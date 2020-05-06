@@ -1,15 +1,24 @@
 #include "baka_input.h"
 #include "baka_logger.h"
 
-namespace Baka
+namespace baka
 {
-    SDL_KeyboardEvent Input::keyboard[ BAKA_NUM_KEYS ];
-    SDL_QuitEvent Input::quitEvent;
-    SDL_TextInputEvent Input::lastKey;
+    SINGLETON_COMMON_IMPLEMENTATION(Input)
+
+    Input::Input()
+    {
+
+    }
+
+    Input::~Input()
+    {
+        
+    }
 
     void Input::Init()
     {
         memset(keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
+        atexit(InputClose);
     }
 
     void Input::Update()

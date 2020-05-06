@@ -2,25 +2,28 @@
 #define _BAKA_INPUT_H_
 
 #include <SDL2/SDL.h>
+#include "singleton_defines.h"
 
 #define BAKA_NUM_KEYS SDL_NUM_SCANCODES
 
-namespace Baka
+namespace baka
 {
     class Input
     {
-    public:
-        static void Init();
-        static void Update();
+    SINGLETON_CLASS_PROPERTIES(Input)
 
-        static bool KeyPressed(int key);
-        static const char *AnyKey();
-        static bool QuitRequested();
+    public:
+        void Init();
+        void Update();
+
+        bool KeyPressed(int key);
+        const char *AnyKey();
+        bool QuitRequested();
 
     private:
-        static SDL_KeyboardEvent keyboard[ BAKA_NUM_KEYS ];
-        static SDL_QuitEvent quitEvent;
-        static SDL_TextInputEvent lastKey;
+        SDL_KeyboardEvent keyboard[ BAKA_NUM_KEYS ];
+        SDL_QuitEvent quitEvent;
+        SDL_TextInputEvent lastKey;
     };
 }
 

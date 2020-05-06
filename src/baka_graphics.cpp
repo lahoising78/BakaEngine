@@ -1,9 +1,20 @@
 #include "baka_graphics.h"
 #include "baka_logger.h"
 
-namespace Baka
+namespace baka
 {
-    SDL_Window *Graphics::window = nullptr;
+    SINGLETON_COMMON_IMPLEMENTATION(Graphics)
+
+    Graphics::Graphics() 
+    {
+        window = nullptr;
+        initialized = false;
+    }
+
+    Graphics::~Graphics()
+    {
+        this->Close();
+    }
 
     bool Graphics::Init( const char *windowName, int width, int height )
     {
@@ -16,7 +27,7 @@ namespace Baka
 
         Graphics::Setup(windowName, width, height);
 
-        atexit(Graphics::Close);
+        atexit(GraphicsClose);
 
         bakalog("baka graphics initialized");
         return true;

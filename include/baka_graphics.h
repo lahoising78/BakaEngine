@@ -2,19 +2,22 @@
 #define _BAKA_GRAPHICS_H_
 
 #include <SDL2/SDL.h>
+#include "singleton_defines.h"
 
-namespace Baka{
+namespace baka{
     class Graphics
     {
+    SINGLETON_CLASS_PROPERTIES(Graphics)
+    
     public:
-        static bool Init( const char *windowName, int width, int height );
+        bool Init( const char *windowName, int width, int height );
 
     private:
-        static void Setup( const char *windowName, int width, int height );
-        static void Close();
+        void Setup( const char *windowName, int width, int height );
 
     private:
-        static SDL_Window *window;
+        SDL_Window *window;
+        bool initialized;
     };
 }
 
