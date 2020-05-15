@@ -6,21 +6,18 @@
 
 int main(int argc, char *argv[])
 {
-    baka::Graphics *baka_graph = baka::Graphics::Get();
     bool running = false;
     bakalog("--==== Start of application ====--");
 
-    running = baka_graph->Init("Baka Engine", 1280, 720);
-    baka::Input *baka_in = baka::Input::Get();
-    
     BakaMain(argc, argv);
+    running = baka::Graphics::IsInit();
 
     bakalog("--==== Update of application ====--");
     while(running)
     {
-        baka_in->Update();
+        baka::Input::Update();
 
-        if( baka_in->QuitRequested() || baka_in->KeyPressed(SDL_SCANCODE_ESCAPE) )
+        if( baka::Input::QuitRequested() || baka::Input::KeyPressed(SDL_SCANCODE_ESCAPE) )
         {
             running = false;
         }

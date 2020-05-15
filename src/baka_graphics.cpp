@@ -3,20 +3,15 @@
 
 namespace baka
 {
-    SINGLETON_COMMON_IMPLEMENTATION(Graphics)
-
-    Graphics::Graphics() 
+    typedef struct
     {
-        window = nullptr;
-        initialized = false;
-    }
+        SDL_Window *window;
+        bool initialized;
+    } BakaGraphics;
 
-    Graphics::~Graphics()
-    {
-        this->Close();
-    }
+    static BakaGraphics graphics_manager = {0};
 
-    bool Graphics::Init( const char *windowName, int width, int height )
+    bool Graphics::Init( const char *windowName, int width, int height, uint32_t apiFlags )
     {
         if(SDL_Init( SDL_INIT_EVERYTHING ) != 0)
         {
@@ -25,19 +20,25 @@ namespace baka
         }
         atexit(SDL_Quit);
 
-        Graphics::Setup(windowName, width, height);
+        Graphics::Setup(windowName, width, height, apiFlags);
 
-        atexit(GraphicsClose);
+        atexit(Graphics::Close);
 
         bakalog("baka graphics initialized");
+        graphics_manager.initialized = true;
         return true;
     }
 
-    void Graphics::Setup( const char *windowName, int width, int height )
+    void Graphics::Setup( const char *windowName, int width, int height, uint32_t apiFlags  )
     {
-        uint32_t windowFlags = SDL_WINDOW_VULKAN;
+        uint32_t windowFlags = 0;
+        
+        if( apiFlags & GraphicAPI::VULKAN )
+        {
+            windowFlags |= SDL_WINDOW_VULKAN;
+        }
 
-        window = SDL_CreateWindow(
+        graphics_manager.window = SDL_CreateWindow(
             windowName,
             0, 0,
             width, height,
@@ -48,9 +49,14 @@ namespace baka
     void Graphics::Close()
     {
         bakalog("closing baka graphics");
-        if(window)
+        if(graphics_manager.window)
         {
-            SDL_DestroyWindow( window );
+            SDL_DestroyWindow( graphics_manager.window );
         }
+    }
+
+    bool Graphics::IsInit()
+    {
+        return graphics_manager.initialized;
     }
 }

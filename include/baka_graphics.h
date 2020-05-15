@@ -2,22 +2,29 @@
 #define _BAKA_GRAPHICS_H_
 
 #include <SDL2/SDL.h>
-#include "singleton_defines.h"
 
 namespace baka{
-    class Graphics
+    typedef enum
     {
-    SINGLETON_CLASS_PROPERTIES(Graphics)
-    
+        NONE = 0,
+        VULKAN  = 1
+    } GraphicAPI;
+
+    class Graphics
+    {    
     public:
-        bool Init( const char *windowName, int width, int height );
+        /** 
+         * @brief initialize window
+         * @param width width of the window
+         * @param height height of the window
+         * @param apiFlags a uint containing the flag bits for GraphicsAPIs
+         */
+        static bool Init( const char *windowName, int width, int height, uint32_t apiFlags );
+        static bool IsInit();
 
     private:
-        void Setup( const char *windowName, int width, int height );
-
-    private:
-        SDL_Window *window;
-        bool initialized;
+        static void Setup( const char *windowName, int width, int height, uint32_t apiFlags );
+        static void Close();
     };
 }
 

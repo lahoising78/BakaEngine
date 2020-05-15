@@ -3,30 +3,27 @@
 
 namespace baka
 {
-    SINGLETON_COMMON_IMPLEMENTATION(Input)
-
-    Input::Input()
+    typedef struct
     {
+        SDL_KeyboardEvent keyboard[ BAKA_NUM_KEYS ];
+        SDL_QuitEvent quitEvent;
+        SDL_TextInputEvent lastKey;
+    } BakaInput;
 
-    }
-
-    Input::~Input()
-    {
-        
-    }
+    static BakaInput input_manager = {0};
 
     void Input::Init()
     {
-        memset(keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
-        atexit(InputClose);
+        memset(input_manager.keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
+        atexit(Input::Close);
     }
 
     void Input::Update()
     {
         SDL_Event e = {0};
-        memset(keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
-        quitEvent = {0};
-        lastKey = {0};
+        memset(input_manager.keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
+        input_manager.quitEvent = {0};
+        input_manager.lastKey = {0};
 
         while(SDL_PollEvent(&e))
         {
@@ -36,16 +33,16 @@ namespace baka
             case SDL_KEYDOWN:
                 if(e.key.keysym.scancode < BAKA_NUM_KEYS)
                 {
-                    keyboard[ e.key.keysym.scancode ] = e.key;
+                    input_manager.keyboard[ e.key.keysym.scancode ] = e.key;
                 }
                 break;
 
             case SDL_TEXTINPUT:
-                lastKey = e.text;
+                input_manager.lastKey = e.text;
                 break;
 
             case SDL_QUIT:
-                quitEvent = e.quit;
+                input_manager.quitEvent = e.quit;
                 break;
             
             default:
@@ -57,16 +54,21 @@ namespace baka
     bool Input::KeyPressed(int key)
     {
         if(key >= BAKA_NUM_KEYS) return false;
-        return keyboard[key].state == SDL_PRESSED;
+        return input_manager.keyboard[key].state == SDL_PRESSED;
     }
 
     const char *Input::AnyKey()
     {
-        return lastKey.text;
+        return input_manager.lastKey.text;
     }
 
     bool Input::QuitRequested()
     {
-        return quitEvent.type == SDL_QUIT;
+        return input_manager.quitEvent.type == SDL_QUIT;
+    }
+
+    void Input::Close()
+    {
+
     }
 }
