@@ -6,10 +6,11 @@
 
 int main(int argc, char *argv[])
 {
+    BakaApplication *baka = new BakaApplication();
     bool running = false;
     bakalog("--==== Start of application ====--");
 
-    BakaMain(argc, argv);
+    baka->Main(argc, argv);
     running = baka::Graphics::IsInit();
 
     bakalog("--==== Update of application ====--");
@@ -22,10 +23,10 @@ int main(int argc, char *argv[])
             running = false;
         }
 
-        BakaUpdate(0.0f);
+        baka->Update(0.0f);
     }
 
     bakalog("--==== End of application ====--");
-
+    delete baka;
     return 0;
 }
