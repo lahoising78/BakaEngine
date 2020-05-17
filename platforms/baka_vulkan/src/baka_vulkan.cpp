@@ -8,10 +8,11 @@ namespace baka
 {
     #ifdef VULKAN_AVAILABLE
 
-    VulkanGraphics::VulkanGraphics(const char *applicationName)
+    VulkanGraphics::VulkanGraphics(const char *applicationName, bool enableValidations)
     {
         bakalog("Hello from VulkanGraphics");
         strcpy(this->applicationName, applicationName);
+        this->enableValidations = enableValidations;
     }
 
     VulkanGraphics::~VulkanGraphics()
@@ -50,7 +51,20 @@ namespace baka
         instanceInfo.enabledExtensionCount = extensions.enabled.size();
         instanceInfo.ppEnabledExtensionNames = extensions.enabled.data();
 
-        instanceInfo.enabledLayerCount = 0;
+        if( enableValidations )
+        {
+            instance_layers.Init();
+            instance_layers.EnableLayers(
+                {"VK_LAYER_KHRONOS_validation"}
+            );
+
+            instanceInfo.enabledLayerCount = instance_layers.enabled.size();
+            instanceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
+        } 
+        else
+        {
+            instanceInfo.enabledLayerCount = 0;
+        }
 
         VkResult res = vkCreateInstance(&instanceInfo, NULL, &this->instance);
         if(res)
