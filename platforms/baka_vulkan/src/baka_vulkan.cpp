@@ -40,22 +40,25 @@ namespace baka
         instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         instanceInfo.pApplicationInfo = &appInfo;
 
+        extensions.Init();
         unsigned int extCount = 0;
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, NULL);
-        extensions.extensions.resize(extCount);
-        extensions.names.resize(extCount);
-        SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, extensions.names.data());
+        std::vector<const char *> sdlExts(extCount);
+        SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, sdlExts.data());
+        extensions.EnableExtensions(sdlExts);
         
-        instanceInfo.enabledExtensionCount = extCount;
-        instanceInfo.ppEnabledExtensionNames = extensions.names.data();
+        instanceInfo.enabledExtensionCount = extensions.enabled.size();
+        instanceInfo.ppEnabledExtensionNames = extensions.enabled.data();
 
         instanceInfo.enabledLayerCount = 0;
 
         VkResult res = vkCreateInstance(&instanceInfo, NULL, &this->instance);
         if(res)
         {
-            bakawarn("VkInstance create failed with code %u", res);
+            bakawarn("VkInstance create failed with code %d", res);
         }
+
+
     }
     
     #endif
