@@ -59,4 +59,9 @@ namespace baka
     {
         return graphics_manager.initialized;
     }
+
+    SDL_Window *Graphics::GetWindow()
+    {
+        return graphics_manager.window;
+    }
 }

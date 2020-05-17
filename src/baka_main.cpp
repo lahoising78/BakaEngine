@@ -4,13 +4,19 @@
 #include "SDL.h"
 #include "baka_logger.h"
 
+BakaApplication *prog = NULL;
+void CloseApplication();
+
 int main(int argc, char *argv[])
 {
-    BakaApplication *baka = new BakaApplication();
+    prog = new BakaApplication();
+    atexit(CloseApplication);
     bool running = false;
     bakalog("--==== Start of application ====--");
-
-    baka->Main(argc, argv);
+    
+    prog->Main(argc, argv);
+    if(prog->vk_graphics) prog->vk_graphics->Init();
+    
     running = baka::Graphics::IsInit();
 
     bakalog("--==== Update of application ====--");
@@ -23,10 +29,14 @@ int main(int argc, char *argv[])
             running = false;
         }
 
-        baka->Update(0.0f);
+        prog->Update(0.0f);
     }
 
     bakalog("--==== End of application ====--");
-    delete baka;
     return 0;
+}
+
+void CloseApplication()
+{
+    if(prog) delete prog;
 }

@@ -1,9 +1,8 @@
 #ifndef _BAKA_CORE_H_
 #define _BAKA_CORE_H_
 
-#ifdef VULKAN_AVAILABLE
 #include "baka_vulkan.h"
-#endif
+#include "baka_open_gl.h"
 
 class BakaApplication
 {
@@ -13,9 +12,8 @@ public:
     void Update(float deltaTime);
 
 public:
-    #ifdef VULKAN_AVAILABLE
     baka::VulkanGraphics *vk_graphics;
-    #endif
+    baka::OpenGLGraphics *gl_graphics;
 };
 
 #endif

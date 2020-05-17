@@ -4,6 +4,8 @@ file(
     GLOB baka_src
     "include/*.h"
     "src/*.cpp"
+    "platforms/baka_open_gl/include/*.h"
+    "platforms/baka_open_gl/src/*.cpp"
 )
 
 file(
@@ -37,3 +39,6 @@ if( Vulkan_FOUND )
     target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_vulkan/include")
     set(baka_src ${baka_src} ${baka_vulkan})
 endif()
+
+find_package(OpenGL)
+target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_open_gl/include")

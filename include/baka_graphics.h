@@ -22,6 +22,8 @@ namespace baka{
         static bool Init( const char *windowName, int width, int height, uint32_t apiFlags );
         static bool IsInit();
 
+        static SDL_Window *GetWindow();
+
     private:
         static void Setup( const char *windowName, int width, int height, uint32_t apiFlags );
         static void Close();
