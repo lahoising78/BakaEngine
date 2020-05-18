@@ -9,5 +9,7 @@ namespace baka
         vkGetPhysicalDeviceProperties(device, &properties);
         vkGetPhysicalDeviceFeatures(device, &features);
         this->device = device;
+
+        queues = VulkanQueues(this->device);
     }
 }

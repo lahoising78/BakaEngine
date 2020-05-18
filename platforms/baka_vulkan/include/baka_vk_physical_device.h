@@ -2,6 +2,7 @@
 #define _BAKA_VK_PHYSICAL_DEVICE_H_
 
 #include <vulkan/vulkan.h>
+#include "baka_vk_queues.h"
 
 namespace baka
 {
@@ -18,6 +19,8 @@ namespace baka
         VulkanPhysicalDevice(VkPhysicalDevice device);
 
     public:
+        VulkanQueues queues;
+
         VkPhysicalDevice device;
         VkPhysicalDeviceProperties properties;
         VkPhysicalDeviceFeatures features;
