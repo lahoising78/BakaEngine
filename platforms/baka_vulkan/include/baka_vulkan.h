@@ -6,6 +6,7 @@
 #include "baka_vk_extensions.h"
 #include "baka_vk_validation.h"
 #include "baka_vk_physical_device.h"
+#include "baka_vk_device.h"
 
 namespace baka
 {
@@ -22,6 +23,7 @@ namespace baka
     private:
         virtual void CreateInstance();
         virtual void PickPhysicalDevice();
+        virtual void CreateLogicalDevice();
 
     protected:
         char applicationName[4096];
@@ -34,6 +36,7 @@ namespace baka
         /* VULKAN STUFF */
         VkInstance instance;
         VulkanPhysicalDevice physicalDevice;
+        VulkanLogicalDevice logicalDevice;
     };
 
     #else

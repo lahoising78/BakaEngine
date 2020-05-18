@@ -20,6 +20,7 @@ namespace baka
     {
         bakalog("VulkanGraphics closing");
 
+        vkDestroyDevice(this->logicalDevice.device, NULL);
         if(enableValidations) VulkanValidation::DestroyDebugMessenger(this->instance);
         vkDestroyInstance(this->instance, NULL);
     }
@@ -29,6 +30,7 @@ namespace baka
         this->CreateInstance();
         if(enableValidations) VulkanValidation::SetupDebugMessenger(this->instance);
         this->PickPhysicalDevice();
+        this->CreateLogicalDevice();
     }
 
     void VulkanGraphics::CreateInstance()
@@ -97,7 +99,7 @@ namespace baka
         
         for(auto phys : availablePhysicalDevices)
         {
-            VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
+            VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys, {});
             if( VulkanUtils::IsPhysicalDeviceSuitable(vpd) )
             {
                 this->physicalDevice = vpd;
@@ -105,6 +107,45 @@ namespace baka
                 break;
             }
         }
+    }
+
+    void VulkanGraphics::CreateLogicalDevice()
+    {
+        this->logicalDevice = {};
+        this->logicalDevice.physicalDevice = &this->physicalDevice;
+
+        std::vector<float> priorities = {1.0f};
+        VkDeviceQueueCreateInfo queueInfo = VulkanUtils::DeviceQueueCreateInfo(
+            0, nullptr,
+            priorities.data(),
+            priorities.size(),
+            physicalDevice.queues.familyIndices[VK_QUEUE_GRAPHICS_BIT]
+        );
+
+        VkDeviceCreateInfo deviceInfo = {};
+        deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        deviceInfo.pQueueCreateInfos = &queueInfo;
+        deviceInfo.queueCreateInfoCount = 1;
+        deviceInfo.pEnabledFeatures = physicalDevice.requiredFeatures.data();
+        deviceInfo.enabledExtensionCount = 0;
+        
+        if(enableValidations)
+        {
+            deviceInfo.enabledLayerCount = instance_layers.enabled.size();
+            deviceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
+        }
+
+        VkResult res = vkCreateDevice(physicalDevice.device, &deviceInfo, NULL, &this->logicalDevice.device);
+        if(res != VK_SUCCESS)
+        {
+            bakawarn("Device creation failed with error code %d", res);
+        }
+
+        this->logicalDevice.queues[VK_QUEUE_GRAPHICS_BIT] = VulkanLogicalDeviceQueues(
+            this->logicalDevice.device, 
+            this->physicalDevice.queues.familyIndices[VK_QUEUE_GRAPHICS_BIT],
+            0
+        );
     }
 
     #endif

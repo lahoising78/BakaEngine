@@ -35,6 +35,17 @@ namespace baka
         static VkPhysicalDeviceProperties GetPhysicalDeviceCapabilities(VkPhysicalDevice device);
         static bool IsPhysicalDeviceSuitable(VulkanPhysicalDevice device);
 
+        /*  ============================================================
+            LOGICAL DEVICE (VkDevice) 
+            ============================================================*/
+        static VkDeviceQueueCreateInfo DeviceQueueCreateInfo(
+            VkDeviceQueueCreateFlags flags,
+            const void *pNext,
+            const float *priorities,
+            uint32_t queueCount,
+            uint32_t queueFamilyIndex
+        );
+
     private:
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallbackDefault(
             VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,

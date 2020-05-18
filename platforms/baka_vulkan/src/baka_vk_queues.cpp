@@ -2,14 +2,16 @@
 
 namespace baka
 {
-    VulkanQueues::VulkanQueues()
+    /*  ======================================================
+        PHYSICAL DEVICE QUEUES
+        ====================================================== */
+    VulkanPhysicalDeviceQueues::VulkanPhysicalDeviceQueues()
     {
         families.clear();
         familyIndices.clear();
-        device = VK_NULL_HANDLE;
     }
 
-    VulkanQueues::VulkanQueues(VkPhysicalDevice device)
+    VulkanPhysicalDeviceQueues::VulkanPhysicalDeviceQueues(VkPhysicalDevice device)
     {
         this->device = device;
 
@@ -19,7 +21,7 @@ namespace baka
         vkGetPhysicalDeviceQueueFamilyProperties(this->device, &count, families.data());
     }
 
-    bool VulkanQueues::FindQueueIndex( VkQueueFlagBits flag )
+    bool VulkanPhysicalDeviceQueues::FindQueueIndex( VkQueueFlagBits flag )
     {
         for(uint32_t i = 0; i < families.size(); i++)
         {
@@ -30,5 +32,25 @@ namespace baka
             }
         }
         return false;
+    }
+
+    /*  ==============================================================
+        LOGICAL DEVICE QUEUES
+        ============================================================== */
+    VulkanLogicalDeviceQueues::VulkanLogicalDeviceQueues()
+    {
+        this->device = VK_NULL_HANDLE;
+        this->familyIndex = 0;
+        this->queueIndex = 0;
+        this->queue = VK_NULL_HANDLE;
+    }
+
+    VulkanLogicalDeviceQueues::VulkanLogicalDeviceQueues(VkDevice device, uint32_t familyIndex, uint32_t queueIndex)
+    {
+        this->device = device;
+        this->familyIndex = familyIndex;
+        this->queueIndex = queueIndex;
+
+        vkGetDeviceQueue(this->device, familyIndex, queueIndex, &queue);
     }
 }

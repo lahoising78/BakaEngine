@@ -121,4 +121,24 @@ namespace baka
                     // device.features.geometryShader &&
                     device.queues.FindQueueIndex( VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT );
         }
+
+    /*  ====================================================================
+        LOGICAL DEVICE
+        ==================================================================== */
+        VkDeviceQueueCreateInfo VulkanUtils::DeviceQueueCreateInfo(
+            VkDeviceQueueCreateFlags flags,
+            const void *pNext,
+            const float *priorities,
+            uint32_t queueCount,
+            uint32_t queueFamilyIndex)
+        {
+            VkDeviceQueueCreateInfo info = {};
+            info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            info.flags = flags;
+            info.pNext = pNext;
+            info.pQueuePriorities = priorities;
+            info.queueCount = queueCount;
+            info.queueFamilyIndex = queueFamilyIndex;
+            return info;
+        }
 }

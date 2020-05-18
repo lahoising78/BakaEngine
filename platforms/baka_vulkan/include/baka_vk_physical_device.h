@@ -14,12 +14,18 @@ namespace baka
             this->device = VK_NULL_HANDLE;
             this->properties = {};
             this->features = {};
+            this->requiredFeatures.clear();
         }
 
-        VulkanPhysicalDevice(VkPhysicalDevice device);
+        VulkanPhysicalDevice(VkPhysicalDevice device, std::vector<VkPhysicalDeviceFeatures> requiredFeatures);
+
+        bool IsSuitable();
+
+        bool FeatureContains(VkPhysicalDeviceFeatures container, VkPhysicalDeviceFeatures check);
 
     public:
-        VulkanQueues queues;
+        VulkanPhysicalDeviceQueues queues;
+        std::vector<VkPhysicalDeviceFeatures> requiredFeatures;
 
         VkPhysicalDevice device;
         VkPhysicalDeviceProperties properties;
