@@ -12,6 +12,7 @@ namespace baka
 
     class VulkanGraphics
     {
+
     public:
         VulkanGraphics(const char *applicationName, bool enableValidations);
         virtual ~VulkanGraphics();
@@ -22,6 +23,7 @@ namespace baka
 
     protected:
         char applicationName[4096];
+
         VulkanExtensions extensions;
         
         bool enableValidations;

@@ -1,8 +1,9 @@
-#include "baka_logger.h"
-#include "baka_vulkan.h"
-#include "baka_graphics.h"
 #include <cstring>
 #include <SDL2/SDL_vulkan.h>
+#include "baka_logger.h"
+#include "baka_vulkan.h"
+#include "baka_vk_utils.h"
+#include "baka_graphics.h"
 
 namespace baka
 {
@@ -19,12 +20,14 @@ namespace baka
     {
         bakalog("VulkanGraphics closing");
 
+        if(enableValidations) VulkanValidation::DestroyDebugMessenger(this->instance);
         vkDestroyInstance(this->instance, NULL);
     }
 
     void VulkanGraphics::Init()
     {
         this->CreateInstance();
+        if(enableValidations) VulkanValidation::SetupDebugMessenger(this->instance);
     }
 
     void VulkanGraphics::CreateInstance()
@@ -47,32 +50,32 @@ namespace baka
         std::vector<const char *> sdlExts(extCount);
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, sdlExts.data());
         extensions.EnableExtensions(sdlExts);
+        extensions.EnableExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         
         instanceInfo.enabledExtensionCount = extensions.enabled.size();
         instanceInfo.ppEnabledExtensionNames = extensions.enabled.data();
 
+        VkDebugUtilsMessengerCreateInfoEXT debugInfo = {};
         if( enableValidations )
         {
             instance_layers.Init();
-            instance_layers.EnableLayers(
-                {"VK_LAYER_KHRONOS_validation"}
-            );
+            instance_layers.EnableLayers({
+                "VK_LAYER_KHRONOS_validation",
+                "VK_LAYER_LUNARG_standard_validation"
+            });
 
-            instanceInfo.enabledLayerCount = instance_layers.enabled.size();
+            instanceInfo.enabledLayerCount = (uint32_t)instance_layers.enabled.size();
             instanceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
-        } 
-        else
-        {
-            instanceInfo.enabledLayerCount = 0;
+
+            debugInfo = VulkanUtils::DebugMessengerCreateInfoDefault();
+            instanceInfo.pNext = &debugInfo;
         }
 
         VkResult res = vkCreateInstance(&instanceInfo, NULL, &this->instance);
-        if(res)
+        if(res != VK_SUCCESS)
         {
             bakawarn("VkInstance create failed with code %d", res);
         }
-
-
     }
     
     #endif

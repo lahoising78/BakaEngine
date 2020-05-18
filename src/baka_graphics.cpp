@@ -53,8 +53,6 @@ namespace baka
         {
             SDL_DestroyWindow( graphics_manager.window );
         }
-
-        SDL_Quit();
     }
 
     bool Graphics::IsInit()

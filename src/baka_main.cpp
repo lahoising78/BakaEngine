@@ -10,12 +10,12 @@ void CloseApplication();
 int main(int argc, char *argv[])
 {
     prog = new BakaApplication();
-    atexit(CloseApplication);
     bool running = false;
     bakalog("--==== Start of application ====--");
     
     prog->Main(argc, argv);
     if(prog->vk_graphics) prog->vk_graphics->Init();
+    atexit(CloseApplication);
     
     running = baka::Graphics::IsInit();
 
