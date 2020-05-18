@@ -4,6 +4,9 @@
 
 namespace baka
 {
+    /*  =============================================================
+        DEBUG MESSENGER
+        ============================================================= */
     VkDebugUtilsMessengerCreateInfoEXT VulkanUtils::DebugMessengerCreateInfo(
             VkDebugUtilsMessageSeverityFlagsEXT severity,
             VkDebugUtilsMessageTypeFlagsEXT type,
@@ -92,4 +95,28 @@ namespace baka
 
         return VK_FALSE;
     }
+
+    /*  ================================================================
+        PHYSICAL DEVICE
+        ================================================================ */
+        std::vector<VkPhysicalDevice> VulkanUtils::GetAvailableDevices(VkInstance instance)
+        {
+            unsigned int count = 0;
+            vkEnumeratePhysicalDevices(instance, &count, nullptr);
+            std::vector<VkPhysicalDevice> devices(count);
+            vkEnumeratePhysicalDevices(instance, &count, devices.data());
+            return devices;
+        }
+
+        VkPhysicalDeviceProperties VulkanUtils::GetPhysicalDeviceCapabilities(VkPhysicalDevice device)
+        {
+            VkPhysicalDeviceProperties prop = {};
+            vkGetPhysicalDeviceProperties(device, &prop);
+            return prop;
+        }
+
+        bool VulkanUtils::IsPhysicalDeviceSuitable(VulkanPhysicalDevice device)
+        {
+            return device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && device.features.geometryShader;
+        }
 }
