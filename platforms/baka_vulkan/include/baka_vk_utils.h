@@ -38,7 +38,6 @@ namespace baka
             =========================================================== */
         static std::vector<VkPhysicalDevice> GetAvailableDevices(VkInstance instance);
         static VkPhysicalDeviceProperties GetPhysicalDeviceCapabilities(VkPhysicalDevice device);
-        static bool IsPhysicalDeviceSuitable(VulkanPhysicalDevice &device, VkSurfaceKHR surface);
 
         /*  ============================================================
             LOGICAL DEVICE (VkDevice) 

@@ -2,28 +2,31 @@
 
 namespace baka
 {
-    VulkanPhysicalDevice::VulkanPhysicalDevice(VkPhysicalDevice device, std::vector<VkPhysicalDeviceFeatures> requiredFeatures)
+    VulkanPhysicalDevice::VulkanPhysicalDevice(VkPhysicalDevice device)
     {
         if(device == VK_NULL_HANDLE) return;
 
         vkGetPhysicalDeviceProperties(device, &properties);
         vkGetPhysicalDeviceFeatures(device, &features);
         this->device = device;
-        this->requiredFeatures = requiredFeatures;
 
         queues = VulkanPhysicalDeviceQueues(this->device);
+        this->extensions.Init(this->device);
     }
 
-    bool VulkanPhysicalDevice::IsSuitable()
+    bool VulkanPhysicalDevice::IsSuitable(VkSurfaceKHR surface, std::vector<const char *> requiredExtensions)
     {
+        /* are we a discrete gpu? */
         if( this->properties.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) return false;
 
+        /* do we have a graphics queue? */
         if( !this->queues.FindQueueIndex( VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT ) ) return false;
 
-        // for(VkPhysicalDeviceFeatures f : requiredFeatures)
-        // {
-        //     if( !FeatureContains(this->features, f) ) return false;
-        // }
+        /* do we support presenting to the surface? */
+        if( !this->queues.FindPresentQueue(surface) ) return false;
+        
+        /* do we support the necessary extensions? */
+        if( this->extensions.EnableExtensions(requiredExtensions) != requiredExtensions.size() ) return false;
         
         return true;
     }

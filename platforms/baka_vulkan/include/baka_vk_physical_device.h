@@ -3,6 +3,7 @@
 
 #include <vulkan/vulkan.h>
 #include "baka_vk_queues.h"
+#include "baka_vk_extensions.h"
 
 namespace baka
 {
@@ -14,22 +15,25 @@ namespace baka
             this->device = VK_NULL_HANDLE;
             this->properties = {};
             this->features = {};
-            this->requiredFeatures.clear();
+            this->extensions.Init();
         }
 
-        VulkanPhysicalDevice(VkPhysicalDevice device, std::vector<VkPhysicalDeviceFeatures> requiredFeatures);
+        VulkanPhysicalDevice(VkPhysicalDevice device);
 
-        bool IsSuitable();
+        bool IsSuitable( VkSurfaceKHR surface, std::vector<const char *> requiredExtensions  );
 
         bool FeatureContains(VkPhysicalDeviceFeatures container, VkPhysicalDeviceFeatures check);
 
     public:
         VulkanPhysicalDeviceQueues queues;
-        std::vector<VkPhysicalDeviceFeatures> requiredFeatures;
+        
+        VulkanDeviceExtensions extensions;
 
         VkPhysicalDevice device;
         VkPhysicalDeviceProperties properties;
+
         VkPhysicalDeviceFeatures features;
+        VkPhysicalDeviceFeatures enabledFeatures;
     };
 }
 

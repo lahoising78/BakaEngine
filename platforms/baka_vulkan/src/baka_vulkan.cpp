@@ -53,7 +53,7 @@ namespace baka
 
         /* Vulkan works mostly with extensions. In this block we query the extensions
         that sdl needs to run vulkan on a window, using a common pattern used in vulkan. */
-        extensions.Init();
+        instance_extensions.Init();
         unsigned int extCount = 0;
         /* We query the number of extensions that sdl needs from vulkan */
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, NULL);
@@ -62,22 +62,26 @@ namespace baka
         /* query the actual extension names */
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, sdlExts.data());
         /* the way I set this up is to enable all the extensions that instance_extensions.enabled contains */
-        extensions.EnableExtensions(sdlExts);
+        instance_extensions.EnableExtensions(sdlExts);
+        instance_extensions.EnableExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
         
         /* this is an extension we need to create a debug messenger on vulkan. See VulkanValidation::SetupDebugMessenger */
         if(enableValidations)
-            extensions.EnableExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        {
+            instance_extensions.EnableExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        }
 
-        instanceInfo.enabledExtensionCount = extensions.enabled.size();
-        instanceInfo.ppEnabledExtensionNames = extensions.enabled.data();
+        instanceInfo.enabledExtensionCount = instance_extensions.enabled.size();
+        instanceInfo.ppEnabledExtensionNames = instance_extensions.enabled.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugInfo = {};
         if( enableValidations )
         {
             instance_layers.Init();
             instance_layers.EnableLayers({
-                "VK_LAYER_KHRONOS_validation",
-                "VK_LAYER_LUNARG_standard_validation"
+                "VK_LAYER_KHRONOS_validation"
+                , "VK_LAYER_LUNARG_standard_validation"
+                // , "VK_LAYER_LUNARG_api_dump"
             });
 
             instanceInfo.enabledLayerCount = (uint32_t)instance_layers.enabled.size();
@@ -111,8 +115,8 @@ namespace baka
         
         for(auto phys : availablePhysicalDevices)
         {
-            VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys, {});
-            if( VulkanUtils::IsPhysicalDeviceSuitable(vpd, this->surface) )
+            VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
+            if( vpd.IsSuitable(this->surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
@@ -139,20 +143,23 @@ namespace baka
             ));
         }
 
+        VkPhysicalDeviceFeatures deviceFeatures = {};
         VkDeviceCreateInfo deviceInfo = {};
         deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         deviceInfo.pQueueCreateInfos = queueInfos.data();
         deviceInfo.queueCreateInfoCount = queueInfos.size();
-        deviceInfo.pEnabledFeatures = physicalDevice.requiredFeatures.data();
-        deviceInfo.enabledExtensionCount = 0;
+        deviceInfo.pEnabledFeatures = &deviceFeatures;
+        deviceInfo.enabledExtensionCount = this->logicalDevice.physicalDevice->extensions.enabled.size();
+        deviceInfo.ppEnabledExtensionNames = this->logicalDevice.physicalDevice->extensions.enabled.data();
         
         if(enableValidations)
         {
+            bakalog("enabled extension count: %u", this->logicalDevice.physicalDevice->extensions.enabled.size());
             deviceInfo.enabledLayerCount = instance_layers.enabled.size();
             deviceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
         }
 
-        VkResult res = vkCreateDevice(physicalDevice.device, &deviceInfo, NULL, &this->logicalDevice.device);
+        VkResult res = vkCreateDevice(this->logicalDevice.physicalDevice->device, &deviceInfo, NULL, &this->logicalDevice.device);
         if(res != VK_SUCCESS)
         {
             bakawarn("Device creation failed with error code %d", res);

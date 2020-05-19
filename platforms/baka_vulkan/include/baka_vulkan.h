@@ -29,7 +29,7 @@ namespace baka
     protected:
         char applicationName[4096];
 
-        VulkanExtensions extensions;
+        VulkanInstanceExtensions instance_extensions;
         
         bool enableValidations;
         VulkanValidation instance_layers;
