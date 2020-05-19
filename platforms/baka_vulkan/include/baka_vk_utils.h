@@ -5,6 +5,11 @@
 #include <vulkan/vulkan.h>
 #include "baka_vk_physical_device.h"
 
+#define VKASSERT(res, func, msg) \
+res = func; \
+if( res != VK_SUCCESS ) \
+{ bakawarn("%s failed with error code: %d", msg, res); }
+
 namespace baka
 {
     class VulkanUtils
@@ -33,7 +38,7 @@ namespace baka
             =========================================================== */
         static std::vector<VkPhysicalDevice> GetAvailableDevices(VkInstance instance);
         static VkPhysicalDeviceProperties GetPhysicalDeviceCapabilities(VkPhysicalDevice device);
-        static bool IsPhysicalDeviceSuitable(VulkanPhysicalDevice device);
+        static bool IsPhysicalDeviceSuitable(VulkanPhysicalDevice &device, VkSurfaceKHR surface);
 
         /*  ============================================================
             LOGICAL DEVICE (VkDevice) 

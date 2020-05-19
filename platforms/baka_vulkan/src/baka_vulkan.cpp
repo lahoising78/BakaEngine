@@ -18,17 +18,19 @@ namespace baka
 
     VulkanGraphics::~VulkanGraphics()
     {
-        bakalog("VulkanGraphics closing");
-
         vkDestroyDevice(this->logicalDevice.device, NULL);
+        vkDestroySurfaceKHR(this->instance, this->surface, NULL);
         if(enableValidations) VulkanValidation::DestroyDebugMessenger(this->instance);
         vkDestroyInstance(this->instance, NULL);
+
+        bakalog("VulkanGraphics closed");
     }
 
     void VulkanGraphics::Init()
     {
         this->CreateInstance();
         if(enableValidations) VulkanValidation::SetupDebugMessenger(this->instance);
+        this->CreateSurface();
         this->PickPhysicalDevice();
         this->CreateLogicalDevice();
     }
@@ -91,6 +93,16 @@ namespace baka
             bakawarn("VkInstance create failed with code %d", res);
         }
     }
+
+    void VulkanGraphics::CreateSurface()
+    {
+        bool surfaceCreate = SDL_Vulkan_CreateSurface(baka::Graphics::GetWindow(), this->instance, &this->surface);
+        if(!surfaceCreate)
+        {
+            bakawarn("surface creation failed: %s", SDL_GetError());
+            return;
+        }
+    }
     
     void VulkanGraphics::PickPhysicalDevice()
     {
@@ -100,7 +112,7 @@ namespace baka
         for(auto phys : availablePhysicalDevices)
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys, {});
-            if( VulkanUtils::IsPhysicalDeviceSuitable(vpd) )
+            if( VulkanUtils::IsPhysicalDeviceSuitable(vpd, this->surface) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
@@ -115,17 +127,22 @@ namespace baka
         this->logicalDevice.physicalDevice = &this->physicalDevice;
 
         std::vector<float> priorities = {1.0f};
-        VkDeviceQueueCreateInfo queueInfo = VulkanUtils::DeviceQueueCreateInfo(
-            0, nullptr,
-            priorities.data(),
-            priorities.size(),
-            physicalDevice.queues.familyIndices[VK_QUEUE_GRAPHICS_BIT]
-        );
+        std::vector<VkDeviceQueueCreateInfo> queueInfos; 
+        
+        for(auto familyIndex : this->logicalDevice.physicalDevice->queues.familyIndices)
+        {
+            queueInfos.push_back(VulkanUtils::DeviceQueueCreateInfo(
+                0, nullptr,
+                priorities.data(),
+                priorities.size(),
+                familyIndex.second
+            ));
+        }
 
         VkDeviceCreateInfo deviceInfo = {};
         deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-        deviceInfo.pQueueCreateInfos = &queueInfo;
-        deviceInfo.queueCreateInfoCount = 1;
+        deviceInfo.pQueueCreateInfos = queueInfos.data();
+        deviceInfo.queueCreateInfoCount = queueInfos.size();
         deviceInfo.pEnabledFeatures = physicalDevice.requiredFeatures.data();
         deviceInfo.enabledExtensionCount = 0;
         
@@ -144,6 +161,12 @@ namespace baka
         this->logicalDevice.queues[VK_QUEUE_GRAPHICS_BIT] = VulkanLogicalDeviceQueues(
             this->logicalDevice.device, 
             this->physicalDevice.queues.familyIndices[VK_QUEUE_GRAPHICS_BIT],
+            0
+        );
+
+        this->logicalDevice.queues[VkQueueFlagBits::VK_QUEUE_FLAG_BITS_MAX_ENUM] = VulkanLogicalDeviceQueues(
+            this->logicalDevice.device,
+            this->physicalDevice.queues.familyIndices[VkQueueFlagBits::VK_QUEUE_FLAG_BITS_MAX_ENUM],
             0
         );
     }

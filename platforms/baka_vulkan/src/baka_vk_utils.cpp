@@ -115,10 +115,10 @@ namespace baka
             return prop;
         }
 
-        bool VulkanUtils::IsPhysicalDeviceSuitable(VulkanPhysicalDevice device)
+        bool VulkanUtils::IsPhysicalDeviceSuitable(VulkanPhysicalDevice &device, VkSurfaceKHR surface)
         {
             return  device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && 
-                    // device.features.geometryShader &&
+                    device.queues.FindPresentQueue(surface) &&
                     device.queues.FindQueueIndex( VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT );
         }
 

@@ -22,6 +22,7 @@ namespace baka
 
     private:
         virtual void CreateInstance();
+        virtual void CreateSurface();
         virtual void PickPhysicalDevice();
         virtual void CreateLogicalDevice();
 
@@ -37,6 +38,7 @@ namespace baka
         VkInstance instance;
         VulkanPhysicalDevice physicalDevice;
         VulkanLogicalDevice logicalDevice;
+        VkSurfaceKHR surface;
     };
 
     #else
