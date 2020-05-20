@@ -1,7 +1,7 @@
 #ifndef _BAKA_INPUT_H_
 #define _BAKA_INPUT_H_
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #define BAKA_NUM_KEYS SDL_NUM_SCANCODES
 

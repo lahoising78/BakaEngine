@@ -1,7 +1,7 @@
 #include "baka_vectors.h"
 #include <string>
 #include <stdio.h>
-#include <math.h>
+#include <cmath>
 
 float vec2_magnitude(Vec2 v)
 {

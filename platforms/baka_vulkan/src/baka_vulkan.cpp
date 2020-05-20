@@ -1,5 +1,6 @@
 #include <cstring>
-#include <SDL2/SDL_vulkan.h>
+#include <SDL_vulkan.h>
+//#include <SDL2/SDL_vulkan.h>
 #include "baka_logger.h"
 #include "baka_vulkan.h"
 #include "baka_vk_utils.h"

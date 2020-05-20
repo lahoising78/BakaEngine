@@ -1,7 +1,8 @@
 #include "Baka.h"
 #include "baka_graphics.h"
 #include "baka_input.h"
-#include "SDL.h"
+#include <SDL.h>
+//#include <SDL2/SDL.h>
 #include "baka_logger.h"
 
 BakaApplication *prog = NULL;

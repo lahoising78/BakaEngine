@@ -1,7 +1,8 @@
 #ifndef _BAKA_GRAPHICS_H_
 #define _BAKA_GRAPHICS_H_
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
+//#include <SDL2/SDL.h>
 
 namespace baka{
     typedef enum

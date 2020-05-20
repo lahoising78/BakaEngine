@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <cstring>
 #include "baka_input.h"
 #include "baka_logger.h"
 
