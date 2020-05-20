@@ -36,6 +36,7 @@ namespace baka
 
     bool VulkanExtensions::EnableExtension(const char *extensionName)
     {
+        bakalog("trying to enable %s...", extensionName);
         for(auto &ext : extensions)
         {
             if( strcmp(ext.extensionName, extensionName) == 0 )

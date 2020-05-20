@@ -33,6 +33,7 @@ namespace baka
         if(enableValidations) VulkanValidation::SetupDebugMessenger(this->instance);
         this->CreateSurface();
         this->PickPhysicalDevice();
+        if(this->physicalDevice.device == VK_NULL_HANDLE) return;
         this->CreateLogicalDevice();
     }
 
@@ -64,7 +65,6 @@ namespace baka
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, sdlExts.data());
         /* the way I set this up is to enable all the extensions that instance_extensions.enabled contains */
         instance_extensions.EnableExtensions(sdlExts);
-        instance_extensions.EnableExtension(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
         
         /* this is an extension we need to create a debug messenger on vulkan. See VulkanValidation::SetupDebugMessenger */
         if(enableValidations)
@@ -115,15 +115,21 @@ namespace baka
         auto availablePhysicalDevices = VulkanUtils::GetAvailableDevices(this->instance);
         if(availablePhysicalDevices.size() < 1) return;
         
+        // std::vector<const char *> requiredExtensions = this->instance_extensions.enabled;
         for(auto phys : availablePhysicalDevices)
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
-            if( vpd.IsSuitable(this->surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
+            if( vpd.IsSuitable(this->surface, this->instance_extensions.enabled) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
                 break;
             }
+        }
+
+        if(this->physicalDevice.device == VK_NULL_HANDLE)
+        {
+            bakawarn("There are no suitable physical devices");
         }
     }
 
@@ -157,6 +163,8 @@ namespace baka
         if(enableValidations)
         {
             bakalog("enabled extension count: %u", this->logicalDevice.physicalDevice->extensions.enabled.size());
+            for(auto ext : this->logicalDevice.physicalDevice->extensions.enabled)
+                bakalog("\t%s", ext);
             deviceInfo.enabledLayerCount = static_cast<uint32_t>(instance_layers.enabled.size());
             deviceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
         }
