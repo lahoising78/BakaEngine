@@ -65,8 +65,7 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-
-message("sdl2 path is ${SDL2_PATH}")
+SET(SDL2_PATH "D:/development" CACHE PATH "path to SDL2")
 SET(SDL2_SEARCH_PATHS
 	~/Library/Frameworks
 	/Library/Frameworks
@@ -86,11 +85,21 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 	PATHS ${SDL2_SEARCH_PATHS}
 )
 
+set(POSSIBLE_LIBS lib)
+
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 ) # 64 bit
+    set( POSSIBLE_LIBS ${POSSIBLE_LIBS} lib64 lib lib/x64 )
+    set( POSSIBLE_LIBS ${POSSIBLE_LIBS} lib32 lib lib/x86 )
+else() # 32 bit
+    set( POSSIBLE_LIBS ${POSSIBLE_LIBS} lib32 lib lib/x86 )
+    set( POSSIBLE_LIBS ${POSSIBLE_LIBS} lib64 lib lib/x64 )
+endif()
+
 FIND_LIBRARY(SDL2_LIBRARY_TEMP
 	NAMES SDL2
 	HINTS
 	$ENV{SDL2DIR}
-	PATH_SUFFIXES lib64 lib lib/x64
+	PATH_SUFFIXES ${POSSIBLE_LIBS}
 	PATHS ${SDL2_SEARCH_PATHS}
 )
 
@@ -104,7 +113,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
 			NAMES SDL2main
 			HINTS
 			$ENV{SDL2DIR}
-			PATH_SUFFIXES lib64 lib
+			PATH_SUFFIXES ${POSSIBLE_LIBS}
 			PATHS ${SDL2_SEARCH_PATHS}
 		)
 	ENDIF(NOT ${SDL2_INCLUDE_DIR} MATCHES ".framework")

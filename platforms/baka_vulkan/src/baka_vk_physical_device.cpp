@@ -3,12 +3,13 @@
 namespace baka
 {
     VulkanPhysicalDevice::VulkanPhysicalDevice(VkPhysicalDevice device)
+        : VulkanPhysicalDevice()
     {
         if(device == VK_NULL_HANDLE) return;
 
+        this->device = device;
         vkGetPhysicalDeviceProperties(device, &properties);
         vkGetPhysicalDeviceFeatures(device, &features);
-        this->device = device;
 
         queues = VulkanPhysicalDeviceQueues(this->device);
         this->extensions.Init(this->device);

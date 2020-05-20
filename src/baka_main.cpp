@@ -11,6 +11,7 @@ void CloseApplication();
 int main(int argc, char *argv[])
 {
     prog = new BakaApplication();
+    if (!prog) return 0;
     bool running = false;
     bakalog("--==== Start of application ====--");
     

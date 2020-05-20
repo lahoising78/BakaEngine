@@ -2,7 +2,6 @@ project(Baka)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/modules/")
 
-set(SDL2_PATH D:/libs/source/SDL2-mingw)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
@@ -26,15 +25,13 @@ add_library(
     "${baka_vulkan}"
 )
 
+target_include_directories(baka_engine PUBLIC ${SDL2_INCLUDE_DIR})
 target_link_libraries(baka_engine ${SDL2_LIBRARY})
 
 find_package(Vulkan)
 if( Vulkan_FOUND )
-    if(${CMAKE_VERSION} VERSION_LESS "3.12.4")
-        target_compile_definitions(baka_engine PUBLIC VULKAN_AVAILABLE)
-    else()
-        add_compile_definitions(VULKAN_AVAILABLE)
-    endif()
+    # if(${CMAKE_VERSION} VERSION_LESS "3.12.4")
+    target_compile_definitions(baka_engine PUBLIC VULKAN_AVAILABLE)
 
     target_include_directories(baka_engine PUBLIC Vulkan::Vulkan)
     target_link_libraries(baka_engine Vulkan::Vulkan)

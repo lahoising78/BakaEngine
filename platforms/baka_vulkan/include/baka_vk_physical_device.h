@@ -16,6 +16,7 @@ namespace baka
             this->properties = {};
             this->features = {};
             this->extensions.Init();
+            this->enabledFeatures = {};
         }
 
         VulkanPhysicalDevice(VkPhysicalDevice device);

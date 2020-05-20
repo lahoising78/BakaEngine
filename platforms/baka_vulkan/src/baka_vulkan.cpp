@@ -72,7 +72,7 @@ namespace baka
             instance_extensions.EnableExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
 
-        instanceInfo.enabledExtensionCount = instance_extensions.enabled.size();
+        instanceInfo.enabledExtensionCount = static_cast<uint32_t>(instance_extensions.enabled.size());
         instanceInfo.ppEnabledExtensionNames = instance_extensions.enabled.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugInfo = {};
@@ -139,7 +139,7 @@ namespace baka
             queueInfos.push_back(VulkanUtils::DeviceQueueCreateInfo(
                 0, nullptr,
                 priorities.data(),
-                priorities.size(),
+                static_cast<uint32_t>(priorities.size()),
                 familyIndex.second
             ));
         }
@@ -148,15 +148,15 @@ namespace baka
         VkDeviceCreateInfo deviceInfo = {};
         deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         deviceInfo.pQueueCreateInfos = queueInfos.data();
-        deviceInfo.queueCreateInfoCount = queueInfos.size();
+        deviceInfo.queueCreateInfoCount = static_cast<uint32_t>(queueInfos.size());
         deviceInfo.pEnabledFeatures = &deviceFeatures;
-        deviceInfo.enabledExtensionCount = this->logicalDevice.physicalDevice->extensions.enabled.size();
+        deviceInfo.enabledExtensionCount = static_cast<uint32_t>(this->logicalDevice.physicalDevice->extensions.enabled.size());
         deviceInfo.ppEnabledExtensionNames = this->logicalDevice.physicalDevice->extensions.enabled.data();
         
         if(enableValidations)
         {
             bakalog("enabled extension count: %u", this->logicalDevice.physicalDevice->extensions.enabled.size());
-            deviceInfo.enabledLayerCount = instance_layers.enabled.size();
+            deviceInfo.enabledLayerCount = static_cast<uint32_t>(instance_layers.enabled.size());
             deviceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
         }
 
