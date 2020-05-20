@@ -2,9 +2,8 @@ project(Baka)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/modules/")
 
-set(SDL2_PATH D:/libs/source/SDL2-mingw)
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
+message("SDL2 includes: ${SDL2_INCLUDE_DIR}")
 
 file(
     GLOB baka_src
@@ -26,6 +25,7 @@ add_library(
     "${baka_vulkan}"
 )
 
+target_include_directories(baka_engine PUBLIC ${SDL2_INCLUDE_DIR})
 target_link_libraries(baka_engine ${SDL2_LIBRARY})
 
 find_package(Vulkan)
@@ -41,6 +41,8 @@ if( Vulkan_FOUND )
 
     target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_vulkan/include")
     set(baka_src ${baka_src} ${baka_vulkan})
+
+    message("Vulkan includes: ${Vulkan_INCLUDE_DIR}")
 endif()
 
 find_package(OpenGL)

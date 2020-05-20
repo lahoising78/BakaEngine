@@ -66,7 +66,7 @@
 #  License text for the above reference.)
 
 
-message("sdl2 path is ${SDL2_PATH}")
+set(SDL2_PATH "" CACHE PATH "path to sdl2")
 SET(SDL2_SEARCH_PATHS
 	~/Library/Frameworks
 	/Library/Frameworks
@@ -90,7 +90,7 @@ FIND_LIBRARY(SDL2_LIBRARY_TEMP
 	NAMES SDL2
 	HINTS
 	$ENV{SDL2DIR}
-	PATH_SUFFIXES lib64 lib lib/x64
+	PATH_SUFFIXES lib64 lib lib/x64 lib/x86
 	PATHS ${SDL2_SEARCH_PATHS}
 )
 
