@@ -65,7 +65,8 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-SET(SDL2_PATH "D:/development" CACHE PATH "path to SDL2")
+
+set(SDL2_PATH "" CACHE PATH "path to sdl2")
 SET(SDL2_SEARCH_PATHS
 	~/Library/Frameworks
 	/Library/Frameworks

@@ -81,7 +81,8 @@ namespace baka
             instance_layers.Init();
             instance_layers.EnableLayers({
                 "VK_LAYER_KHRONOS_validation"
-                , "VK_LAYER_LUNARG_standard_validation"
+                , 
+                // "VK_LAYER_LUNARG_standard_validation"
                 // , "VK_LAYER_LUNARG_api_dump"
             });
 
