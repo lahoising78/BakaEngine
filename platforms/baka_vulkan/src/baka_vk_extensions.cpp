@@ -66,5 +66,16 @@ namespace baka
         return count;
     }
 
+    uint32_t VulkanExtensions::EnableAll()
+    {
+        uint32_t count = 0;
 
+        for(auto &ext : extensions)
+        {
+            enabled.push_back(ext.extensionName);
+            count++;
+        }
+
+        return count;
+    }
 }

@@ -13,6 +13,7 @@ namespace baka
         virtual void Init() = 0;
         bool EnableExtension(const char *extensionName);
         uint32_t EnableExtensions(std::vector<const char *> names);
+        uint32_t EnableAll();
 
     public:
         std::vector<VkExtensionProperties> extensions;

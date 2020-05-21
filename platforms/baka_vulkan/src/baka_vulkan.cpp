@@ -65,6 +65,7 @@ namespace baka
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, sdlExts.data());
         /* the way I set this up is to enable all the extensions that instance_extensions.enabled contains */
         instance_extensions.EnableExtensions(sdlExts);
+        // instance_extensions.EnableAll();
         
         /* this is an extension we need to create a debug messenger on vulkan. See VulkanValidation::SetupDebugMessenger */
         if(enableValidations)
@@ -81,7 +82,7 @@ namespace baka
             instance_layers.Init();
             instance_layers.EnableLayers({
                 "VK_LAYER_KHRONOS_validation"
-                , 
+                // , 
                 // "VK_LAYER_LUNARG_standard_validation"
                 // , "VK_LAYER_LUNARG_api_dump"
             });
@@ -119,10 +120,11 @@ namespace baka
         for(auto phys : availablePhysicalDevices)
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
-            if( vpd.IsSuitable(this->surface, this->instance_extensions.enabled) )
+            if( vpd.IsSuitable(this->surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
+                // this->physicalDevice.extensions.EnableAll();
                 break;
             }
         }
