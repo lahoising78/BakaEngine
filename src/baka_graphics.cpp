@@ -7,6 +7,7 @@ namespace baka
     {
         SDL_Window *window;
         bool initialized;
+        int width, height;
     } BakaGraphics;
 
     static BakaGraphics graphics_manager = {0};
@@ -44,6 +45,9 @@ namespace baka
             width, height,
             windowFlags
         );
+
+        graphics_manager.width = width;
+        graphics_manager.height = height;
     }
 
     void Graphics::Close()
@@ -64,4 +68,15 @@ namespace baka
     {
         return graphics_manager.window;
     }
+
+    int Graphics::GetWidth()
+    {
+        return graphics_manager.width;
+    }
+
+    int Graphics::GetHeight()
+    {
+        return graphics_manager.height;
+    }
+
 }

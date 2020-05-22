@@ -31,6 +31,8 @@ namespace baka
             uint32_t modesCount, 
             VkPresentModeKHR prefered);
 
+        static VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR *capabilities);
+
     public:
         VkSurfaceFormatKHR (*choose_surface_format)(
             const VkSurfaceFormatKHR *surfaceFormats, 

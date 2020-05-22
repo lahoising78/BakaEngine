@@ -1,5 +1,6 @@
 #include <cstring>
 #include "baka_vk_swapchain.h"
+#include "baka_graphics.h"
 
 namespace baka
 {
@@ -76,5 +77,30 @@ namespace baka
         }
 
         return VK_PRESENT_MODE_MAILBOX_KHR;
+    }
+
+    /*  having extent of uint32_max means that we can differ between the extent of the window and the resolution of the surface.
+        This is determined by the window manager.  */
+    VkExtent2D VulkanSwapchain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR *capabilities)
+    {
+        VkExtent2D actualExtent = { (uint32_t)Graphics::GetWidth(), (uint32_t)Graphics::GetHeight() };
+        if(!capabilities) return {UINT32_MAX, UINT32_MAX};
+
+        if(capabilities->currentExtent.width != UINT32_MAX)
+        {
+            return capabilities->currentExtent;
+        }
+        
+        actualExtent.width = std::max(
+            capabilities->minImageExtent.width, 
+            std::min(capabilities->maxImageExtent.width, actualExtent.width)
+        );
+
+        actualExtent.height = std::max(
+            capabilities->minImageExtent.height,
+            std::min(capabilities->maxImageExtent.height, actualExtent.height)
+        );
+
+        return actualExtent;
     }
 } // namespace baka
