@@ -99,39 +99,61 @@ namespace baka
     /*  ================================================================
         PHYSICAL DEVICE
         ================================================================ */
-        std::vector<VkPhysicalDevice> VulkanUtils::GetAvailableDevices(VkInstance instance)
-        {
-            unsigned int count = 0;
-            vkEnumeratePhysicalDevices(instance, &count, nullptr);
-            std::vector<VkPhysicalDevice> devices(count);
-            vkEnumeratePhysicalDevices(instance, &count, devices.data());
-            return devices;
-        }
+    std::vector<VkPhysicalDevice> VulkanUtils::GetAvailableDevices(VkInstance instance)
+    {
+        unsigned int count = 0;
+        vkEnumeratePhysicalDevices(instance, &count, nullptr);
+        std::vector<VkPhysicalDevice> devices(count);
+        vkEnumeratePhysicalDevices(instance, &count, devices.data());
+        return devices;
+    }
 
-        VkPhysicalDeviceProperties VulkanUtils::GetPhysicalDeviceCapabilities(VkPhysicalDevice device)
-        {
-            VkPhysicalDeviceProperties prop = {};
-            vkGetPhysicalDeviceProperties(device, &prop);
-            return prop;
-        }
+    VkPhysicalDeviceProperties VulkanUtils::GetPhysicalDeviceCapabilities(VkPhysicalDevice device)
+    {
+        VkPhysicalDeviceProperties prop = {};
+        vkGetPhysicalDeviceProperties(device, &prop);
+        return prop;
+    }
 
     /*  ====================================================================
         LOGICAL DEVICE
         ==================================================================== */
-        VkDeviceQueueCreateInfo VulkanUtils::DeviceQueueCreateInfo(
-            VkDeviceQueueCreateFlags flags,
-            const void *pNext,
-            const float *priorities,
-            uint32_t queueCount,
-            uint32_t queueFamilyIndex)
-        {
-            VkDeviceQueueCreateInfo info = {};
-            info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-            info.flags = flags;
-            info.pNext = pNext;
-            info.pQueuePriorities = priorities;
-            info.queueCount = queueCount;
-            info.queueFamilyIndex = queueFamilyIndex;
-            return info;
-        }
+    VkDeviceQueueCreateInfo VulkanUtils::DeviceQueueCreateInfo(
+        VkDeviceQueueCreateFlags flags,
+        const void *pNext,
+        const float *priorities,
+        uint32_t queueCount,
+        uint32_t queueFamilyIndex)
+    {
+        VkDeviceQueueCreateInfo info = {};
+        info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        info.flags = flags;
+        info.pNext = pNext;
+        info.pQueuePriorities = priorities;
+        info.queueCount = queueCount;
+        info.queueFamilyIndex = queueFamilyIndex;
+        return info;
+    }
+
+    /*  ========================================================================
+        SWAPCHAIN
+        ======================================================================== */
+    SwapchainSupport VulkanUtils::GetSwapchainSwpport(VkPhysicalDevice device, VkSurfaceKHR surface)
+    {
+        SwapchainSupport support = {};
+
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &support.capabilities);
+
+        uint32_t formatCount = 0;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+        support.formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, support.formats.data());
+
+        uint32_t presentModeCount = 0; 
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+        support.presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, support.presentModes.data());
+
+        return support;
+    }
 }

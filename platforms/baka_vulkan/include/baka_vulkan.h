@@ -7,6 +7,7 @@
 #include "baka_vk_validation.h"
 #include "baka_vk_physical_device.h"
 #include "baka_vk_device.h"
+#include "baka_vk_swapchain.h"
 
 namespace baka
 {
@@ -33,6 +34,8 @@ namespace baka
         
         bool enableValidations;
         VulkanValidation instance_layers;
+
+        VulkanSwapchain swapchain;
 
         /* VULKAN STUFF */
         VkInstance instance;

@@ -7,6 +7,8 @@
 
 namespace baka
 {
+    class VulkanSwapchain;
+
     class VulkanPhysicalDevice
     {
     public:
@@ -21,7 +23,7 @@ namespace baka
 
         VulkanPhysicalDevice(VkPhysicalDevice device);
 
-        bool IsSuitable( VkSurfaceKHR surface, std::vector<const char *> requiredExtensions  );
+        bool IsSuitable( VulkanSwapchain *swapchain, std::vector<const char *> requiredExtensions  );
 
         bool FeatureContains(VkPhysicalDeviceFeatures container, VkPhysicalDeviceFeatures check);
 

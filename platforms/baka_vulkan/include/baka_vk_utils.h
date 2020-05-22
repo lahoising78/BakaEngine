@@ -12,6 +12,13 @@ if( res != VK_SUCCESS ) \
 
 namespace baka
 {
+    typedef struct
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    } SwapchainSupport;
+
     class VulkanUtils
     {
     public:
@@ -49,6 +56,11 @@ namespace baka
             uint32_t queueCount,
             uint32_t queueFamilyIndex
         );
+
+        /*  ============================================================
+            SWAPCHAIN
+            ============================================================ */
+        static SwapchainSupport GetSwapchainSwpport(VkPhysicalDevice device, VkSurfaceKHR surface);
 
     private:
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallbackDefault(

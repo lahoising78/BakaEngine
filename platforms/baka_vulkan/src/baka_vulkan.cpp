@@ -120,7 +120,8 @@ namespace baka
         for(auto phys : availablePhysicalDevices)
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
-            if( vpd.IsSuitable(this->surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
+            this->swapchain = VulkanSwapchain(phys, this->surface);
+            if( vpd.IsSuitable(&this->swapchain, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
