@@ -1,4 +1,5 @@
 #include <cstring>
+#include "baka_logger.h"
 #include "baka_vk_swapchain.h"
 #include "baka_graphics.h"
 
@@ -13,18 +14,51 @@ namespace baka
     {
         this->surface = surface;
         this->gpu = gpu;
-        this->support = VulkanUtils::GetSwapchainSwpport(gpu, surface);
+        VulkanUtils::GetSwapchainSupport(this->support, gpu, surface);
 
-        if(!this->choose_surface_format) 
-            this->choose_surface_format = VulkanSwapchain::ChooseSurfaceFormatDefault;
-        
-        if(!this->choose_present_mode)
-            this->choose_present_mode = VulkanSwapchain::ChoosePresentMode;
+        bakalog("support sizes: %u %u", this->support.formats.size(), this->support.presentModes.size());
     }
 
     VulkanSwapchain::~VulkanSwapchain()
     {
 
+    }
+
+    void VulkanSwapchain::Create()
+    {
+        bakalog("creating swapchain");
+        // VulkanUtils::GetSwapchainSupport(this->gpu, this->surface);
+        VkSurfaceFormatKHR format = {};
+        
+        if(!this->choose_surface_format)
+        {
+            this->choose_surface_format = VulkanSwapchain::ChooseSurfaceFormatDefault;
+        }
+
+        bakalog("choose surface format from %u", this->support.formats.size());
+        format = this->choose_surface_format(
+            this->support.formats.data(), 
+            this->support.formats.size(),
+            VkFormat::VK_FORMAT_B8G8R8A8_SRGB,
+            VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+        );
+        bakalog("format %d, color space %d", format.format, format.colorSpace);
+
+        if(!this->choose_present_mode)
+        {
+            this->choose_present_mode = VulkanSwapchain::ChoosePresentMode;
+        }
+
+        bakalog("choose present mode from %u", this->support.presentModes.size());
+        VkPresentModeKHR mode = this->choose_present_mode(
+            this->support.presentModes.data(),
+            this->support.presentModes.size(),
+            VK_PRESENT_MODE_MAILBOX_KHR
+        );
+
+        bakalog("present mode %d", mode);
+
+        VkExtent2D ext = VulkanSwapchain::ChooseSwapExtent(&this->support.capabilities);
     }
 
     VkSurfaceFormatKHR VulkanSwapchain::ChooseSurfaceFormatDefault(

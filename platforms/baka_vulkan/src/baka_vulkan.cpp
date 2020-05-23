@@ -15,11 +15,13 @@ namespace baka
         bakalog("Hello from VulkanGraphics");
         strcpy(this->applicationName, applicationName);
         this->enableValidations = enableValidations;
+        this->swapchain = nullptr;
     }
 
     VulkanGraphics::~VulkanGraphics()
     {
         vkDestroyDevice(this->logicalDevice.device, NULL);
+        if(this->swapchain) delete this->swapchain;
         vkDestroySurfaceKHR(this->instance, this->surface, NULL);
         if(enableValidations) VulkanValidation::DestroyDebugMessenger(this->instance);
         vkDestroyInstance(this->instance, NULL);
@@ -120,11 +122,15 @@ namespace baka
         for(auto phys : availablePhysicalDevices)
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
-            this->swapchain = VulkanSwapchain(phys, this->surface);
-            if( vpd.IsSuitable(&this->swapchain, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
+
+            if(this->swapchain) delete this->swapchain;
+            this->swapchain = new VulkanSwapchain(phys, this->surface);
+            
+            if( vpd.IsSuitable(this->swapchain, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
+                this->swapchain->Create();
                 // this->physicalDevice.extensions.EnableAll();
                 break;
             }

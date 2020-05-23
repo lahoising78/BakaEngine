@@ -17,7 +17,7 @@ namespace baka
         VulkanSwapchain(VkPhysicalDevice device, VkSurfaceKHR surface);
         ~VulkanSwapchain();
 
-        // virtual void Init();
+        virtual void Create();
 
         /* STATIC METHODS */
         static VkSurfaceFormatKHR ChooseSurfaceFormatDefault(

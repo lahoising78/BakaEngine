@@ -138,10 +138,8 @@ namespace baka
     /*  ========================================================================
         SWAPCHAIN
         ======================================================================== */
-    SwapchainSupport VulkanUtils::GetSwapchainSwpport(VkPhysicalDevice device, VkSurfaceKHR surface)
+    void VulkanUtils::GetSwapchainSupport(SwapchainSupport &support, VkPhysicalDevice device, VkSurfaceKHR surface)
     {
-        SwapchainSupport support = {};
-
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &support.capabilities);
 
         uint32_t formatCount = 0;
@@ -153,7 +151,5 @@ namespace baka
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
         support.presentModes.resize(presentModeCount);
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, support.presentModes.data());
-
-        return support;
     }
 }
