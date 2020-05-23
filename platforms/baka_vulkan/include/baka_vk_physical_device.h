@@ -23,7 +23,7 @@ namespace baka
 
         VulkanPhysicalDevice(VkPhysicalDevice device);
 
-        bool IsSuitable( VulkanSwapchain *swapchain, std::vector<const char *> requiredExtensions  );
+        bool IsSuitable( VulkanSwapchain *swapchain, VkSurfaceKHR surface, std::vector<const char *> requiredExtensions  );
 
         bool FeatureContains(VkPhysicalDeviceFeatures container, VkPhysicalDeviceFeatures check);
 

@@ -60,7 +60,7 @@ namespace baka
         /*  ============================================================
             SWAPCHAIN
             ============================================================ */
-        static void GetSwapchainSupport(SwapchainSupport &support, VkPhysicalDevice device, VkSurfaceKHR surface);
+        static void GetSwapchainSupport(SwapchainSupport *support, VkPhysicalDevice device, VkSurfaceKHR surface);
 
     private:
         static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallbackDefault(

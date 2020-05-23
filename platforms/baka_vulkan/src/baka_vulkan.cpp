@@ -15,13 +15,13 @@ namespace baka
         bakalog("Hello from VulkanGraphics");
         strcpy(this->applicationName, applicationName);
         this->enableValidations = enableValidations;
-        this->swapchain = nullptr;
+        this->swapchain = VulkanSwapchain();
     }
 
     VulkanGraphics::~VulkanGraphics()
     {
         vkDestroyDevice(this->logicalDevice.device, NULL);
-        if(this->swapchain) delete this->swapchain;
+        // if(this->swapchain) delete this->swapchain;
         vkDestroySurfaceKHR(this->instance, this->surface, NULL);
         if(enableValidations) VulkanValidation::DestroyDebugMessenger(this->instance);
         vkDestroyInstance(this->instance, NULL);
@@ -123,14 +123,17 @@ namespace baka
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
 
-            if(this->swapchain) delete this->swapchain;
-            this->swapchain = new VulkanSwapchain(phys, this->surface);
+            // if(this->swapchain) delete this->swapchain;
+            this->swapchain.support = {};
+            VulkanUtils::GetSwapchainSupport(&this->swapchain.support, phys, this->surface);
             
-            if( vpd.IsSuitable(this->swapchain, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
+            if( vpd.IsSuitable(&this->swapchain, this->surface, {VK_KHR_SWAPCHAIN_EXTENSION_NAME}) )
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
-                this->swapchain->Create();
+                this->swapchain.gpu = phys;
+                this->swapchain.surface = this->surface;
+                this->swapchain.Create();
                 // this->physicalDevice.extensions.EnableAll();
                 break;
             }

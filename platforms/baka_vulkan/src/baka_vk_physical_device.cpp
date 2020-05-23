@@ -16,7 +16,7 @@ namespace baka
         this->extensions.Init(this->device);
     }
 
-    bool VulkanPhysicalDevice::IsSuitable(VulkanSwapchain *swapchain, std::vector<const char *> requiredExtensions)
+    bool VulkanPhysicalDevice::IsSuitable(VulkanSwapchain *swapchain, VkSurfaceKHR surface, std::vector<const char *> requiredExtensions)
     {
         if(!swapchain) return false;
 
@@ -27,7 +27,7 @@ namespace baka
         if( !this->queues.FindQueueIndex( VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT ) ) return false;
 
         /* do we support presenting to the surface? */
-        if( !this->queues.FindPresentQueue(swapchain->surface) ) return false;
+        if( !this->queues.FindPresentQueue(surface) ) return false;
         
         /* do we support the necessary extensions? */
         if( this->extensions.EnableExtensions(requiredExtensions) != requiredExtensions.size() ) return false;

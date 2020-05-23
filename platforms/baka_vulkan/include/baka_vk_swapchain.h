@@ -19,7 +19,7 @@ namespace baka
 
         virtual void Create();
 
-        /* STATIC METHODS */
+    public: /* STATIC METHODS */
         static VkSurfaceFormatKHR ChooseSurfaceFormatDefault(
             const VkSurfaceFormatKHR *surfaceFormats, 
             uint32_t surfaceFormatCount,
@@ -33,7 +33,12 @@ namespace baka
 
         static VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR *capabilities);
 
-    public:
+    public: /* PUBLIC VARIABLES */
+        VkPhysicalDevice gpu;
+        VkSurfaceKHR surface;
+        SwapchainSupport support;
+
+    private:    /* PRIVATE VARIABLES */
         VkSurfaceFormatKHR (*choose_surface_format)(
             const VkSurfaceFormatKHR *surfaceFormats, 
             uint32_t surfaceFormatCount,
@@ -45,10 +50,7 @@ namespace baka
             uint32_t modesCount, 
             VkPresentModeKHR prefered);
 
-    public:
-        VkPhysicalDevice gpu;
-        VkSurfaceKHR surface;
-        SwapchainSupport support;
+        VkExtent2D (*choose_swap_extent)(const VkSurfaceCapabilitiesKHR *capabilities);
     };
 } // namespace baka
 

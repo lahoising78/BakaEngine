@@ -35,7 +35,7 @@ namespace baka
         bool enableValidations;
         VulkanValidation instance_layers;
 
-        VulkanSwapchain *swapchain;
+        VulkanSwapchain swapchain;
 
         /* VULKAN STUFF */
         VkInstance instance;

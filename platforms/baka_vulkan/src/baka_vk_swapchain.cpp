@@ -14,7 +14,7 @@ namespace baka
     {
         this->surface = surface;
         this->gpu = gpu;
-        VulkanUtils::GetSwapchainSupport(this->support, gpu, surface);
+        VulkanUtils::GetSwapchainSupport(&this->support, gpu, surface);
 
         bakalog("support sizes: %u %u", this->support.formats.size(), this->support.presentModes.size());
     }
@@ -27,7 +27,7 @@ namespace baka
     void VulkanSwapchain::Create()
     {
         bakalog("creating swapchain");
-        // VulkanUtils::GetSwapchainSupport(this->gpu, this->surface);
+        VulkanUtils::GetSwapchainSupport(&this->support, this->gpu, this->surface);
         VkSurfaceFormatKHR format = {};
         
         if(!this->choose_surface_format)
