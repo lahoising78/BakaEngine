@@ -4,6 +4,7 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 #include "baka_vk_utils.h"
+#include "baka_vk_device.h"
 
 #define BAKA_VK_FORMAT_DEFAULT VK_FORMAT_B8G8R8A8_SRGB
 #define BAKA_VK_COLOR_SPACE_DEFAULT VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
@@ -14,7 +15,7 @@ namespace baka
     {
     public:
         VulkanSwapchain();
-        VulkanSwapchain(VkPhysicalDevice device, VkSurfaceKHR surface);
+        // VulkanSwapchain(VkPhysicalDevice device, VkSurfaceKHR surface);
         ~VulkanSwapchain();
 
         virtual void Create();
@@ -34,9 +35,12 @@ namespace baka
         static VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR *capabilities);
 
     public: /* PUBLIC VARIABLES */
-        VkPhysicalDevice gpu;
-        VkSurfaceKHR surface;
+        VulkanPhysicalDevice *physicalDevice;
+        VulkanLogicalDevice *logicalDevice;
         SwapchainSupport support;
+
+        VkSwapchainKHR swapchain;
+        VkSurfaceKHR surface;
 
     private:    /* PRIVATE VARIABLES */
         VkSurfaceFormatKHR (*choose_surface_format)(

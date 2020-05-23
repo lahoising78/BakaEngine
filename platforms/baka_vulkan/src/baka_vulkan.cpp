@@ -20,8 +20,8 @@ namespace baka
 
     VulkanGraphics::~VulkanGraphics()
     {
+        vkDestroySwapchainKHR(this->logicalDevice.device, this->swapchain.swapchain, nullptr);
         vkDestroyDevice(this->logicalDevice.device, NULL);
-        // if(this->swapchain) delete this->swapchain;
         vkDestroySurfaceKHR(this->instance, this->surface, NULL);
         if(enableValidations) VulkanValidation::DestroyDebugMessenger(this->instance);
         vkDestroyInstance(this->instance, NULL);
@@ -32,11 +32,17 @@ namespace baka
     void VulkanGraphics::Init()
     {
         this->CreateInstance();
+        
         if(enableValidations) VulkanValidation::SetupDebugMessenger(this->instance);
+        
         this->CreateSurface();
         this->PickPhysicalDevice();
+        
         if(this->physicalDevice.device == VK_NULL_HANDLE) return;
+        
         this->CreateLogicalDevice();
+        this->swapchain.Create();
+
     }
 
     void VulkanGraphics::CreateInstance()
@@ -86,8 +92,10 @@ namespace baka
                 "VK_LAYER_KHRONOS_validation"
                 // , 
                 // "VK_LAYER_LUNARG_standard_validation"
-                // , "VK_LAYER_LUNARG_api_dump"
+                , "VK_LAYER_LUNARG_api_dump"
             });
+
+
 
             instanceInfo.enabledLayerCount = (uint32_t)instance_layers.enabled.size();
             instanceInfo.ppEnabledLayerNames = instance_layers.enabled.data();
@@ -131,9 +139,9 @@ namespace baka
             {
                 this->physicalDevice = vpd;
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
-                this->swapchain.gpu = phys;
+                this->swapchain.physicalDevice = &this->physicalDevice;
                 this->swapchain.surface = this->surface;
-                this->swapchain.Create();
+                // this->swapchain.Create();
                 // this->physicalDevice.extensions.EnableAll();
                 break;
             }
@@ -198,6 +206,8 @@ namespace baka
             this->physicalDevice.queues.familyIndices[VkQueueFlagBits::VK_QUEUE_FLAG_BITS_MAX_ENUM],
             0
         );
+
+        this->swapchain.logicalDevice = &this->logicalDevice;
     }
 
     #endif

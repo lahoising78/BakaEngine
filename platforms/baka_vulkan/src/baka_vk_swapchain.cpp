@@ -2,6 +2,7 @@
 #include "baka_logger.h"
 #include "baka_vk_swapchain.h"
 #include "baka_graphics.h"
+// #include "baka_vk_device.h"
 
 namespace baka
 {
@@ -10,14 +11,14 @@ namespace baka
         std::memset(this, 0, sizeof(VulkanSwapchain));
     }
 
-    VulkanSwapchain::VulkanSwapchain(VkPhysicalDevice gpu, VkSurfaceKHR surface)
-    {
-        this->surface = surface;
-        this->gpu = gpu;
-        VulkanUtils::GetSwapchainSupport(&this->support, gpu, surface);
+    // VulkanSwapchain::VulkanSwapchain(VkPhysicalDevice gpu, VkSurfaceKHR surface)
+    // {
+    //     this->surface = surface;
+    //     this->gpu = gpu;
+    //     VulkanUtils::GetSwapchainSupport(&this->support, gpu, surface);
 
-        bakalog("support sizes: %u %u", this->support.formats.size(), this->support.presentModes.size());
-    }
+    //     bakalog("support sizes: %u %u", this->support.formats.size(), this->support.presentModes.size());
+    // }
 
     VulkanSwapchain::~VulkanSwapchain()
     {
@@ -27,7 +28,7 @@ namespace baka
     void VulkanSwapchain::Create()
     {
         bakalog("creating swapchain");
-        VulkanUtils::GetSwapchainSupport(&this->support, this->gpu, this->surface);
+        VulkanUtils::GetSwapchainSupport(&this->support, this->physicalDevice->device, this->surface);
         VkSurfaceFormatKHR format = {};
         
         if(!this->choose_surface_format)
@@ -35,30 +36,102 @@ namespace baka
             this->choose_surface_format = VulkanSwapchain::ChooseSurfaceFormatDefault;
         }
 
-        bakalog("choose surface format from %u", this->support.formats.size());
         format = this->choose_surface_format(
             this->support.formats.data(), 
             this->support.formats.size(),
             VkFormat::VK_FORMAT_B8G8R8A8_SRGB,
             VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
         );
-        bakalog("format %d, color space %d", format.format, format.colorSpace);
 
         if(!this->choose_present_mode)
         {
             this->choose_present_mode = VulkanSwapchain::ChoosePresentMode;
         }
 
-        bakalog("choose present mode from %u", this->support.presentModes.size());
         VkPresentModeKHR mode = this->choose_present_mode(
             this->support.presentModes.data(),
             this->support.presentModes.size(),
             VK_PRESENT_MODE_MAILBOX_KHR
         );
 
-        bakalog("present mode %d", mode);
-
         VkExtent2D ext = VulkanSwapchain::ChooseSwapExtent(&this->support.capabilities);
+
+        /*  This is how many buffers we will have (image buffer).
+            It is recommended to use the min possible + 1 */
+        uint32_t imageCount = this->support.capabilities.minImageCount + 1;
+        
+        /*  make sure we don't use more than we actually can.
+            note that a maxImageCount of 0 means we can have as many as we want. */
+        if (this->support.capabilities.maxImageCount > 0 && imageCount > this->support.capabilities.maxImageCount) {
+            imageCount = this->support.capabilities.maxImageCount;
+        }
+
+        VkSwapchainCreateInfoKHR createInfo = {};
+        createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+        createInfo.surface = this->surface;
+        createInfo.minImageCount = imageCount;
+        createInfo.imageFormat = format.format;
+        createInfo.imageColorSpace = format.colorSpace;
+        createInfo.imageExtent = ext;
+
+        /* how many layers each image has. 
+        always 1, unless we are creating a stereoscopic 3D app  */
+        createInfo.imageArrayLayers = 1;
+
+        /* specify what kind of operations we are going to do.
+        since we are drawing directly to it, we use color attachment bit
+        we can also use transfer dst if we plan to do post-processing */
+        createInfo.imageUsage = VkImageUsageFlagBits::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+        /* now we specify how we are going to use our swap chain images.
+        Since we are going to write to them using graphics queue, and then
+        presenting them using presentation queue, we specify those. 
+        The following procdure can be found here:
+            https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Swap_chain*/
+        uint32_t famIndices[] = {
+            this->physicalDevice->queues.familyIndices[ VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT ],
+            this->physicalDevice->queues.familyIndices[ VkQueueFlagBits::VK_QUEUE_FLAG_BITS_MAX_ENUM ]
+        };
+
+        /** @note there is a chance we are going to use the same queues for both of these
+         * operations, so we need to handle that situation. 
+         */
+        if( famIndices[0] != famIndices[1] )
+        {
+            /* concurrent mode means the image can be used across multiple queues */
+            createInfo.imageSharingMode = VkSharingMode::VK_SHARING_MODE_CONCURRENT;
+            createInfo.queueFamilyIndexCount = 2;
+            createInfo.pQueueFamilyIndices = famIndices;
+        }
+        else
+        {
+            createInfo.imageSharingMode = VkSharingMode::VK_SHARING_MODE_EXCLUSIVE;
+            createInfo.queueFamilyIndexCount = 0;
+            createInfo.pQueueFamilyIndices = nullptr;
+        }
+        
+        /* we can apply a transform to the image, like rotating 90 degrees clockwise or something.
+        We don't want to do that, so just specify current transform */
+        createInfo.preTransform = this->support.capabilities.currentTransform;
+        /* don't blend with other windows */
+        createInfo.compositeAlpha = VkCompositeAlphaFlagBitsKHR::VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
+        createInfo.presentMode = mode;
+        
+        /* don't bother calculating a pixel if you can't see it anyway (like a window in front of it) */
+        createInfo.clipped = VK_TRUE;
+
+        /* needs to be specified if you are creating a new swapchain from another */
+        createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+        bakalog("logical device addr %u", this->logicalDevice);
+
+        VkResult res = vkCreateSwapchainKHR(this->logicalDevice->device, &createInfo, nullptr, &this->swapchain);
+        if(res != VK_SUCCESS)
+        {
+            bakawarn("Swapchain creation failed with error code %d", res);
+        }
+        // VKASSERT(res, vkCreateSwapchainKHR(this->logicalDevice->device, &createInfo, nullptr, &this->swapchain), "Swapchain creation")
     }
 
     VkSurfaceFormatKHR VulkanSwapchain::ChooseSurfaceFormatDefault(
@@ -95,7 +168,7 @@ namespace baka
         The second one is another version of the fist mode. The difference is that, once the queue is full, the 
         old images will simply will replaced with the new ones, intead of waiting for the old ones to be rendered.
         
-        Mailbox is the only mode that is guaranteed to be supported. 
+        fifo is the only mode that is guaranteed to be supported. 
         
         There are other present modes, and you can read about them from here:
             https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Swap_chain*/
@@ -110,7 +183,7 @@ namespace baka
             if(presentMode == preferedMode) return presentMode;
         }
 
-        return VK_PRESENT_MODE_MAILBOX_KHR;
+        return VK_PRESENT_MODE_FIFO_KHR;
     }
 
     /*  having extent of uint32_max means that we can differ between the extent of the window and the resolution of the surface.
