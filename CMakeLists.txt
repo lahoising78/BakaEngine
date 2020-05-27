@@ -19,6 +19,12 @@ file(
     "platforms/baka_vulkan/src/*.cpp"
 )
 
+file(
+    GLOB baka_gl
+    "platforms/baka_open_gl/include/*.h"
+    "platforms/baka_open_gl/src/*.cpp"
+)
+
 add_library(
     baka_engine
     "${baka_src}"
@@ -28,6 +34,7 @@ add_library(
 target_include_directories(baka_engine PUBLIC ${SDL2_INCLUDE_DIR})
 target_link_libraries(baka_engine ${SDL2_LIBRARY})
 
+# VULKAN
 find_package(Vulkan)
 if( Vulkan_FOUND )
     # if(${CMAKE_VERSION} VERSION_LESS "3.12.4")
@@ -42,8 +49,22 @@ if( Vulkan_FOUND )
 endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_vulkan/include")
 
-cmake_policy(SET CMP0072 NEW)
+# OPENGL 
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL)
+if( OPENGL_FOUND )
+
+    find_package(GLEW REQUIRED)
+    target_link_libraries(baka_engine ${GLEW_LIBRARIES})
+    target_include_directories(baka_engine PUBLIC ${GLEW_INCLUDE_DIRS})
+
+    target_include_directories(baka_engine PUBLIC OpenGL::OpenGL)
+    target_link_libraries(baka_engine OpenGL::OpenGL)
+
+    set(baka_src ${baka_src} ${baka_gl})
+
+    message("OpenGL includes: ${OPENGL_INCLUDE_DIR}")
+endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_open_gl/include")
 
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
