@@ -5,16 +5,10 @@
 #include <SDL.h>
 #include "baka_logger.h"
 #include "baka_open_gl.h"
+#include "baka_graphics.h"
 
 namespace baka
 {
-    typedef struct
-    {
-        SDL_GLContext gl_context;
-    } GLGraphicsManager;
-
-    static GLGraphicsManager gl_manager = {};
-
     GLGraphics::GLGraphics()
     {
         bakalog("Hello from GLGraphics");
@@ -22,13 +16,14 @@ namespace baka
 
     GLGraphics::~GLGraphics()
     {
+        SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
     }
 
-    void GLGraphics::SetContext( struct SDL_Window *window )
+    void GLGraphics::Init()
     {
-        gl_manager.gl_context = SDL_GL_CreateContext(window);
-        if( !gl_manager.gl_context )
+        this->gl_context = SDL_GL_CreateContext(Graphics::GetWindow());
+        if( !this->gl_context )
         {
             bakawarn("Unable to create gl context");
             return;
@@ -42,12 +37,32 @@ namespace baka
         } 
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    }
-
-    void GLGraphics::Init()
-    {
         bakalog("gl graphics initialized");
     }
+
+    void GLGraphics::Render()
+    {
+        this->RenderBegin();
+
+            glBegin(GL_TRIANGLES);
+            glVertex2f(-0.5f, -0.5f);
+            glVertex2f( 0.5f, -0.5f);
+            glVertex2f( 0.5f,  0.5f);
+            glEnd();
+
+        this->RenderEnd();
+    }
+
+    void GLGraphics::RenderBegin()
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void GLGraphics::RenderEnd()
+    {
+        SDL_GL_SwapWindow(Graphics::GetWindow());
+    }
+
     
 } // namespace baka
 

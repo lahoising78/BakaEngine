@@ -1,6 +1,7 @@
 #include "baka_graphics.h"
 #include "baka_logger.h"
 #include "baka_open_gl.h"
+#include "Baka.h"
 
 namespace baka
 {
@@ -9,12 +10,20 @@ namespace baka
         SDL_Window *window;
         bool initialized;
         int width, height;
+        uint32_t apiFlags;
+        BakaApplication *application;
     } BakaGraphics;
 
     static BakaGraphics graphics_manager = {0};
 
-    bool Graphics::Init( const char *windowName, int width, int height, uint32_t apiFlags )
+    bool Graphics::Init( const char *windowName, int width, int height, BakaApplication *application )
     {
+        if(!application)
+        {
+            bakaerr("No application was provided. Cannot initialize graphics");
+            return false;
+        }
+
         if(SDL_Init( SDL_INIT_EVERYTHING ) != 0)
         {
             bakaerr("Failed to initialize SDL");
@@ -22,7 +31,8 @@ namespace baka
         }
         atexit(SDL_Quit);
 
-        Graphics::Setup(windowName, width, height, apiFlags);
+        graphics_manager.application = application;
+        Graphics::Setup(windowName, width, height);
 
         atexit(Graphics::Close);
 
@@ -31,22 +41,22 @@ namespace baka
         return true;
     }
 
-    void Graphics::Setup( const char *windowName, int width, int height, uint32_t apiFlags  )
+    void Graphics::Setup( const char *windowName, int width, int height )
     {
         uint32_t windowFlags = 0;
         
-        if( apiFlags & GraphicAPI::VULKAN )
+        if( graphics_manager.application->vk_graphics )
         {
             windowFlags |= SDL_WINDOW_VULKAN;
         }
 
-        if( apiFlags & GraphicAPI::OPENGL )
+        if( graphics_manager.application->gl_graphics )
         {
             windowFlags |= SDL_WINDOW_OPENGL;
 
             /* set open gl version */
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
             /* enable double buffering with 24bit depth buffer */
@@ -61,13 +71,18 @@ namespace baka
             windowFlags
         );
 
-        if(apiFlags & GraphicAPI::OPENGL)
-        {
-            GLGraphics::SetContext( graphics_manager.window );
-        }
-
         graphics_manager.width = width;
         graphics_manager.height = height;
+
+        if(graphics_manager.application->gl_graphics)
+        {
+            graphics_manager.application->gl_graphics->Init();
+        }
+
+        if(graphics_manager.application->vk_graphics)
+        {
+            graphics_manager.application->vk_graphics->Init();
+        }
     }
 
     void Graphics::Close()
@@ -76,6 +91,14 @@ namespace baka
         if(graphics_manager.window)
         {
             SDL_DestroyWindow( graphics_manager.window );
+        }
+    }
+
+    void Graphics::Render()
+    {
+        if(graphics_manager.application->gl_graphics)
+        {
+            graphics_manager.application->gl_graphics->Render();
         }
     }
 

@@ -5,6 +5,7 @@
 #include "baka_logger.h"
 
 struct SDL_Window;
+typedef void *SDL_GLContext;
 
 namespace baka 
 {
@@ -19,9 +20,14 @@ public:
     GLGraphics();
     ~GLGraphics();
     virtual void Init();
+    virtual void Render();
 
 private:
-    static void SetContext( struct SDL_Window *window );
+    virtual void RenderBegin();
+    virtual void RenderEnd();
+
+private:
+    SDL_GLContext gl_context;
 };
 
 #else

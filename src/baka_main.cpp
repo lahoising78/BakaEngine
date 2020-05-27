@@ -16,8 +16,6 @@ int main(int argc, char *argv[])
     bakalog("--==== Start of application ====--");
     
     prog->Main(argc, argv);
-    if(prog->vk_graphics) prog->vk_graphics->Init();
-    if(prog->gl_graphics) prog->gl_graphics->Init();
     atexit(CloseApplication);
     
     running = baka::Graphics::IsInit();
@@ -33,6 +31,7 @@ int main(int argc, char *argv[])
         }
 
         prog->Update(0.0f);
+        baka::Graphics::Render();
     }
 
     bakalog("--==== End of application ====--");

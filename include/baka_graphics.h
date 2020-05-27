@@ -2,9 +2,11 @@
 #define _BAKA_GRAPHICS_H_
 
 #include <SDL.h>
-// #include <SDL2/SDL.h>
+
+class BakaApplication;
 
 namespace baka{
+
     typedef enum
     {
         NONE    = 0,
@@ -21,15 +23,16 @@ namespace baka{
          * @param height height of the window
          * @param apiFlags a uint containing the flag bits for GraphicsAPIs
          */
-        static bool Init( const char *windowName, int width, int height, uint32_t apiFlags );
+        static bool Init( const char *windowName, int width, int height, BakaApplication *application );
         static bool IsInit();
+        static void Render();
 
         static SDL_Window *GetWindow();
         static int GetWidth();
         static int GetHeight();
 
     private:
-        static void Setup( const char *windowName, int width, int height, uint32_t apiFlags );
+        static void Setup( const char *windowName, int width, int height );
         static void Close();
     };
 }
