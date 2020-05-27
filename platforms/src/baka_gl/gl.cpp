@@ -7,21 +7,24 @@
 #include "baka_graphics.h"
 #include "baka_utils.h"
 #include "baka_gl/shaders.h"
-
-#define GLCALL(fx)  fx;\
-                    this->ReadErrors(__LINE__)
+#include "baka_gl/vertex_buffer.h"
+#include "baka_gl/index_buffer.h"
+#include "baka_gl/utils.h"
 
 namespace baka
 {
+
     unsigned int vao;
-    unsigned int vb;
-    unsigned int ib;
-    GLShader shader;
+    gl::VertexBuffer vb;
+    gl::IndexBuffer ib;
+    // unsigned int vb;
+    // unsigned int ib;
+    gl::Shader shader;
 
     unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
+        0, 1, 2,
+        2, 3, 0
+    };
 
     GLGraphics::GLGraphics()
     {
@@ -30,8 +33,10 @@ namespace baka
 
     GLGraphics::~GLGraphics()
     {
-        glDeleteBuffers(1, &vb);
-        glDeleteBuffers(1, &ib);
+        vb.Destroy();
+        ib.Destroy();
+        // glDeleteBuffers(1, &vb);
+        // glDeleteBuffers(1, &ib);
         shader.Destroy();
         glDeleteVertexArrays(1, &vao);
 
@@ -69,9 +74,7 @@ namespace baka
             -0.5f,  0.5f,   0.3f, 0.2f, 1.0f, 1.0f
         };
 
-        GLCALL(glGenBuffers(1, &vb));
-        GLCALL(glBindBuffer(GL_ARRAY_BUFFER, vb));
-        GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * 6 * sizeof(float), positions, GL_STATIC_DRAW));
+        vb.Create(4 * 6 * sizeof(float), positions);
 
         GLCALL(glEnableVertexAttribArray(0));
         GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0));
@@ -79,9 +82,10 @@ namespace baka
         GLCALL(glEnableVertexAttribArray(1));
         GLCALL(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void *)(2 * sizeof(float))));
 
-        GLCALL(glGenBuffers(1, &ib));
-        GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib));
-        GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+        ib.Create(indices, 6);
+        // GLCALL(glGenBuffers(1, &ib));
+        // GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib));
+        // GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
         std::string vertShader = Utils::ReadFile("baka_engine/shaders/default.vert");
         std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
@@ -96,7 +100,8 @@ namespace baka
             shader.Bind();
 
             glBindVertexArray(vao);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+            // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+            ib.Bind();
 
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
@@ -111,15 +116,6 @@ namespace baka
     void GLGraphics::RenderEnd()
     {
         SDL_GL_SwapWindow(Graphics::GetWindow());
-    }
-
-    void GLGraphics::ReadErrors(unsigned int line)
-    {
-        int err;
-        while( err = glGetError() )
-        {
-            bakaerr("gl error at line %u: %s", line, glewGetErrorString(err));
-        }
     }
 } // namespace baka
 

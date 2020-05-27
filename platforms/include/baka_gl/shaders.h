@@ -3,19 +3,22 @@
 
 namespace baka
 {
-    class GLShader
+    namespace gl
     {
-    public:
-        unsigned int Create(const char *vertSource, const char *fragSource);
-        void Destroy();
-        void Bind();
+        class Shader
+        {
+        public:
+            unsigned int Create(const char *vertSource, const char *fragSource);
+            void Destroy();
+            void Bind();
 
-    private:
-        unsigned int CompileShader(unsigned int shaderType, const char *source);
+        private:
+            unsigned int CompileShader(unsigned int shaderType, const char *source);
 
-    private:
-        unsigned int program;
-    };
+        private:
+            unsigned int program;
+        };
+    }
 } // namespace baka
 
 
