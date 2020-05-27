@@ -4,6 +4,8 @@
 #include "baka_platform.h"
 #include "baka_logger.h"
 
+struct SDL_Window;
+
 namespace baka 
 {
 
@@ -11,10 +13,15 @@ namespace baka
 
 class GLGraphics
 {
+friend class Graphics;
+
 public:
     GLGraphics();
     ~GLGraphics();
     virtual void Init();
+
+private:
+    static void SetContext( struct SDL_Window *window );
 };
 
 #else
