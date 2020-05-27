@@ -63,19 +63,21 @@ namespace baka
         GLCALL(glBindVertexArray(vao));
 
         float positions[] = {
-            -0.5f, -0.5f,
-             0.5f, -0.5f,
-             0.5f,  0.5f,
-            -0.5f,  0.5f
+            -0.5f, -0.5f,   1.0f, 0.0f, 1.0f, 1.0f,
+             0.5f, -0.5f,   0.0f, 1.0f, 1.0f, 1.0f,
+             0.5f,  0.5f,   0.5f, 0.0f, 0.5f, 1.0f,
+            -0.5f,  0.5f,   0.3f, 0.2f, 1.0f, 1.0f
         };
 
-        unsigned int vb;
         GLCALL(glGenBuffers(1, &vb));
         GLCALL(glBindBuffer(GL_ARRAY_BUFFER, vb));
-        GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
+        GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * 6 * sizeof(float), positions, GL_STATIC_DRAW));
 
         GLCALL(glEnableVertexAttribArray(0));
-        GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+        GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0));
+
+        GLCALL(glEnableVertexAttribArray(1));
+        GLCALL(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void *)(2 * sizeof(float))));
 
         GLCALL(glGenBuffers(1, &ib));
         GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib));
