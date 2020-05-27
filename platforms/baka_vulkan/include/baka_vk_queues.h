@@ -1,6 +1,7 @@
 #ifndef _BAKA_VK_QUEUES_H_
 #define _BAKA_VK_QUEUES_H_
 
+#ifdef VULKAN_AVAILABLE
 #include <vector>
 #include <unordered_map>
 #include <vulkan/vulkan.h>
@@ -35,5 +36,6 @@ namespace baka
         VkQueue queue;
     };
 }
+#endif
 
 #endif

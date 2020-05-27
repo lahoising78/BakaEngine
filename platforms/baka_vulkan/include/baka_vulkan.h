@@ -2,12 +2,16 @@
 #define _BAKA_VULKAN_H_
 
 #include "baka_platform.h"
+
+#ifdef VULKAN_AVAILABLE
 #include <vulkan/vulkan.h>
 #include "baka_vk_extensions.h"
 #include "baka_vk_validation.h"
 #include "baka_vk_physical_device.h"
 #include "baka_vk_device.h"
 #include "baka_vk_swapchain.h"
+#endif
+
 
 namespace baka
 {

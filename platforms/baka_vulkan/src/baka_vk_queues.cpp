@@ -1,3 +1,4 @@
+#ifdef VULKAN_AVAILABLE
 #include "baka_logger.h"
 #include "baka_vk_queues.h"
 
@@ -84,3 +85,4 @@ namespace baka
         vkGetDeviceQueue(this->device, familyIndex, queueIndex, &queue);
     }
 }
+#endif

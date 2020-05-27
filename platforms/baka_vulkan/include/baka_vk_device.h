@@ -1,6 +1,7 @@
 #ifndef _BAKA_VK_DEVICE_H_
 #define _BAKA_VK_DEVICE_H_
 
+#ifdef VULKAN_AVAILABLE
 #include <unordered_map>
 #include <vulkan/vulkan.h>
 #include "baka_vk_queues.h"
@@ -24,4 +25,5 @@ namespace baka
     } VulkanLogicalDevice;
 }
 
+#endif
 #endif

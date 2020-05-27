@@ -1,3 +1,5 @@
+#ifdef VULKAN_AVAILABLE
+
 #include "baka_vk_physical_device.h"
 #include "baka_vk_swapchain.h"
 
@@ -21,7 +23,7 @@ namespace baka
         if(!swapchain) return false;
 
         /* are we a discrete gpu? */
-        // if( this->properties.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) return false;
+        // if( this->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ) return false;
 
         /* do we have a graphics queue? */
         if( !this->queues.FindQueueIndex( VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT ) ) return false;
@@ -30,7 +32,8 @@ namespace baka
         if( !this->queues.FindPresentQueue(surface) ) return false;
         
         /* do we support the necessary extensions? */
-        if( this->extensions.EnableExtensions(requiredExtensions) != requiredExtensions.size() ) return false;
+        this->extensions.EnableExtensions(requiredExtensions);
+        if( this->extensions.enabled.size() != requiredExtensions.size() ) return false;
 
         if( swapchain->support.formats.empty() || swapchain->support.presentModes.empty() ) return false;
         
@@ -66,3 +69,5 @@ namespace baka
         return true;
     }
 }
+
+#endif

@@ -1,6 +1,7 @@
 #ifndef _BAKA_VK_SWAPCHAIN_H_
 #define _BAKA_VK_SWAPCHAIN_H_
 
+#ifdef VULKAN_AVAILABLE
 #include <vector>
 #include <vulkan/vulkan.h>
 #include "baka_vk_utils.h"
@@ -58,5 +59,5 @@ namespace baka
     };
 } // namespace baka
 
-
+#endif
 #endif

@@ -36,11 +36,11 @@ if( Vulkan_FOUND )
     target_include_directories(baka_engine PUBLIC Vulkan::Vulkan)
     target_link_libraries(baka_engine Vulkan::Vulkan)
 
-    target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_vulkan/include")
     set(baka_src ${baka_src} ${baka_vulkan})
-
+    
     message("Vulkan includes: ${Vulkan_INCLUDE_DIR}")
 endif()
+target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_vulkan/include")
 
 cmake_policy(SET CMP0072 NEW)
 find_package(OpenGL)

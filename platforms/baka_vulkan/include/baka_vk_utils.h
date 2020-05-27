@@ -1,6 +1,7 @@
 #ifndef _BAKA_VK_UTILS_H_
 #define _BAKA_VK_UTILS_H_
 
+#ifdef VULKAN_AVAILABLE
 #include <vector>
 #include <vulkan/vulkan.h>
 #include "baka_vk_physical_device.h"
@@ -71,4 +72,5 @@ namespace baka
     };
 }
 
+#endif
 #endif

@@ -1,6 +1,7 @@
 #ifndef _BAKA_VK_PHYSICAL_DEVICE_H_
 #define _BAKA_VK_PHYSICAL_DEVICE_H_
 
+#ifdef VULKAN_AVAILABLE
 #include <vulkan/vulkan.h>
 #include "baka_vk_queues.h"
 #include "baka_vk_extensions.h"
@@ -39,5 +40,6 @@ namespace baka
         VkPhysicalDeviceFeatures enabledFeatures;
     };
 }
+#endif
 
 #endif

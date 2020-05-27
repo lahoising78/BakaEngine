@@ -1,3 +1,5 @@
+#ifdef VULKAN_AVAILABLE
+
 #include <cstring>
 #include "baka_logger.h"
 #include "baka_vk_utils.h"
@@ -153,3 +155,4 @@ namespace baka
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, support->presentModes.data());
     }
 }
+#endif

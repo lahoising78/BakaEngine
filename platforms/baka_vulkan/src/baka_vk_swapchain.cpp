@@ -1,3 +1,5 @@
+#ifdef VULKAN_AVAILABLE
+
 #include <cstring>
 #include "baka_logger.h"
 #include "baka_vk_swapchain.h"
@@ -55,6 +57,7 @@ namespace baka
         );
 
         VkExtent2D ext = VulkanSwapchain::ChooseSwapExtent(&this->support.capabilities);
+        ext = {0,0};
 
         /*  This is how many buffers we will have (image buffer).
             It is recommended to use the min possible + 1 */
@@ -123,8 +126,6 @@ namespace baka
 
         /* needs to be specified if you are creating a new swapchain from another */
         createInfo.oldSwapchain = VK_NULL_HANDLE;
-
-        bakalog("logical device addr %u", this->logicalDevice);
 
         VkResult res = vkCreateSwapchainKHR(this->logicalDevice->device, &createInfo, nullptr, &this->swapchain);
         if(res != VK_SUCCESS)
@@ -211,3 +212,5 @@ namespace baka
         return actualExtent;
     }
 } // namespace baka
+
+#endif

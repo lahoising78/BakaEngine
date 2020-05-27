@@ -73,7 +73,7 @@ namespace baka
         SDL_Vulkan_GetInstanceExtensions(baka::Graphics::GetWindow(), &extCount, sdlExts.data());
         /* the way I set this up is to enable all the extensions that instance_extensions.enabled contains */
         instance_extensions.EnableExtensions(sdlExts);
-        // instance_extensions.EnableAll();
+        instance_extensions.EnableAll();
         
         /* this is an extension we need to create a debug messenger on vulkan. See VulkanValidation::SetupDebugMessenger */
         if(enableValidations)
@@ -92,7 +92,7 @@ namespace baka
                 "VK_LAYER_KHRONOS_validation"
                 // , 
                 // "VK_LAYER_LUNARG_standard_validation"
-                , "VK_LAYER_LUNARG_api_dump"
+                // , "VK_LAYER_LUNARG_api_dump"
             });
 
 
@@ -126,7 +126,7 @@ namespace baka
         auto availablePhysicalDevices = VulkanUtils::GetAvailableDevices(this->instance);
         if(availablePhysicalDevices.size() < 1) return;
         
-        // std::vector<const char *> requiredExtensions = this->instance_extensions.enabled;
+        bakalog("there are %u physical devices available", availablePhysicalDevices.size());
         for(auto phys : availablePhysicalDevices)
         {
             VulkanPhysicalDevice vpd = VulkanPhysicalDevice(phys);
@@ -141,8 +141,6 @@ namespace baka
                 bakalog("Choosing physical device: %s", vpd.properties.deviceName);
                 this->swapchain.physicalDevice = &this->physicalDevice;
                 this->swapchain.surface = this->surface;
-                // this->swapchain.Create();
-                // this->physicalDevice.extensions.EnableAll();
                 break;
             }
         }
@@ -158,15 +156,18 @@ namespace baka
         this->logicalDevice = {};
         this->logicalDevice.physicalDevice = &this->physicalDevice;
 
-        std::vector<float> priorities = {1.0f};
+        float priorities = 1.0f;
         std::vector<VkDeviceQueueCreateInfo> queueInfos; 
         
+        std::set<uint32_t> foundFamilies;
         for(auto familyIndex : this->logicalDevice.physicalDevice->queues.familyIndices)
         {
+            if(foundFamilies.find(familyIndex.second) != foundFamilies.end()) continue;
+            foundFamilies.insert(familyIndex.second);
             queueInfos.push_back(VulkanUtils::DeviceQueueCreateInfo(
                 0, nullptr,
-                priorities.data(),
-                static_cast<uint32_t>(priorities.size()),
+                &priorities,
+                1,
                 familyIndex.second
             ));
         }
@@ -177,8 +178,8 @@ namespace baka
         deviceInfo.pQueueCreateInfos = queueInfos.data();
         deviceInfo.queueCreateInfoCount = static_cast<uint32_t>(queueInfos.size());
         deviceInfo.pEnabledFeatures = &deviceFeatures;
-        deviceInfo.enabledExtensionCount = static_cast<uint32_t>(this->logicalDevice.physicalDevice->extensions.enabled.size());
-        deviceInfo.ppEnabledExtensionNames = this->logicalDevice.physicalDevice->extensions.enabled.data();
+        deviceInfo.enabledExtensionCount = static_cast<uint32_t>(this->physicalDevice.extensions.enabled.size());
+        deviceInfo.ppEnabledExtensionNames = this->physicalDevice.extensions.enabled.data();
         
         if(enableValidations)
         {

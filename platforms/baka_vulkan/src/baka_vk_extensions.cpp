@@ -6,6 +6,7 @@
 namespace baka
 {
 
+    #ifdef VULKAN_AVAILABLE
     void VulkanInstanceExtensions::Init()
     {
         unsigned int extCount = 0;
@@ -78,4 +79,5 @@ namespace baka
 
         return count;
     }
+    #endif
 }

@@ -1,12 +1,17 @@
 #ifndef _BAKA_VK_EXTENSIONS_
 #define _BAKA_VK_EXTENSIONS_
 
+#include "baka_platform.h"
+
+#ifdef VULKAN_AVAILABLE
 #include <vector>
 #include <set>
 #include <vulkan/vulkan.h>
+#endif
 
 namespace baka
 {
+    #ifdef VULKAN_AVAILABLE
     class VulkanExtensions
     {
     public:
@@ -32,6 +37,7 @@ namespace baka
         void Init();
         void Init(VkPhysicalDevice);
     };
+    #endif
 }
 
 #endif

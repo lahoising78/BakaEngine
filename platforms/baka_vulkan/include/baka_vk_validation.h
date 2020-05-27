@@ -1,6 +1,7 @@
 #ifndef _BAKA_VK_VALIDATION_H_
 #define _BAKA_VK_VALIDATION_H_
 
+#ifdef VULKAN_AVAILABLE
 #include <vulkan/vulkan.h>
 #include <vector>
 
@@ -37,5 +38,5 @@ namespace baka
     
 } // namespace baka
 
-
+#endif
 #endif

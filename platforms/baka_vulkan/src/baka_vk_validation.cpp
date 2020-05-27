@@ -1,3 +1,5 @@
+#ifdef VULKAN_AVAILABLE
+
 #include <cstring>
 #include <algorithm>
 #include "baka_logger.h"
@@ -113,3 +115,5 @@ namespace baka
     }
     
 } // namespace baka
+
+#endif

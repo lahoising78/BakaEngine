@@ -8,6 +8,7 @@ class Platform {\
 public:\
     Platform(){ bakaerr( #Platform " not found"); }\
     ~Platform(){}\
+    void Init(){}\
 };
 
 #endif
