@@ -1,8 +1,8 @@
 #ifndef _BAKA_CORE_H_
 #define _BAKA_CORE_H_
 
-#include "baka_vulkan.h"
-#include "baka_open_gl.h"
+#include "baka_vk/vulkan.h"
+#include "baka_gl/gl.h"
 
 class BakaApplication
 {

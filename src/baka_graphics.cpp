@@ -1,6 +1,6 @@
 #include "baka_graphics.h"
 #include "baka_logger.h"
-#include "baka_open_gl.h"
+#include "baka_gl/gl.h"
 #include "Baka.h"
 
 namespace baka

@@ -3,10 +3,10 @@
 #include <GL/glew.h>
 #include <SDL.h>
 #include "baka_logger.h"
-#include "baka_open_gl.h"
+#include "baka_gl/gl.h"
 #include "baka_graphics.h"
 #include "baka_utils.h"
-#include "baka_gl_shaders.h"
+#include "baka_gl/shaders.h"
 
 #define GLCALL(fx)  fx;\
                     this->ReadErrors(__LINE__)

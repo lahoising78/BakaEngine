@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 
 #include "baka_logger.h"
-#include "baka_gl_shaders.h"
+#include "baka_gl/shaders.h"
 
 namespace baka
 {
