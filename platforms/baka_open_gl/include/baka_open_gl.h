@@ -25,6 +25,7 @@ public:
 private:
     virtual void RenderBegin();
     virtual void RenderEnd();
+    virtual void ReadErrors(unsigned int line);
 
 private:
     SDL_GLContext gl_context;

@@ -66,7 +66,7 @@ namespace baka
 
         graphics_manager.window = SDL_CreateWindow(
             windowName,
-            0, 0,
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             width, height,
             windowFlags
         );

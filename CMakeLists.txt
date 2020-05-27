@@ -70,3 +70,17 @@ endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_open_gl/include")
 
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+# Copy the shaders to get a good filepath thing from engine
+file(
+    GLOB shaders
+    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*"
+)
+
+set( shader_outdir "${CMAKE_CURRENT_BINARY_DIR}/shaders" )
+foreach( f ${shaders} )
+    get_filename_component(filename ${f} NAME)
+    set(outfile "${shader_outdir}/${filename}")
+    message("copy ${filename} to ${outfile}")
+    configure_file(${f} ${outfile} COPYONLY)
+endforeach()
