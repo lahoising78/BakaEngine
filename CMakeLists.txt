@@ -38,13 +38,13 @@ target_link_libraries(baka_engine ${SDL2_LIBRARY})
 find_package(Vulkan)
 if( Vulkan_FOUND )
     # if(${CMAKE_VERSION} VERSION_LESS "3.12.4")
-    target_compile_definitions(baka_engine PUBLIC VULKAN_AVAILABLE)
 
     target_include_directories(baka_engine PUBLIC Vulkan::Vulkan)
     target_link_libraries(baka_engine Vulkan::Vulkan)
 
     set(baka_src ${baka_src} ${baka_vulkan})
     
+    target_compile_definitions(baka_engine PUBLIC VULKAN_AVAILABLE)
     message("Vulkan includes: ${Vulkan_INCLUDE_DIR}")
 endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_vulkan/include")
@@ -63,7 +63,9 @@ if( OPENGL_FOUND )
 
     set(baka_src ${baka_src} ${baka_gl})
 
+    target_compile_definitions(baka_engine PUBLIC OPEN_GL_AVAILABLE)
     message("OpenGL includes: ${OPENGL_INCLUDE_DIR}")
+    
 endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/baka_open_gl/include")
 

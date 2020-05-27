@@ -1,28 +1,25 @@
 #ifndef _BAKA_OPEN_GL_
 #define _BAKA_OPEN_GL_
 
+#include "baka_platform.h"
 #include "baka_logger.h"
 
 namespace baka 
 {
 
-#ifndef OPEN_GL_AVAILABLE
+#ifdef OPEN_GL_AVAILABLE
 
-class OpenGLGraphics
+class GLGraphics
 {
 public:
-    OpenGLGraphics() {}
-    ~OpenGLGraphics() { bakalog("open gl graphics bye"); }
+    GLGraphics();
+    ~GLGraphics();
+    virtual void Init();
 };
 
 #else
 
-class OpenGLGraphics
-{
-public:
-    OpenGLGraphics();
-    ~OpenGLGraphics();
-};
+BAKA_PLATFORM_NOT_FOUND(GLGraphics)
 
 #endif /* end open gl available */
 

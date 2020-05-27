@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     
     prog->Main(argc, argv);
     if(prog->vk_graphics) prog->vk_graphics->Init();
+    if(prog->gl_graphics) prog->gl_graphics->Init();
     atexit(CloseApplication);
     
     running = baka::Graphics::IsInit();

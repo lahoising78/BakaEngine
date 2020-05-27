@@ -39,6 +39,11 @@ namespace baka
             windowFlags |= SDL_WINDOW_VULKAN;
         }
 
+        if( apiFlags & GraphicAPI::OPENGL )
+        {
+            windowFlags |= SDL_WINDOW_OPENGL;
+        }
+
         graphics_manager.window = SDL_CreateWindow(
             windowName,
             0, 0,

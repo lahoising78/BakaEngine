@@ -7,8 +7,9 @@
 namespace baka{
     typedef enum
     {
-        NONE = 0,
-        VULKAN  = 1
+        NONE    = 0,
+        VULKAN  = 1,
+        OPENGL  = 2
     } GraphicAPI;
 
     class Graphics

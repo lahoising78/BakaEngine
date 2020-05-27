@@ -13,7 +13,7 @@ public:
 
 public:
     baka::VulkanGraphics *vk_graphics;
-    baka::OpenGLGraphics *gl_graphics;
+    baka::GLGraphics *gl_graphics;
 };
 
 #endif
