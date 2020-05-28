@@ -11,6 +11,7 @@ class VertexBuffer
 public:
     void Create(unsigned long size, const void *data);
     void Destroy();
+    unsigned int GetRendererId() { return renderer_id; }
 
 private:
     unsigned int renderer_id;

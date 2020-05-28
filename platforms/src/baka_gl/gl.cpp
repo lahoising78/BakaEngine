@@ -10,21 +10,16 @@
 #include "baka_gl/vertex_buffer.h"
 #include "baka_gl/index_buffer.h"
 #include "baka_gl/utils.h"
+#include "baka_gl/vertex_array.h"
 
 namespace baka
 {
 
-    unsigned int vao;
+    // unsigned int vao;
+    gl::VertexArray vao;
     gl::VertexBuffer vb;
     gl::IndexBuffer ib;
-    // unsigned int vb;
-    // unsigned int ib;
     gl::Shader shader;
-
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 3, 0
-    };
 
     GLGraphics::GLGraphics()
     {
@@ -35,10 +30,9 @@ namespace baka
     {
         vb.Destroy();
         ib.Destroy();
-        // glDeleteBuffers(1, &vb);
-        // glDeleteBuffers(1, &ib);
         shader.Destroy();
-        glDeleteVertexArrays(1, &vao);
+        vao.Destroy();
+        // glDeleteVertexArrays(1, &vao);
 
         SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
@@ -64,28 +58,45 @@ namespace baka
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        GLCALL(glGenVertexArrays(1, &vao));
-        GLCALL(glBindVertexArray(vao));
 
         float positions[] = {
-            -0.5f, -0.5f,   1.0f, 0.0f, 1.0f, 1.0f,
-             0.5f, -0.5f,   0.0f, 1.0f, 1.0f, 1.0f,
-             0.5f,  0.5f,   0.5f, 0.0f, 0.5f, 1.0f,
-            -0.5f,  0.5f,   0.3f, 0.2f, 1.0f, 1.0f
+            -0.5f, -0.5f,   0.7f, 0.5f, 0.4f, 1.0f,
+             0.5f, -0.5f,   0.4f, 0.7f, 0.5f, 1.0f,
+             0.5f,  0.5f,   0.5f, 0.4f, 0.7f, 1.0f,
+            -0.5f,  0.5f,   0.7f, 0.7f, 0.7f, 1.0f
         };
 
         vb.Create(4 * 6 * sizeof(float), positions);
 
-        GLCALL(glEnableVertexAttribArray(0));
-        GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0));
+        gl::VertexLayout layout;
+        
+        gl::VertexAttributeElement attr = {};
+        attr.count = 2;
+        attr.normalize = GL_FALSE;
+        attr.type = GL_FLOAT;
+        layout.AddAttribute(attr);
 
-        GLCALL(glEnableVertexAttribArray(1));
-        GLCALL(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void *)(2 * sizeof(float))));
+        attr = {};
+        attr.count = 4;
+        attr.normalize = GL_FALSE;
+        attr.type = GL_FLOAT;
+        layout.AddAttribute(attr);
+
+        vao.Create(vb.GetRendererId(), layout);
+        // GLCALL(glGenVertexArrays(1, &vao));
+        // GLCALL(glBindVertexArray(vao));
+        // GLCALL(glEnableVertexAttribArray(0));
+        // GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0));
+
+        // GLCALL(glEnableVertexAttribArray(1));
+        // GLCALL(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void *)(2 * sizeof(float))));
+
+        unsigned int indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
 
         ib.Create(indices, 6);
-        // GLCALL(glGenBuffers(1, &ib));
-        // GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib));
-        // GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
         std::string vertShader = Utils::ReadFile("baka_engine/shaders/default.vert");
         std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
@@ -99,8 +110,8 @@ namespace baka
 
             shader.Bind();
 
-            glBindVertexArray(vao);
-            // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+            // glBindVertexArray(vao);
+            vao.Bind();
             ib.Bind();
 
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
