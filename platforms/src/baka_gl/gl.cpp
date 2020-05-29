@@ -2,6 +2,10 @@
 
 #include <GL/glew.h>
 #include <SDL.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "baka_logger.h"
 #include "baka_gl/gl.h"
 #include "baka_graphics.h"
@@ -14,12 +18,11 @@
 
 namespace baka
 {
-
-    // unsigned int vao;
     gl::VertexArray vao;
     gl::VertexBuffer vb;
     gl::IndexBuffer ib;
     gl::Shader shader;
+    glm::mat4 viewProjection;
 
     GLGraphics::GLGraphics()
     {
@@ -58,15 +61,14 @@ namespace baka
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-
         float positions[] = {
-            -0.5f, -0.5f,   0.7f, 0.5f, 0.4f, 1.0f,
-             0.5f, -0.5f,   0.4f, 0.7f, 0.5f, 1.0f,
-             0.5f,  0.5f,   0.5f, 0.4f, 0.7f, 1.0f,
-            -0.5f,  0.5f,   0.7f, 0.7f, 0.7f, 1.0f
+            -0.5f, -0.5f,
+             0.5f, -0.5f,
+             0.5f,  0.5f,
+            -0.5f,  0.5f 
         };
 
-        vb.Create(4 * 6 * sizeof(float), positions);
+        vb.Create(4 * 2 * sizeof(float), positions);
 
         gl::VertexLayout layout;
         
@@ -76,20 +78,7 @@ namespace baka
         attr.type = GL_FLOAT;
         layout.AddAttribute(attr);
 
-        attr = {};
-        attr.count = 4;
-        attr.normalize = GL_FALSE;
-        attr.type = GL_FLOAT;
-        layout.AddAttribute(attr);
-
         vao.Create(vb.GetRendererId(), layout);
-        // GLCALL(glGenVertexArrays(1, &vao));
-        // GLCALL(glBindVertexArray(vao));
-        // GLCALL(glEnableVertexAttribArray(0));
-        // GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0));
-
-        // GLCALL(glEnableVertexAttribArray(1));
-        // GLCALL(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (const void *)(2 * sizeof(float))));
 
         unsigned int indices[] = {
             0, 1, 2,
@@ -110,7 +99,6 @@ namespace baka
 
             shader.Bind();
 
-            // glBindVertexArray(vao);
             vao.Bind();
             ib.Bind();
 

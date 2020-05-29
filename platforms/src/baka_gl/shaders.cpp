@@ -11,25 +11,25 @@ namespace baka
     {
         unsigned int Shader::Create(const char *vertSource, const char *fragSource)
         {
-            unsigned int program = glCreateProgram();
+            unsigned int renderer_program_id = glCreateProgram();
             unsigned int vert = this->CompileShader(GL_VERTEX_SHADER, vertSource);
             unsigned int frag = this->CompileShader(GL_FRAGMENT_SHADER, fragSource);
 
-            glAttachShader(program, vert);
-            glAttachShader(program, frag);
-            glLinkProgram(program);
-            glValidateProgram(program);
+            glAttachShader(renderer_program_id, vert);
+            glAttachShader(renderer_program_id, frag);
+            glLinkProgram(renderer_program_id);
+            glValidateProgram(renderer_program_id);
 
             glDeleteShader(vert);
             glDeleteShader(frag);
 
-            this->program = program;
-            return program;
+            this->renderer_program_id = renderer_program_id;
+            return renderer_program_id;
         }
 
         void Shader::Destroy()
         {
-            glDeleteProgram(this->program);
+            glDeleteProgram(this->renderer_program_id);
         }
 
         unsigned int Shader::CompileShader(unsigned int shaderType, const char *source)
@@ -56,7 +56,7 @@ namespace baka
 
         void Shader::Bind()
         {
-            glUseProgram(this->program);
+            glUseProgram(this->renderer_program_id);
         }
     }
 } // namespace baka

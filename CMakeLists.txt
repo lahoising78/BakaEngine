@@ -9,6 +9,8 @@ file(
     GLOB baka_src
     "include/*.h"
     "src/*.cpp"
+    "external/glm/glm/*.hpp"
+    "external/glm/glm/*.inl"
 )
 
 file(
@@ -32,6 +34,8 @@ add_library(
 
 target_include_directories(baka_engine PUBLIC ${SDL2_INCLUDE_DIR})
 target_link_libraries(baka_engine ${SDL2_LIBRARY})
+
+target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/glm")
 
 # VULKAN
 find_package(Vulkan)

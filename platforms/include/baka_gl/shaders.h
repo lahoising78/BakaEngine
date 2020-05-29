@@ -12,11 +12,13 @@ namespace baka
             void Destroy();
             void Bind();
 
+            unsigned int GetRendererId() { return renderer_program_id; };
+
         private:
             unsigned int CompileShader(unsigned int shaderType, const char *source);
 
         private:
-            unsigned int program;
+            unsigned int renderer_program_id;
         };
     }
 } // namespace baka
