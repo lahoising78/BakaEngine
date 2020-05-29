@@ -26,7 +26,7 @@ public:
 
     glm::mat4 GetViewProjection() { return view_projection; }
 
-    void SetRotation(Rot rotation) { this->rotation = rotation; }
+    void SetRotation(Rot rotation) { this->rotation = rotation; RecalculateMatrix(); }
     Rot GetRotation() { return this->rotation; }
 
 private:

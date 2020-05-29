@@ -64,19 +64,28 @@ namespace baka
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
+        // float w = (float)Graphics::GetWidth() / 4;
+        // float h = (float)Graphics::GetHeight() / 4;
         float positions[] = {
-              0.0f,   0.0f,
-            640.0f,   0.0f,
-            640.0f, 360.0f,
-              0.0f, 360.0f
+            // -w,     -h,
+            //  w,     -h,
+            //  w,      h,
+            // -w,      h
+            -0.5, -0.5, -1.0f,
+             0.5, -0.5,  1.0f,
+             0.5,  0.5,  1.0f,
+            -0.5,  0.5, -1.0f,
+
+             1.5, -0.5,  1.0f,
+             1.5,  0.5,  1.0f
         };
 
-        vb.Create(4 * 2 * sizeof(float), positions);
+        vb.Create(6 * 3 * sizeof(float), positions);
 
         gl::VertexLayout layout;
         
         gl::VertexAttributeElement attr = {};
-        attr.count = 2;
+        attr.count = 3;
         attr.normalize = GL_FALSE;
         attr.type = GL_FLOAT;
         layout.AddAttribute(attr);
@@ -85,10 +94,13 @@ namespace baka
 
         unsigned int indices[] = {
             0, 1, 2,
-            2, 3, 0
+            2, 3, 0,
+
+            1, 4, 5,
+            5, 2, 1
         };
 
-        ib.Create(indices, 6);
+        ib.Create(indices, 6 * 2);
 
         std::string vertShader = Utils::ReadFile("baka_engine/shaders/default.vert");
         std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
@@ -98,21 +110,11 @@ namespace baka
         modelMat = glm::mat4(1.0);
 
         // 2d camera
-        // view = 
-        //     glm::translate( glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f) ) *
-        //     glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
-        // view = glm::inverse(view);
-        // proj = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-        OrthographicsCamera cam = OrthographicsCamera();
+        // OrthographicsCamera cam = OrthographicsCamera();
 
         // 3d camera
-        // view = glm::lookAt(
-        //     glm::vec3(0.0f, 0.0f, -1.0f),
-        //     glm::vec3(0.0f, 0.0f, 0.0f),
-        //     glm::vec3(0.0f, 1.0f, 0.0f)
-        // );
-        // proj = glm::perspective(glm::radians(45.0f), 16.0f/9.0f, 0.1f, 2.0f);
-
+        Camera cam = Camera(90.0f);
+        cam.SetPosition(glm::vec3(0, 0, -2));
 
         modelMat = cam.GetViewProjection() * modelMat;
 
@@ -129,7 +131,7 @@ namespace baka
             vao.Bind();
             ib.Bind();
 
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, 6 * 2, GL_UNSIGNED_INT, nullptr);
 
         this->RenderEnd();
     }
