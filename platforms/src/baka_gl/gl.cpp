@@ -22,7 +22,10 @@ namespace baka
     gl::VertexBuffer vb;
     gl::IndexBuffer ib;
     gl::Shader shader;
-    glm::mat4 viewProjection;
+
+    glm::mat4 modelMat;
+    glm::mat4 view;
+    glm::mat4 proj;
 
     GLGraphics::GLGraphics()
     {
@@ -35,7 +38,6 @@ namespace baka
         ib.Destroy();
         shader.Destroy();
         vao.Destroy();
-        // glDeleteVertexArrays(1, &vao);
 
         SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
@@ -65,7 +67,7 @@ namespace baka
             -0.5f, -0.5f,
              0.5f, -0.5f,
              0.5f,  0.5f,
-            -0.5f,  0.5f 
+            -0.5f,  0.5f
         };
 
         vb.Create(4 * 2 * sizeof(float), positions);
@@ -91,6 +93,29 @@ namespace baka
         std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
         shader.Create(vertShader.c_str(), fragShader.c_str());
         shader.Bind();
+
+        modelMat = glm::mat4(1.0);
+
+        // 2d camera
+        view = 
+            glm::translate( glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f) ) *
+            glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
+        view = glm::inverse(view);
+        proj = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+
+        // 3d camera
+        // view = glm::lookAt(
+        //     glm::vec3(0.0f, 0.0f, -1.0f),
+        //     glm::vec3(0.0f, 0.0f, 0.0f),
+        //     glm::vec3(0.0f, 1.0f, 0.0f)
+        // );
+        // proj = glm::perspective(glm::radians(45.0f), 16.0f/9.0f, 0.1f, 2.0f);
+
+
+        modelMat = proj * view * modelMat;
+
+        int location = glGetUniformLocation(shader.GetRendererId(), "u_modelMat");
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(modelMat));
     }
 
     void GLGraphics::Render()
