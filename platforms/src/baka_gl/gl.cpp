@@ -15,6 +15,7 @@
 #include "baka_gl/index_buffer.h"
 #include "baka_gl/utils.h"
 #include "baka_gl/vertex_array.h"
+#include "baka_camera.h"
 
 namespace baka
 {
@@ -64,10 +65,10 @@ namespace baka
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         float positions[] = {
-            -0.5f, -0.5f,
-             0.5f, -0.5f,
-             0.5f,  0.5f,
-            -0.5f,  0.5f
+              0.0f,   0.0f,
+            640.0f,   0.0f,
+            640.0f, 360.0f,
+              0.0f, 360.0f
         };
 
         vb.Create(4 * 2 * sizeof(float), positions);
@@ -97,11 +98,12 @@ namespace baka
         modelMat = glm::mat4(1.0);
 
         // 2d camera
-        view = 
-            glm::translate( glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f) ) *
-            glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
-        view = glm::inverse(view);
-        proj = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+        // view = 
+        //     glm::translate( glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f) ) *
+        //     glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
+        // view = glm::inverse(view);
+        // proj = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+        OrthographicsCamera cam = OrthographicsCamera();
 
         // 3d camera
         // view = glm::lookAt(
@@ -112,7 +114,7 @@ namespace baka
         // proj = glm::perspective(glm::radians(45.0f), 16.0f/9.0f, 0.1f, 2.0f);
 
 
-        modelMat = proj * view * modelMat;
+        modelMat = cam.GetViewProjection() * modelMat;
 
         int location = glGetUniformLocation(shader.GetRendererId(), "u_modelMat");
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(modelMat));
