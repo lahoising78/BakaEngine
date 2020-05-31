@@ -5,6 +5,12 @@
 
 namespace baka
 {
+    typedef struct
+    {
+        uint32_t count;
+        void *data;
+    } Array;
+
     class Utils
     {
     public:

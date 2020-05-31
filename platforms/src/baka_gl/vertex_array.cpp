@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 
+#include <baka_logger.h>
 #include "baka_gl/utils.h"
 #include "baka_gl/vertex_array.h"
 
@@ -24,6 +25,8 @@ void VertexArray::Create(unsigned int vertexBufferId, VertexLayout &vertexLayout
         GLCALL(glVertexAttribPointer(i, attrs[i].count, attrs[i].type, attrs[i].normalize, vertexLayout.GetStride(), (const void *)offset));
         offset += VertexLayout::GetSizeOfType(attrs[i].type) * attrs[i].count;
     }
+
+    bakalog("vertex array init final size: %ld", offset);
 }
 
 void VertexArray::Bind()

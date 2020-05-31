@@ -2,6 +2,9 @@
 #define _BAKA_GL_INDEX_BUFFER_H_
 
 #include <stdint.h>
+#include <GL/glew.h>
+
+#define BAKA_GL_INDEX_TYPE GL_UNSIGNED_INT
 
 namespace baka
 {
@@ -15,6 +18,9 @@ public:
     void Destroy();
     void Bind();
     void Unbind();
+
+    uint32_t GetCount() { return this->count; }
+    // const unsigned int *GetIndices() { return this->indices; }
 
 private:
     unsigned int renderer_id;

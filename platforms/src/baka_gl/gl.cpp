@@ -16,12 +16,11 @@
 #include "baka_gl/utils.h"
 #include "baka_gl/vertex_array.h"
 #include "baka_camera.h"
+#include "baka_gl/mesh.h"
 
 namespace baka
 {
-    gl::VertexArray vao;
-    gl::VertexBuffer vb;
-    gl::IndexBuffer ib;
+    gl::Mesh *m_mesh;
     gl::Shader shader;
 
     glm::mat4 modelMat;
@@ -35,10 +34,8 @@ namespace baka
 
     GLGraphics::~GLGraphics()
     {
-        vb.Destroy();
-        ib.Destroy();
         shader.Destroy();
-        vao.Destroy();
+        if(m_mesh) delete m_mesh;
 
         SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
@@ -80,7 +77,10 @@ namespace baka
              1.5,  0.5,  1.0f
         };
 
-        vb.Create(6 * 3 * sizeof(float), positions);
+        bakalog("3 * sizeof(float) = %lu", 3 * sizeof(float));
+        Array vertices = {};
+        vertices.count = 6;
+        vertices.data = positions;
 
         gl::VertexLayout layout;
         
@@ -90,7 +90,7 @@ namespace baka
         attr.type = GL_FLOAT;
         layout.AddAttribute(attr);
 
-        vao.Create(vb.GetRendererId(), layout);
+        bakalog("layout stride = %lu", layout.GetStride());
 
         unsigned int indices[] = {
             0, 1, 2,
@@ -100,7 +100,11 @@ namespace baka
             5, 2, 1
         };
 
-        ib.Create(indices, 6 * 2);
+        Array indicesArray = {};
+        indicesArray.count = 6 * 2;
+        indicesArray.data = indices;
+
+        m_mesh = new gl::Mesh(vertices, layout, indicesArray);
 
         std::string vertShader = Utils::ReadFile("baka_engine/shaders/default.vert");
         std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
@@ -128,10 +132,7 @@ namespace baka
 
             shader.Bind();
 
-            vao.Bind();
-            ib.Bind();
-
-            glDrawElements(GL_TRIANGLES, 6 * 2, GL_UNSIGNED_INT, nullptr);
+            if(m_mesh) m_mesh->Render();
 
         this->RenderEnd();
     }
