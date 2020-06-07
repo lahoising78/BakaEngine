@@ -41,8 +41,6 @@ void StackAllocator::FreeStackUntil(StackAllocatorMarker &marker)
 {
     this->stackTopOffset = (uint8_t*)marker.pData;
 
-    memset(this->stackTopOffset, 0, this->stackEnd - (uint8_t*)marker.pData);
-
     marker = {};
 }
 
