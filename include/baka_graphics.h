@@ -3,9 +3,10 @@
 
 #include <SDL.h>
 
-class BakaApplication;
-
 namespace baka{
+    
+    class BakaApplication;
+    struct baka_app_config_s;
 
     typedef enum
     {
@@ -23,17 +24,21 @@ namespace baka{
          * @param height height of the window
          * @param apiFlags a uint containing the flag bits for GraphicsAPIs
          */
-        static bool Init( const char *windowName, int width, int height, BakaApplication *application );
+        static bool Init(struct baka_app_config_s);
         static bool IsInit();
         static void Render();
+        static void Close();
 
         static SDL_Window *GetWindow();
-        static int GetWidth();
-        static int GetHeight();
+        static int GetWindowWidth();
+        // static void SetWindowWidth(int);
+        static int GetWindowHeight();
+        // static void SetWindowHeight(int);
+        static const char * const GetWindowName();
+        // static void SetWindowName(const char *);
 
     private:
-        static void Setup( const char *windowName, int width, int height );
-        static void Close();
+        static void Setup();
     };
 }
 

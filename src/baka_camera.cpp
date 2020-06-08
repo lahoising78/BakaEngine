@@ -12,8 +12,8 @@ OrthographicsCamera::OrthographicsCamera()
 {
     this->rotation = 0.0f;
 
-    float width = (float)Graphics::GetWidth() / 2;
-    float height = (float)Graphics::GetHeight() / 2;
+    float width = (float)Graphics::GetWindowWidth() / 2;
+    float height = (float)Graphics::GetWindowHeight() / 2;
 
     this->projection = glm::ortho(-width, width, -height, height, -1.0f, 1.0f);
 
@@ -43,8 +43,8 @@ void Camera::RecalculateMatrix()
     view = glm::translate(identity_matrix, this->position) * 
         glm::yawPitchRoll(glm::radians(this->rotation.y), glm::radians(this->rotation.x), glm::radians(this->rotation.z));
 
-    float w = Graphics::GetWidth();
-    float h = Graphics::GetHeight();
+    float w = Graphics::GetWindowWidth();
+    float h = Graphics::GetWindowHeight();
     projection = glm::perspective(glm::radians(this->fov), w/h, this->nearClip, this->farClip);
 
     this->view_projection = this->projection * this->view;
