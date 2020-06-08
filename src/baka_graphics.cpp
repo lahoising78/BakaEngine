@@ -6,22 +6,11 @@
 
 namespace baka
 {
-    typedef struct
-    {
-        SDL_Window *window;
-        char windowName[BAKA_WINDOW_NAME_MAX_LENGTH];
-        int windowWidth, windowHeight;
-        uint32_t apiFlags;
-        bool initialized;
-    } BakaGraphics;
+    static GLGraphics *gl_graphics = nullptr;
 
-    static BakaGraphics graphics_manager = {0};
-
-    bool Graphics::Init(BakaApplicationConfig config)
+    bool Graphics::Init(WindowConfig config)
     {
-        strcpy(graphics_manager.windowName, config.initialWindowName);
-        graphics_manager.windowWidth = config.initialWindowWidth;
-        graphics_manager.windowHeight = config.initialWindowHeight;
+        this->window_config = config;
 
         if(SDL_Init( SDL_INIT_EVERYTHING ) != 0)
         {
@@ -32,60 +21,61 @@ namespace baka
         Graphics::Setup();
 
         bakalog("baka graphics initialized");
-        graphics_manager.initialized = true;
+        this->initialized = true;
         return true;
     }
 
     void Graphics::Setup()
     {
         uint32_t windowFlags = 0;
-        const char * const windowName = graphics_manager.windowName;
-        const int width = graphics_manager.windowWidth;
-        const int height = graphics_manager.windowHeight;
+        const char * const windowName = this->window_config.name;
+        const int width = this->window_config.width;
+        const int height = this->window_config.height;
         
-        // if( graphics_manager.application->vk_graphics )
+        // if( this->application->vk_graphics )
         // {
         //     windowFlags |= SDL_WINDOW_VULKAN;
         // }
 
-        // if( graphics_manager.application->gl_graphics )
-        // {
-        //     windowFlags |= SDL_WINDOW_OPENGL;
+        if( this->window_config.api_flags & GraphicAPIBits::BAKA_GAPI_OPENGL )
+        {
+            windowFlags |= SDL_WINDOW_OPENGL;
 
-        //     /* set open gl version */
-        //     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        //     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-        //     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+            /* set open gl version */
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-        //     /* enable double buffering with 24bit depth buffer */
-        //     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        //     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-        // }
+            /* enable double buffering with 24bit depth buffer */
+            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        }
 
-        graphics_manager.window = SDL_CreateWindow(
+        this->window = SDL_CreateWindow(
             windowName,
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             width, height,
             windowFlags
         );
 
-        // if(graphics_manager.application->gl_graphics)
-        // {
-        //     graphics_manager.application->gl_graphics->Init();
-        // }
+        if(this->window_config.api_flags & GraphicAPIBits::BAKA_GAPI_OPENGL)
+        {
+            gl_graphics = &GLGraphics::Get();
+            gl_graphics->Init();
+        }
 
-        // if(graphics_manager.application->vk_graphics)
+        // if(this->application->vk_graphics)
         // {
-        //     graphics_manager.application->vk_graphics->Init();
+        //     this->application->vk_graphics->Init();
         // }
     }
 
     void Graphics::Close()
     {
         bakalog("closing baka graphics");
-        if(graphics_manager.window)
+        if(this->window)
         {
-            SDL_DestroyWindow( graphics_manager.window );
+            SDL_DestroyWindow( this->window );
         }
 
         SDL_Quit();
@@ -93,50 +83,50 @@ namespace baka
 
     void Graphics::Render()
     {
-        // if(graphics_manager.application->gl_graphics)
-        // {
-        //     graphics_manager.application->gl_graphics->Render();
-        // }
+        if(gl_graphics)
+        {
+            gl_graphics->Render();
+        }
     }
 
     bool Graphics::IsInit()
     {
-        return graphics_manager.initialized;
+        return this->initialized;
     }
 
     SDL_Window *Graphics::GetWindow()
     {
-        return graphics_manager.window;
+        return this->window;
     }
 
     int Graphics::GetWindowWidth()
     {
-        return graphics_manager.windowWidth;
+        return this->window_config.width;
     }
 
     // void Graphics::SetWindowWidth(int w)
     // {
-    //     graphics_manager.windowWidth = w;
+    //     this->window_config.width = w;
     // }
 
     int Graphics::GetWindowHeight()
     {
-        return graphics_manager.windowHeight;
+        return this->window_config.height;
     }
 
     // void Graphics::SetWindowHeight(int h)
     // {
-    //     graphics_manager.windowHeight = h;
+    //     this->window_config.height = h;
     // }
 
     const char * const Graphics::GetWindowName()
     {
-        return graphics_manager.windowName;
+        return this->window_config.name;
     }
 
     // void Graphics::SetWindowName(const char *name)
     // {
-    //     snprintf(graphics_manager.windowName, sizeof(char) * BAKA_WINDOW_NAME_MAX_LENGTH, name);
+    //     snprintf(this->windowName, sizeof(char) * BAKA_WINDOW_NAME_MAX_LENGTH, name);
     // }
 
 }

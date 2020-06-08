@@ -20,6 +20,8 @@
 
 namespace baka
 {
+    extern Graphics *graphics;
+
     gl::Mesh *m_mesh;
     gl::Shader shader;
 
@@ -43,7 +45,7 @@ namespace baka
 
     void GLGraphics::Init()
     {
-        this->gl_context = SDL_GL_CreateContext(Graphics::GetWindow());
+        this->gl_context = SDL_GL_CreateContext(graphics->GetWindow());
         if( !this->gl_context )
         {
             bakawarn("Unable to create gl context");
@@ -144,7 +146,7 @@ namespace baka
 
     void GLGraphics::RenderEnd()
     {
-        SDL_GL_SwapWindow(Graphics::GetWindow());
+        SDL_GL_SwapWindow(graphics->GetWindow());
     }
 } // namespace baka
 

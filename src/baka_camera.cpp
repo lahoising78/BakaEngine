@@ -7,13 +7,15 @@
 namespace baka
 {
     
+extern Graphics *graphics;
+
 OrthographicsCamera::OrthographicsCamera()
     : CameraBase()
 {
     this->rotation = 0.0f;
 
-    float width = (float)Graphics::GetWindowWidth() / 2;
-    float height = (float)Graphics::GetWindowHeight() / 2;
+    float width = (float)graphics->GetWindowWidth() / 2;
+    float height = (float)graphics->GetWindowHeight() / 2;
 
     this->projection = glm::ortho(-width, width, -height, height, -1.0f, 1.0f);
 
@@ -43,8 +45,8 @@ void Camera::RecalculateMatrix()
     view = glm::translate(identity_matrix, this->position) * 
         glm::yawPitchRoll(glm::radians(this->rotation.y), glm::radians(this->rotation.x), glm::radians(this->rotation.z));
 
-    float w = Graphics::GetWindowWidth();
-    float h = Graphics::GetWindowHeight();
+    float w = graphics->GetWindowWidth();
+    float h = graphics->GetWindowHeight();
     projection = glm::perspective(glm::radians(this->fov), w/h, this->nearClip, this->farClip);
 
     this->view_projection = this->projection * this->view;

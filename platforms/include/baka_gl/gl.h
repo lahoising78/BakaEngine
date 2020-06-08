@@ -22,6 +22,12 @@ public:
     virtual void Init();
     virtual void Render();
 
+    static GLGraphics &Get()
+    {
+        static GLGraphics glGraphics = GLGraphics();
+        return glGraphics;
+    }
+
 private:
     virtual void RenderBegin();
     virtual void RenderEnd();

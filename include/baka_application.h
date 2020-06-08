@@ -1,17 +1,15 @@
 #ifndef _BAKA_APPLICATION_H_
 #define _BAKA_APPLICATION_H_
 
-#define BAKA_WINDOW_NAME_MAX_LENGTH 256
+#include "baka_graphics.h"
 
 namespace baka
 {
 
-typedef struct baka_app_config_s
+typedef struct
 {
-    int     initialWindowWidth;
-    int     initialWindowHeight;
-    char    initialWindowName[BAKA_WINDOW_NAME_MAX_LENGTH];
-} BakaApplicationConfig;
+    WindowConfig window_config;
+} BakaAppConfig;
 
 class BakaApplication
 {
@@ -26,7 +24,7 @@ private:
     virtual void Update() = 0;
 
 protected:
-    BakaApplicationConfig app_config;
+    BakaAppConfig app_config;
     bool running;
 };
 
