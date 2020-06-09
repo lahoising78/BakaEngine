@@ -1,76 +1,117 @@
 #include <cstdlib>
 #include <cstring>
+
+#include <SDL.h>
+
 #include "baka_input.h"
 #include "baka_logger.h"
 
 namespace baka
 {
-    typedef struct
+    void Input::Init(InputConfig input_config)
     {
-        SDL_KeyboardEvent keyboard[ BAKA_NUM_KEYS ];
-        SDL_QuitEvent quitEvent;
-        SDL_TextInputEvent lastKey;
-    } BakaInput;
-
-    static BakaInput input_manager = {0};
-
-    void Input::Init()
-    {
-        memset(input_manager.keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
-        atexit(Input::Close);
+        memset(this->input_events.keyboard_state, 0, sizeof(uint8_t) * 512);
+        this->input_events.mouse_button_curr_side = this->input_events.mouse_button_state;
+        this->input_events.mouse_button_prev_side = this->input_events.mouse_button_state + 8;
+        SDL_StartTextInput();
     }
 
     void Input::Update()
     {
-        SDL_Event e = {0};
-        memset(input_manager.keyboard, 0, sizeof(SDL_KeyboardEvent) * BAKA_NUM_KEYS);
-        input_manager.quitEvent = {0};
-        input_manager.lastKey = {0};
+        // memcpy(this->input_events.prev_keyboard_events, this->input_events.keyboard_events, sizeof(uint8_t) * this->input_events.num_keys);
+        
+        memset(this->input_events.keyboard_events, 0, sizeof(SDL_KeyboardEvent) * 512);
+        this->input_events.quit_event = {};
+        this->input_events.text_event = {};
+        memcpy( this->input_events.mouse_button_prev_side, 
+                this->input_events.mouse_button_curr_side,
+                sizeof(uint8_t) * 8);
 
-        while(SDL_PollEvent(&e))
+        SDL_Event e = {};
+
+        while( SDL_PollEvent(&e) )
         {
             switch (e.type)
             {
             case SDL_KEYUP:
             case SDL_KEYDOWN:
-                if(e.key.keysym.scancode < BAKA_NUM_KEYS)
-                {
-                    input_manager.keyboard[ e.key.keysym.scancode ] = e.key;
-                }
-                break;
-
-            case SDL_TEXTINPUT:
-                input_manager.lastKey = e.text;
+                this->input_events.keyboard_events[ e.key.keysym.scancode ] = e.key;
+                this->input_events.keyboard_state[ e.key.keysym.scancode ] = e.key.state;
                 break;
 
             case SDL_QUIT:
-                input_manager.quitEvent = e.quit;
+                this->input_events.quit_event = e.quit;
+                break;
+
+            case SDL_TEXTINPUT:
+                this->input_events.text_event = e.text;
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                this->input_events.mouse_button_curr_side[ e.button.button ] = e.button.state;
                 break;
             
             default:
                 break;
             }
         }
+
     }
 
-    bool Input::KeyPressed(int key)
+    bool Input::IsKeyPressed(int key)
     {
-        if(key >= BAKA_NUM_KEYS) return false;
-        return input_manager.keyboard[key].state == SDL_PRESSED;
+        BAKA_ASSERT(key < 512);
+        return input_events.keyboard_state[key];
     }
 
-    const char *Input::AnyKey()
+    bool Input::KeyJustPressed(int key)
     {
-        return input_manager.lastKey.text;
+        BAKA_ASSERT(key < 512);
+        return  input_events.keyboard_events[key].type == SDL_KEYDOWN &&
+                input_events.keyboard_events[key].repeat == 0;
+    }
+
+    bool Input::KeyJustReleased(int key)
+    {
+        BAKA_ASSERT(key < 512);
+        return  input_events.keyboard_events[key].type == SDL_KEYUP;
+    }
+
+    bool Input::AnyKey()
+    {
+        return this->input_events.text_event.type;
     }
 
     bool Input::QuitRequested()
     {
-        return input_manager.quitEvent.type == SDL_QUIT;
+        return input_events.quit_event.type;
+    }
+
+    bool Input::IsMouseButtonPressed(int mouseButton)
+    {
+        BAKA_ASSERT(mouseButton < 8);
+        return this->input_events.mouse_button_curr_side[mouseButton];
+    }
+
+    bool Input::MouseButtonJustPressed(int mouseButton)
+    {
+        BAKA_ASSERT(mouseButton < 8);
+        return  this->input_events.mouse_button_curr_side[ mouseButton ] &&
+                !this->input_events.mouse_button_prev_side[ mouseButton ];
+    }
+
+    bool Input::MouseButtonJustReleased(int mouseButton)
+    {
+        BAKA_ASSERT(mouseButton < 8);
+        return  !this->input_events.mouse_button_curr_side[ mouseButton ] &&
+                this->input_events.mouse_button_prev_side[ mouseButton ];
     }
 
     void Input::Close()
     {
-
+        // if(this->input_events.prev_keyboard_events)
+        //     delete this->input_events.prev_keyboard_events;
+        SDL_StopTextInput();
     }
 }

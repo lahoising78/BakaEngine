@@ -2,6 +2,7 @@
 #define _BAKA_APPLICATION_H_
 
 #include "baka_graphics.h"
+#include "baka_input.h"
 
 namespace baka
 {
@@ -9,6 +10,7 @@ namespace baka
 typedef struct
 {
     WindowConfig window_config;
+    InputConfig input_config;
 } BakaAppConfig;
 
 class BakaApplication
