@@ -56,12 +56,11 @@ if( OPENGL_FOUND )
     target_link_libraries(baka_engine ${GLEW_LIBRARIES})
     target_include_directories(baka_engine PUBLIC ${GLEW_INCLUDE_DIRS})
 
-    target_include_directories(baka_engine PUBLIC OpenGL::OpenGL)
-    target_link_libraries(baka_engine OpenGL::OpenGL)
+    # target_include_directories(baka_engine PUBLIC OpenGL::GL)
+    target_link_libraries(baka_engine OpenGL::GL)
 
     target_compile_definitions(baka_engine PUBLIC OPEN_GL_AVAILABLE)
     message("Glew includes: ${GLEW_INCLUDE_DIRS}")
-    message("OpenGL includes: ${OPENGL_INCLUDE_DIR}")
 endif()
 
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/include")

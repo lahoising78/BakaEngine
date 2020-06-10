@@ -76,6 +76,7 @@ SET(SDL2_SEARCH_PATHS
 	/opt/local # DarwinPorts
 	/opt/csw # Blastwave
 	/opt
+	$ENV{SDL2DIR}
 	${SDL2_PATH}
 )
 

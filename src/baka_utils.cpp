@@ -10,6 +10,8 @@ namespace baka
         std::string content;
 
         std::ifstream t(filepath);
+        if(!t.is_open()) return "";
+
         t.seekg(0, std::ios::end);
         content.resize(t.tellg());
         t.seekg(0, std::ios::beg);

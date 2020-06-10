@@ -1,6 +1,7 @@
 #include <ctime>
 #include <chrono>
 #include <cstdint>
+#include <stdio.h>
 #include <SDL.h>
 
 #include "Baka.h"

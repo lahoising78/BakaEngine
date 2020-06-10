@@ -22,12 +22,12 @@ namespace baka
 {
     extern Graphics *graphics;
 
-    gl::Mesh *m_mesh;
-    gl::Shader shader;
+    // gl::Mesh *m_mesh;
+    // gl::Shader shader;
 
-    glm::mat4 modelMat;
-    glm::mat4 view;
-    glm::mat4 proj;
+    // glm::mat4 modelMat;
+    // glm::mat4 view;
+    // glm::mat4 proj;
 
     GLGraphics::GLGraphics()
     {
@@ -36,8 +36,8 @@ namespace baka
 
     GLGraphics::~GLGraphics()
     {
-        shader.Destroy();
-        if(m_mesh) delete m_mesh;
+        // shader.Destroy();
+        // if(m_mesh) delete m_mesh;
 
         SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
@@ -61,80 +61,80 @@ namespace baka
 
         bakalog("gl graphics initialized. using version %s", glGetString(GL_VERSION));
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        // float w = (float)Graphics::GetWidth() / 4;
-        // float h = (float)Graphics::GetHeight() / 4;
-        float positions[] = {
-            // -w,     -h,
-            //  w,     -h,
-            //  w,      h,
-            // -w,      h
-            -0.5, -0.5, -1.0f,
-             0.5, -0.5,  1.0f,
-             0.5,  0.5,  1.0f,
-            -0.5,  0.5, -1.0f,
+        // // float w = (float)Graphics::GetWidth() / 4;
+        // // float h = (float)Graphics::GetHeight() / 4;
+        // float positions[] = {
+        //     // -w,     -h,
+        //     //  w,     -h,
+        //     //  w,      h,
+        //     // -w,      h
+        //     -0.5, -0.5, -1.0f,
+        //      0.5, -0.5,  1.0f,
+        //      0.5,  0.5,  1.0f,
+        //     -0.5,  0.5, -1.0f,
 
-             1.5, -0.5,  1.0f,
-             1.5,  0.5,  1.0f
-        };
+        //      1.5, -0.5,  1.0f,
+        //      1.5,  0.5,  1.0f
+        // };
 
-        bakalog("3 * sizeof(float) = %lu", 3 * sizeof(float));
-        Array vertices = {};
-        vertices.count = 6;
-        vertices.data = positions;
+        // bakalog("3 * sizeof(float) = %lu", 3 * sizeof(float));
+        // Array vertices = {};
+        // vertices.count = 6;
+        // vertices.data = positions;
 
-        gl::VertexLayout layout;
+        // gl::VertexLayout layout;
         
-        gl::VertexAttributeElement attr = {};
-        attr.count = 3;
-        attr.normalize = GL_FALSE;
-        attr.type = GL_FLOAT;
-        layout.AddAttribute(attr);
+        // gl::VertexAttributeElement attr = {};
+        // attr.count = 3;
+        // attr.normalize = GL_FALSE;
+        // attr.type = GL_FLOAT;
+        // layout.AddAttribute(attr);
 
-        bakalog("layout stride = %lu", layout.GetStride());
+        // bakalog("layout stride = %lu", layout.GetStride());
 
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0,
+        // unsigned int indices[] = {
+        //     0, 1, 2,
+        //     2, 3, 0,
 
-            1, 4, 5,
-            5, 2, 1
-        };
+        //     1, 4, 5,
+        //     5, 2, 1
+        // };
 
-        Array indicesArray = {};
-        indicesArray.count = 6 * 2;
-        indicesArray.data = indices;
+        // Array indicesArray = {};
+        // indicesArray.count = 6 * 2;
+        // indicesArray.data = indices;
 
-        m_mesh = new gl::Mesh(vertices, layout, indicesArray);
+        // m_mesh = new gl::Mesh(vertices, layout, indicesArray);
 
-        std::string vertShader = Utils::ReadFile("baka_engine/shaders/default.vert");
-        std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
-        shader.Create(vertShader.c_str(), fragShader.c_str());
-        shader.Bind();
+        // std::string vertShader = Utils::ReadFile("baka_engine/shaders/default.vert");
+        // std::string fragShader = Utils::ReadFile("baka_engine/shaders/default.frag");
+        // shader.Create(vertShader.c_str(), fragShader.c_str());
+        // shader.Bind();
 
-        modelMat = glm::mat4(1.0);
+        // modelMat = glm::mat4(1.0);
 
         // 2d camera
         // OrthographicsCamera cam = OrthographicsCamera();
 
         // 3d camera
-        Camera cam = Camera(90.0f);
-        cam.SetPosition(glm::vec3(0, 0, -2));
+        // Camera cam = Camera(90.0f);
+        // cam.SetPosition(glm::vec3(0, 0, -2));
 
-        modelMat = cam.GetViewProjection() * modelMat;
+        // modelMat = cam.GetViewProjection() * modelMat;
 
-        int location = glGetUniformLocation(shader.GetRendererId(), "u_modelMat");
-        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(modelMat));
+        // int location = glGetUniformLocation(shader.GetRendererId(), "u_modelMat");
+        // glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(modelMat));
     }
 
     void GLGraphics::Render()
     {
         this->RenderBegin();
 
-            shader.Bind();
+            // shader.Bind();
 
-            if(m_mesh) m_mesh->Render();
+            // if(m_mesh) m_mesh->Render();
 
         this->RenderEnd();
     }
