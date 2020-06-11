@@ -9,6 +9,7 @@ SET(GLEW_SEARCH_PATHS
 	/opt/csw # Blastwave
 	/opt
 	${GLEW_PATH}
+	$ENV{GLEWDIR}
 )
 
 FIND_PATH(GLEW_INCLUDE_DIRS GL/glew.h
@@ -19,12 +20,14 @@ FIND_PATH(GLEW_INCLUDE_DIRS GL/glew.h
 )
 
 FIND_LIBRARY(GLEW_LIBRARIES
-    NAMES glew32 glew32s
+    NAMES GLEW glew32 glew32s
     HINT
     $ENV{GLEWDIR}
     PATH_SUFFIXES lib
     PATHS ${GLEW_SEARCH_PATHS}
 )
+
+message("include: ${GLEW_INCLUDE_DIRS}\nlibs: ${GLEW_LIBRARIES}")
 
 INCLUDE(FindPackageHandleStandardArgs)
 
