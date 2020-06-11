@@ -32,6 +32,8 @@ BakaApplication::BakaApplication()
 
 bool BakaApplication::Init()
 {
+    baka_log_init();
+    
     running = false;
     bakalog("--==== Start of application ====--");
     
