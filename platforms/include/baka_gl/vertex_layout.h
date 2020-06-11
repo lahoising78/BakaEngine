@@ -11,7 +11,7 @@ namespace gl
 
     typedef struct
     {
-        uint32_t    count;
+        size_t      count;
         int         type;
         int         normalize;
     } VertexAttributeElement;
@@ -22,7 +22,7 @@ namespace gl
         VertexLayout();
         void AddAttribute(VertexAttributeElement attr);
 
-        uint32_t GetCount() { return attributes.size(); }
+        size_t GetCount() { return attributes.size(); }
         const std::vector<VertexAttributeElement> &GetAttributes() { return attributes; }
         int GetStride() { return stride; }
 

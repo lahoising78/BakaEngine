@@ -70,7 +70,7 @@ void BakaApplication::Run()
         frameCounter++;
 
         auto tEnd = std::chrono::high_resolution_clock::now();
-        float fpsTimer = std::chrono::duration<double, std::milli>(tEnd - lastTimestamp).count();
+        double fpsTimer = std::chrono::duration<double, std::milli>(tEnd - lastTimestamp).count();
 
         if (fpsTimer > 1000.0f)
 		{
