@@ -66,6 +66,11 @@ endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/include")
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
+# make important directories be retrievable from code
+add_compile_definitions(BAKA_WORKSPACE_PATH="${CMAKE_SOURCE_DIR}")
+add_compile_definitions(BAKA_ENGINE_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
+add_compile_definitions(BAKA_EXECUTABLE_PATH="${CMAKE_BINARY_DIR}")
+
 # Copy the shaders to get a good filepath thing from engine
 file(
     GLOB shaders

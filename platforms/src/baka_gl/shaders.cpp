@@ -11,6 +11,9 @@ namespace baka
     {
         unsigned int Shader::Create(const char *vertSource, const char *fragSource)
         {
+            BAKA_ASSERT(vertSource);
+            BAKA_ASSERT(fragSource);
+
             unsigned int renderer_program_id = glCreateProgram();
             unsigned int vert = this->CompileShader(GL_VERTEX_SHADER, vertSource);
             unsigned int frag = this->CompileShader(GL_FRAGMENT_SHADER, fragSource);
@@ -34,6 +37,8 @@ namespace baka
 
         unsigned int Shader::CompileShader(unsigned int shaderType, const char *source)
         {
+            BAKA_ASSERT(source);
+
             unsigned int id = glCreateShader(shaderType);
             glShaderSource(id, 1, &source, nullptr);
             glCompileShader(id);

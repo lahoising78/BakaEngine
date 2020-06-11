@@ -13,8 +13,6 @@ namespace baka
 
     class Utils
     {
-    public:
-        static std::string ReadFile(const char *filepath);
     };
 } // namespace baka
 
