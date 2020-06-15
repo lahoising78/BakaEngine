@@ -23,7 +23,7 @@ FIND_LIBRARY(GLEW_LIBRARIES
     NAMES GLEW glew32 glew32s
     HINT
     $ENV{GLEWDIR}
-    PATH_SUFFIXES lib
+    PATH_SUFFIXES lib lib/Release/x64 lib/Release/Win32
     PATHS ${GLEW_SEARCH_PATHS}
 )
 

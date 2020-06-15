@@ -87,7 +87,7 @@ if sdl2_dir == '':
     sdl_dir_start = cmake_cache.find(sdl2_dir_path_start)
     sdl2_dir_end = cmake_cache.find('\n', sdl_dir_start)
     sdl2_dir = cmake_cache[sdl_dir_start + len(sdl2_dir_path_start): sdl2_dir_end]
-    print('sdl2 path:', sdl2_dir)
+    # print('sdl2 path:', sdl2_dir)
 
 # ==================== GLEW CMAKE CACHE ============================
 if glew_dir == '':
@@ -95,13 +95,15 @@ if glew_dir == '':
     glew_dir_start = cmake_cache.find(glew_dir_path_start)
     glew_dir_end = cmake_cache.find('\n', glew_dir_start)
     glew_dir = cmake_cache[ glew_dir_start + len(glew_dir_path_start) : glew_dir_end ]
-    print( 'glew dir:', glew_dir )
+    # print( 'glew dir:', glew_dir )
 
 # ===================== COPY SDL2 DLLs =========================
 if sdl2_dir != '':
     if sdl2_dir[-1] == '/' or sdl2_dir[-1] == '\\':
         sdl2_dir = sdl2_dir[:-1]
+    
     sdl2_dir.replace("/", "\\")
+    print("sdl2 dir: " + sdl2_dir)
     
     possible_lib_paths = [ "lib\\" ]
 
@@ -166,19 +168,36 @@ if sdl2_dir != '':
 if glew_dir != '':
     if glew_dir[-1] == '/' or glew_dir[-1] == '\\':
         glew_dir = glew_dir[:-1]
+    
     glew_dir.replace("/", "\\")
-
     print()
-    glew_dll_name='glew32.dll'
-    glew_dll_path = glew_dir + "\\bin\\" + glew_dll_name
-    if not os.path.exists(glew_dll_path):
-        print('unable to find glew32.dll at specified location:', glew_dll_path)
-        sys.exit(0)
+    print("glew dir: " + glew_dir)
 
-    src = glew_dll_path
-    for build in build_types:
-        p = build_dir + '\\' + build
-        if os.path.exists(p):
-            dst = p + '\\' + glew_dll_name
-            print('copying ' + src + ' to ' + dst)
-            copyfile(src, dst)
+    glew_dll_name='glew32.dll'
+    glew_dll_path = glew_dir + "\\bin"
+    glew_dll_possible_paths = ["", "\\Release\\x64", "\\Release\\Win32"]
+    
+    for i in range(len(glew_dll_possible_paths)):
+        glew_dll_possible_paths[i] = glew_dll_path + glew_dll_possible_paths[i] + "\\" + glew_dll_name
+
+    dll_copied = False
+    for glew_dll_path in glew_dll_possible_paths:
+        if not os.path.exists(glew_dll_path):
+            continue
+
+        src = glew_dll_path
+        for build in build_types:
+            p = build_dir + '\\' + build
+            if os.path.exists(p):
+                dst = p + '\\' + glew_dll_name
+                print('copying ' + src + ' to ' + dst)
+                copyfile(src, dst)
+                dll_copied = True
+
+        if dll_copied:
+            break
+
+    if not dll_copied:
+        print('unable to find glew32.dll at specified locations:')
+        for p in glew_dll_possible_paths:
+            print(p)
