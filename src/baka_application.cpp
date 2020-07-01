@@ -9,12 +9,14 @@
 #include "baka_input.h"
 #include "baka_logger.h"
 #include "baka_application.h"
+#include "baka_time.h"
 
 namespace baka
 {
 
 baka::Graphics *graphics = nullptr;
 baka::Input *input = nullptr;
+baka::Time *g_time = nullptr;
 
 BakaApplication::BakaApplication()
     : running(false), app_config({})
@@ -27,6 +29,7 @@ BakaApplication::BakaApplication()
     app_config.window_config.api_flags = GraphicAPIBits::BAKA_GAPI_OPENGL;
 
     input = &Input::Get();
+    g_time = &Time::Get();
     // app_config.input_config.num_keys = 512;
 }
 
@@ -53,12 +56,15 @@ void BakaApplication::Start()
 
 void BakaApplication::Run()
 {
-    std::chrono::high_resolution_clock::time_point lastTimestamp = std::chrono::high_resolution_clock::now();   
-    uint32_t frameCounter = 0;
+    // std::chrono::high_resolution_clock::time_point lastTimestamp = std::chrono::high_resolution_clock::now();   
+    // uint32_t frameCounter = 0;
+    g_time->game_start_time.Start();
 
     bakalog("--==== Update of application ====--");
     while(running)
     {
+        g_time->FrameStart();
+
         input->Update();
 
         if( input->QuitRequested() || input->IsKeyPressed(SDL_SCANCODE_ESCAPE) )
@@ -69,17 +75,18 @@ void BakaApplication::Run()
         this->Update();
         graphics->Render();
 
-        frameCounter++;
+        g_time->FrameEnd();
+        // frameCounter++;
 
-        auto tEnd = std::chrono::high_resolution_clock::now();
-        double fpsTimer = std::chrono::duration<double, std::milli>(tEnd - lastTimestamp).count();
+        // auto tEnd = std::chrono::high_resolution_clock::now();
+        // double fpsTimer = std::chrono::duration<double, std::milli>(tEnd - lastTimestamp).count();
 
-        if (fpsTimer > 1000.0f)
-		{
-			bakalog("fps: %f", (float)frameCounter * (1000.0f / fpsTimer));
-			frameCounter = 0;
-			lastTimestamp = tEnd;
-		}
+        // if (fpsTimer > 1000.0f)
+		// {
+		// 	bakalog("fps: %f", (float)frameCounter * (1000.0f / fpsTimer));
+		// 	frameCounter = 0;
+		// 	lastTimestamp = tEnd;
+		// }
     }
 }
 
