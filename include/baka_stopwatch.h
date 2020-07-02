@@ -6,14 +6,14 @@
 namespace baka
 {
 
-typedef std::chrono::seconds sec;
-typedef std::chrono::milliseconds millisec;
-typedef std::chrono::microseconds microsec;
-typedef std::chrono::duration<int64_t, std::ratio<60L,1L>> minute;
-typedef std::chrono::duration<int64_t, std::ratio<3600L,1L>> hour;
-typedef std::chrono::duration<int64_t, std::ratio<60L * 60L * 24L, 1L>> day;
-typedef std::chrono::duration<int64_t, std::ratio<60L * 60L * 24L * 7L, 1L>> week;
-typedef std::chrono::duration<int64_t, std::ratio<60L * 60L * 24L * 365L, 1L>> year;
+typedef std::micro microsec;
+typedef std::milli millisec;
+typedef std::ratio<1L,1L> sec;
+typedef std::ratio<60L,1L> minute;
+typedef std::ratio<3600L,1L> hour;
+typedef std::ratio<60L * 60L * 24L, 1L> day;
+typedef std::ratio<60L * 60L * 24L * 7L, 1L> week;
+typedef std::ratio<60L * 60L * 24L * 365L, 1L> year;
     
 class Stopwatch
 {
@@ -22,7 +22,7 @@ public:
     
     void Start();
 
-    template<typename TimeDataType = float, typename TimeUnits = std::ratio<1L,1L>>
+    template<typename TimeDataType = float, typename TimeUnits = sec>
     TimeDataType GetTime();
 
 private:

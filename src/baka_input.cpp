@@ -14,24 +14,18 @@ namespace baka
         this->input_events.keyboard_curr_side = this->input_events.keyboard_state;
         this->input_events.keyboard_prev_side = this->input_events.keyboard_state + BAKA_KEYCODES_NUM;
 
-        memset(this->input_events.mouse_button_state, 0, sizeof(uint8_t) * BAKA_MOUSE_BUTTON_NUM * 2);
-        this->input_events.mouse_button_curr_side = this->input_events.mouse_button_state;
-        this->input_events.mouse_button_prev_side = this->input_events.mouse_button_state + BAKA_MOUSE_BUTTON_NUM;
+        this->input_events.mouse_buttons = ButtonState();
         SDL_StartTextInput();
     }
 
     void Input::Update()
     {
-        // memcpy(this->input_events.prev_keyboard_events, this->input_events.keyboard_events, sizeof(uint8_t) * this->input_events.num_keys);
-        
         memcpy( this->input_events.keyboard_prev_side, 
                 this->input_events.keyboard_curr_side, 
                 sizeof(uint8_t) * BAKA_KEYCODES_NUM);
-        memcpy( this->input_events.mouse_button_prev_side, 
-                this->input_events.mouse_button_curr_side,
-                sizeof(uint8_t) * BAKA_MOUSE_BUTTON_NUM);
         this->input_events.quit_event = {};
         this->input_events.text_event = {};
+        this->input_events.mouse_buttons.NextState();
 
         SDL_Event e = {};
 
@@ -53,8 +47,11 @@ namespace baka
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                this->input_events.mouse_buttons.current_button_states |= 1 << e.button.button;
+                break;
+                
             case SDL_MOUSEBUTTONUP:
-                this->input_events.mouse_button_curr_side[ e.button.button ] = e.button.state;
+                this->input_events.mouse_buttons.current_button_states &= ~(1 << e.button.button);
                 break;
             
             default:
@@ -62,6 +59,7 @@ namespace baka
             }
         }
 
+        this->input_events.mouse_buttons.DetectButtonUpDownEvents();
     }
 
     bool Input::IsKeyPressed(BakaKeycode key)
@@ -97,27 +95,23 @@ namespace baka
     bool Input::IsMouseButtonPressed(BakaMouseButton mouseButton)
     {
         BAKA_ASSERT(mouseButton < BAKA_MOUSE_BUTTON_NUM);
-        return this->input_events.mouse_button_curr_side[mouseButton];
+        return this->input_events.mouse_buttons.current_button_states & (1 << mouseButton);
     }
 
     bool Input::MouseButtonJustPressed(BakaMouseButton mouseButton)
     {
         BAKA_ASSERT(mouseButton < BAKA_MOUSE_BUTTON_NUM);
-        return  this->input_events.mouse_button_curr_side[ mouseButton ] &&
-                !this->input_events.mouse_button_prev_side[ mouseButton ];
+        return this->input_events.mouse_buttons.button_downs & (1 << mouseButton);
     }
 
     bool Input::MouseButtonJustReleased(BakaMouseButton mouseButton)
     {
         BAKA_ASSERT(mouseButton < BAKA_MOUSE_BUTTON_NUM);
-        return  !this->input_events.mouse_button_curr_side[ mouseButton ] &&
-                this->input_events.mouse_button_prev_side[ mouseButton ];
+        return this->input_events.mouse_buttons.button_ups & (1 << mouseButton);
     }
 
     void Input::Close()
     {
-        // if(this->input_events.prev_keyboard_events)
-        //     delete this->input_events.prev_keyboard_events;
         SDL_StopTextInput();
     }
 }

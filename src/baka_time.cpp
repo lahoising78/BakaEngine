@@ -25,7 +25,7 @@ void Time::FrameEnd()
         by debugging or something like that, so assume an ideal frame time instead */
     if(delta_time > 1000.0f) delta_time = 1.0f / 60.0f;
 
-    bakalog("frame time: %fms", delta_time);
+    // bakalog("frame time: %fms", delta_time);
 }
 
 

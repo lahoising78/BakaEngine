@@ -17,7 +17,7 @@ public:
      */
     float GetDeltaTime() { return delta_time; }
     
-    template<typename TimeDataType = int64_t, typename TimeUnit = std::milli> 
+    template<typename TimeDataType = int64_t, typename TimeUnit = millisec> 
     TimeDataType GetTime() { return game_start_time.GetTime<TimeDataType,TimeUnit>(); }
 
     static Time &Get()
