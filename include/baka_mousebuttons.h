@@ -14,6 +14,11 @@ typedef int BakaMouseButton;
 #define BAKA_MOUSE_BUTTON_X2       5
 #define BAKA_MOUSE_BUTTON_NUM      8
 
+inline uint32_t MouseButtonBit( uint32_t button )
+{
+    return (1 << button);
+}
+
 } // namespace baka
 
 #endif

@@ -17,14 +17,11 @@ void ButtonState::DetectButtonUpDownEvents()
     uint32_t buttonChanges = current_button_states ^ previous_button_states;
     button_downs = buttonChanges & current_button_states;
     button_ups = buttonChanges & (~current_button_states);
-    // bakalog("downs: %u", button_downs);
-    // bakalog("ups: %u", button_ups);
 }
 
 void ButtonState::NextState()
 {
     previous_button_states = current_button_states;
-
 }
 
 } // namespace baka

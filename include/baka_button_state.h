@@ -16,6 +16,15 @@ friend class Input;
 public:
     ButtonState();
     void DetectButtonUpDownEvents();
+    inline void TurnBitsOn(uint32_t bits)
+    {
+        this->current_button_states |= bits;
+    }
+
+    inline void TurnBitsOff(uint32_t bits)
+    {
+        this->current_button_states &= ~bits;
+    }
 
 protected:
     void NextState();

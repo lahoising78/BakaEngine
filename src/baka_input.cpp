@@ -16,6 +16,18 @@ namespace baka
 
         this->input_events.mouse_buttons = ButtonState();
         SDL_StartTextInput();
+
+        this->input_events.game_controller_num = (uint32_t)SDL_NumJoysticks();
+        this->input_events.game_controllers = (GameController*)malloc(sizeof(GameController) * this->input_events.game_controller_num);
+        if(this->input_events.game_controllers)
+        {
+            for(uint32_t i = 0; i < this->input_events.game_controller_num; i++)
+            {
+                GameController *control = &this->input_events.game_controllers[i];
+                *control = GameController();
+                control->Open(i);
+            }
+        }
     }
 
     void Input::Update()
@@ -47,11 +59,11 @@ namespace baka
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                this->input_events.mouse_buttons.current_button_states |= 1 << e.button.button;
+                this->input_events.mouse_buttons.TurnBitsOn(MouseButtonBit(e.button.button));
                 break;
                 
             case SDL_MOUSEBUTTONUP:
-                this->input_events.mouse_buttons.current_button_states &= ~(1 << e.button.button);
+                this->input_events.mouse_buttons.TurnBitsOff(MouseButtonBit(e.button.button));
                 break;
             
             default:
@@ -113,5 +125,18 @@ namespace baka
     void Input::Close()
     {
         SDL_StopTextInput();
+
+        if(this->input_events.game_controllers)
+        {
+
+            for(uint32_t i = 0; i < this->input_events.game_controller_num; i++)
+            {
+                this->input_events.game_controllers[i].Close();
+            }
+
+            free(this->input_events.game_controllers);
+            this->input_events.game_controllers = nullptr;
+            this->input_events.game_controller_num = 0;
+        }
     }
 }

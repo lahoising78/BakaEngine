@@ -5,6 +5,7 @@
 #include "baka_keycodes.h"
 #include "baka_mousebuttons.h"
 #include "baka_button_state.h"
+#include <baka_game_controller.h>
 
 namespace baka
 {
@@ -15,6 +16,9 @@ typedef struct
     uint8_t             *keyboard_prev_side;
 
     ButtonState         mouse_buttons;
+
+    GameController      *game_controllers;
+    uint32_t            game_controller_num;
 
     SDL_QuitEvent       quit_event;
 
