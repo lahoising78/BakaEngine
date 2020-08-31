@@ -32,13 +32,9 @@ namespace baka
         const int width = this->window_config.width;
         const int height = this->window_config.height;
         
-        // if( this->application->vk_graphics )
-        // {
-        //     windowFlags |= SDL_WINDOW_VULKAN;
-        // }
-
-        if( this->window_config.api_flags & GraphicAPIBits::BAKA_GAPI_OPENGL )
+        switch (this->window_config.graphics_api)
         {
+        case GraphicsAPI::BAKA_GAPI_OPENGL:
             windowFlags |= SDL_WINDOW_OPENGL;
 
             /* set open gl version */
@@ -49,6 +45,10 @@ namespace baka
             /* enable double buffering with 24bit depth buffer */
             SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
             SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+            break;
+        
+        default:
+            break;
         }
 
         this->window = SDL_CreateWindow(
@@ -58,16 +58,16 @@ namespace baka
             windowFlags
         );
 
-        if(this->window_config.api_flags & GraphicAPIBits::BAKA_GAPI_OPENGL)
+        switch (this->window_config.graphics_api)
         {
+        case GraphicsAPI::BAKA_GAPI_OPENGL:
             gl_graphics = &GLGraphics::Get();
             gl_graphics->Init();
+            break;
+        
+        default:
+            break;
         }
-
-        // if(this->application->vk_graphics)
-        // {
-        //     this->application->vk_graphics->Init();
-        // }
     }
 
     void Graphics::Close()

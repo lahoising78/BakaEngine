@@ -18,12 +18,14 @@ class BakaApplication
 public:
     BakaApplication();
     ~BakaApplication();
-    void Start();
+    void Run();
 
 private:
     bool Init();
-    void Run();
+    void Loop();
+
     virtual void Update() = 0;
+    virtual void Start() = 0;
 
 protected:
     BakaAppConfig app_config;

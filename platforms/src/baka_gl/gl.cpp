@@ -10,9 +10,26 @@
 #include <baka_graphics.h>
 #include <baka_gl/gl.h>
 
+#include <baka_gl/shaders.h>
+#include <baka_buffer.h>
+#include <baka_path_explorer.h>
+
 namespace baka
 {
     extern Graphics *graphics;
+    gl::Shader *defaultShader = nullptr;
+    VertexBuffer *vb = nullptr;
+    IndexBuffer *ib = nullptr;
+    unsigned int vertexArray, indexBuffer;
+
+    static GLenum AttribTypeToGLType(VertexAttributeType type)
+    {
+        switch (type)
+        {
+        case VertexAttributeType::ATTRIBUTE_FLOAT: return GL_FLOAT;
+        }
+        return 0;
+    }
 
     GLGraphics::GLGraphics()
     {
@@ -21,6 +38,11 @@ namespace baka
 
     GLGraphics::~GLGraphics()
     {
+        // meshes.clear();
+        if(vb) delete vb;
+        if(ib) delete ib;
+        if(defaultShader) delete defaultShader;
+
         SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
     }
@@ -50,11 +72,66 @@ namespace baka
         bakalog("gl graphics initialized. using version %s", glGetString(GL_VERSION));
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+        char folder[128];
+        char path[256];
+        char *vert = nullptr;
+        char *frag = nullptr;
+
+        baka::PathExplorer explorer = baka::PathExplorer::Get();
+        explorer.GetEngineDirectory(folder);
+
+        std::sprintf(path, "%s/shaders/default.vert", folder);
+        vert = explorer.ReadFile(path, nullptr);
+
+        std::sprintf(path, "%s/shaders/default.frag", folder);
+        frag = explorer.ReadFile(path, nullptr);
+
+        defaultShader = new gl::Shader();
+        defaultShader->Create(vert, frag);
+
+        if(vert) delete vert;
+        if(frag) delete frag;
+
+        glGenVertexArrays(1, &vertexArray);
+        glBindVertexArray(vertexArray);
+
+        float vertices[] = 
+        {
+            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+             0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f        
+        };
+        vb = VertexBuffer::Create(vertices, sizeof(vertices));
+
+        VertexBufferLayout layout = VertexBufferLayout({
+            { VertexAttributeType::ATTRIBUTE_FLOAT, 3 },
+            { VertexAttributeType::ATTRIBUTE_FLOAT, 4 }
+        });
+
+        int i = 0;
+        for(const auto &a : layout)
+        {
+            glEnableVertexAttribArray(i);
+            glVertexAttribPointer(i, a.count, AttribTypeToGLType(a.attribType), a.normalize? GL_TRUE : GL_FALSE, layout.GetStride(), (const void *)a.offset);
+            i++;
+        }
+
+        std::uint32_t indices[] = { 0, 1, 2 };
+        ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
     }
 
     void GLGraphics::Render()
     {
         this->RenderBegin();
+
+            defaultShader->Bind();
+            // for(auto &m : meshes)
+            // {
+            //     m.second->Render();
+            // }
+            glBindVertexArray(vertexArray);
+            glDrawElements(GL_TRIANGLES, ib->GetCount(), GL_UNSIGNED_INT, nullptr);
 
         this->RenderEnd();
     }

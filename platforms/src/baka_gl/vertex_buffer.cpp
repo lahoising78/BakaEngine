@@ -1,26 +1,33 @@
-#include <GL/glew.h>
+// #include <GL/glew.h>
 
-#include <baka_logger.h>
-#include "baka_gl/vertex_buffer.h"
-#include "baka_gl/utils.h"
+// #include <baka_gl/vertex_buffer.h>
 
-namespace baka
-{
-namespace gl
-{
+// namespace baka
+// {
+// namespace gl
+// {
+    
+//     VertexBuffer::VertexBuffer(const void *data, std::size_t size)
+//     {
+//         glGenBuffers(1, &this->bufferId);
+//         glBindBuffer(GL_ARRAY_BUFFER, this->bufferId);
+//         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+//     }
 
-void VertexBuffer::Create(unsigned long size, const void *data)
-{
-    bakalog("vertex buffer reserve %lu bytes", size);
-    GLCALL(glGenBuffers(1, &this->renderer_id));
-    GLCALL(glBindBuffer(GL_ARRAY_BUFFER, this->renderer_id));
-    GLCALL(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
-}
+//     VertexBuffer::~VertexBuffer()
+//     {
+//         glDeleteBuffers(1, &this->bufferId);
+//     }
 
-void VertexBuffer::Destroy()
-{
-    glDeleteBuffers(1, &this->renderer_id);
-}
+//     void VertexBuffer::Bind() const
+//     {
+//         glBindBuffer(GL_ARRAY_BUFFER, this->bufferId);
+//     }
 
-} // namespace gl
-} // namespace baka
+//     void VertexBuffer::Unbind() const
+//     {
+//         glBindBuffer(GL_ARRAY_BUFFER, 0);
+//     }
+
+// } // namespace gl
+// } // namespace baka

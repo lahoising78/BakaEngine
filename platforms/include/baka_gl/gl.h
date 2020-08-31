@@ -1,8 +1,10 @@
 #ifndef _BAKA_OPEN_GL_
 #define _BAKA_OPEN_GL_
 
-#include "baka_platform.h"
+#include <unordered_map>
+
 #include "baka_logger.h"
+#include "baka_platform.h"
 
 struct SDL_Window;
 typedef void *SDL_GLContext;
@@ -27,6 +29,8 @@ public:
         static GLGraphics glGraphics = GLGraphics();
         return glGraphics;
     }
+
+    // std::unordered_map<std::string,gl::Mesh*> meshes;
 
 private:
     virtual void RenderBegin();

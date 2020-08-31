@@ -1,24 +1,17 @@
-#ifndef _BAKA_GL_VERTEX_BUFFER_H_
-#define _BAKA_GL_VERTEX_BUFFER_H_
+#ifndef _GL_VERTEX_BUFFER_H_
+#define _GL_VERTEX_BUFFER_H_
 
-namespace baka
-{
-namespace gl
-{
+// #include <baka_vertex_buffer.h>
 
-class VertexBuffer
-{
-public:
-    void Create(unsigned long size, const void *data);
-    void Destroy();
-    unsigned int GetRendererId() { return renderer_id; }
+// namespace baka
+// {
+// namespace gl
+// {
+    
 
-private:
-    unsigned int renderer_id;
-};
-
-} // namespace gl
-} // namespace baka
+    
+// } // namespace gl
+// } // namespace baka
 
 
 #endif

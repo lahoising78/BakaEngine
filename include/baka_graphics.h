@@ -7,20 +7,18 @@
 #define BAKA_WINDOW_NAME_MAX_LENGTH 256
 
 namespace baka{
-    typedef uint32_t GraphicsAPI;
-
     typedef enum
     {
         BAKA_GAPI_NONE    = 0,
         BAKA_GAPI_VULKAN  = 1,
         BAKA_GAPI_OPENGL  = 2
-    } GraphicAPIBits;
+    } GraphicsAPI;
     
     typedef struct
     {
         int width, height;
         char name[BAKA_WINDOW_NAME_MAX_LENGTH];
-        GraphicsAPI api_flags;
+        GraphicsAPI graphics_api;
     } WindowConfig;
 
     class Graphics
@@ -44,6 +42,8 @@ namespace baka{
         // static void SetWindowHeight(int);
         const char * const GetWindowName();
         // static void SetWindowName(const char *);
+
+        baka::GraphicsAPI GetEnabledAPI() { return this->window_config.graphics_api; }
 
         static Graphics &Get()
         {

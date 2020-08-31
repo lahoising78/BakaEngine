@@ -26,7 +26,7 @@ BakaApplication::BakaApplication()
     app_config.window_config.width = 800;
     app_config.window_config.height = 600;
     snprintf(app_config.window_config.name, BAKA_WINDOW_NAME_MAX_LENGTH, "Baka Engine");
-    app_config.window_config.api_flags = GraphicAPIBits::BAKA_GAPI_OPENGL;
+    app_config.window_config.graphics_api = GraphicsAPI::BAKA_GAPI_OPENGL;
 
     input = &Input::Get();
     g_time = &Time::Get();
@@ -48,17 +48,19 @@ bool BakaApplication::Init()
     return running;
 }
 
-void BakaApplication::Start()
+void BakaApplication::Run()
 {
     this->Init();
-    this->Run();
+    this->Loop();
 }
 
-void BakaApplication::Run()
+void BakaApplication::Loop()
 {
     // std::chrono::high_resolution_clock::time_point lastTimestamp = std::chrono::high_resolution_clock::now();   
     // uint32_t frameCounter = 0;
     g_time->game_start_time.Start();
+
+    this->Start();
 
     bakalog("--==== Update of application ====--");
     while(running)
