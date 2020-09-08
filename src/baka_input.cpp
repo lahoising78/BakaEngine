@@ -38,6 +38,7 @@ namespace baka
         this->input_events.quit_event = {};
         this->input_events.text_event = {};
         this->input_events.mouse_buttons.NextState();
+        this->input_events.window_event = {};
 
         SDL_Event e = {};
 
@@ -65,6 +66,9 @@ namespace baka
             case SDL_MOUSEBUTTONUP:
                 this->input_events.mouse_buttons.TurnBitsOff(MouseButtonBit(e.button.button));
                 break;
+
+            case SDL_WINDOWEVENT:
+                if(e.window.event == SDL_WINDOWEVENT_RESIZED) this->input_events.window_event = e.window;
             
             default:
                 break;
@@ -120,6 +124,11 @@ namespace baka
     {
         BAKA_ASSERT(mouseButton < BAKA_MOUSE_BUTTON_NUM);
         return this->input_events.mouse_buttons.button_ups & (1 << mouseButton);
+    }
+
+    bool Input::WindowResizedThisFrame()
+    {
+        return this->input_events.window_event.event == SDL_WINDOWEVENT_RESIZED;
     }
 
     void Input::Close()

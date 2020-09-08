@@ -36,10 +36,8 @@ namespace baka{
         void Close();
 
         SDL_Window *GetWindow();
-        int GetWindowWidth();
-        // static void SetWindowWidth(int);
-        int GetWindowHeight();
-        // static void SetWindowHeight(int);
+        void GetWindowPosition(int *x, int *y);
+        void GetWindowSize(int *w, int *h);
         const char * const GetWindowName();
         // static void SetWindowName(const char *);
 

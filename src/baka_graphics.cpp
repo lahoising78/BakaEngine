@@ -27,7 +27,7 @@ namespace baka
 
     void Graphics::Setup()
     {
-        uint32_t windowFlags = 0;
+        uint32_t windowFlags = SDL_WINDOW_RESIZABLE;
         const char * const windowName = this->window_config.name;
         const int width = this->window_config.width;
         const int height = this->window_config.height;
@@ -99,25 +99,15 @@ namespace baka
         return this->window;
     }
 
-    int Graphics::GetWindowWidth()
+    void Graphics::GetWindowPosition(int *x, int *y)
     {
-        return this->window_config.width;
+        SDL_GetWindowPosition(this->window, x, y);
     }
 
-    // void Graphics::SetWindowWidth(int w)
-    // {
-    //     this->window_config.width = w;
-    // }
-
-    int Graphics::GetWindowHeight()
+    void Graphics::GetWindowSize(int *w, int *h)
     {
-        return this->window_config.height;
+        SDL_GetWindowSize(this->window, w, h);
     }
-
-    // void Graphics::SetWindowHeight(int h)
-    // {
-    //     this->window_config.height = h;
-    // }
 
     const char * const Graphics::GetWindowName()
     {

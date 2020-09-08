@@ -1,55 +1,93 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+#include <baka_input.h>
 #include "baka_camera.h"
 #include "baka_graphics.h"
 
 namespace baka
 {
     
-extern Graphics *graphics;
-
-OrthographicsCamera::OrthographicsCamera()
-    : CameraBase()
+Camera::Camera()
+    : position(glm::vec3()), rotation(glm::identity<glm::quat>()), 
+    view(glm::mat4(1.0f)), projection(glm::mat4(1.0f)), viewProjection(glm::mat4(1.0f)),
+    nearClip(0.1f), farClip(100.0f)
 {
-    this->rotation = 0.0f;
 
-    float width = (float)graphics->GetWindowWidth() / 2;
-    float height = (float)graphics->GetWindowHeight() / 2;
+}
 
-    this->projection = glm::ortho(-width, width, -height, height, -1.0f, 1.0f);
+Camera::Camera(CameraType camType, CameraInfo info, float nearClip, float farClip)
+    : position(glm::vec3()), rotation(glm::identity<glm::quat>())
+{
+    this->camType = camType;
+    this->info = info;
+    this->nearClip = nearClip;
+    this->farClip = farClip;
+    UpdateCameraSpace();
+}
 
+void Camera::SetPerspective(CameraInfo::Perspective perspectiveInfo, float nearClip, float farClip)
+{
+    static Graphics &graphics = Graphics::Get();
+    
+    camType = CameraType::PERSPECTIVE;
+    this->info.perspectiveInfo = perspectiveInfo;
+    this->nearClip = nearClip;
+    this->farClip = farClip;
+    
+    int w, h;
+    graphics.GetWindowSize(&w, &h);
+    projection = glm::perspective(perspectiveInfo.fov, (float)w / (float)h , nearClip, farClip);
     RecalculateMatrix();
 }
 
-void OrthographicsCamera::RecalculateMatrix()
+void Camera::SetOrtho(CameraInfo::Ortho orthoInfo, float nearClip, float farClip)
 {
-    this->view = 
-        glm::translate( identity_matrix, this->position ) *
-        glm::rotate( identity_matrix, glm::radians(this->rotation), glm::vec3(0, 0, 1));
+    float halfWidth =  orthoInfo.width / 2.0f;
+    float halfHeight = orthoInfo.height / 2.0f;
     
-    view = glm::inverse(view);
+    camType = CameraType::ORTHOGRAPHIC;
+    this->info.orthoInfo = orthoInfo;
+    this->nearClip = nearClip;
+    this->farClip = farClip;
 
-    this->view_projection = this->projection * this->view;
-}
-
-Camera::Camera(float fov, float farClip, float nearClip)
-    : CameraBase(), fov(fov), nearClip(nearClip), farClip(farClip)
-{
-    this->rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    projection = glm::ortho( -halfWidth, halfWidth, -halfHeight, halfHeight, nearClip, farClip );
     RecalculateMatrix();
 }
 
 void Camera::RecalculateMatrix()
 {
-    view = glm::translate(identity_matrix, this->position) * 
-        glm::yawPitchRoll(glm::radians(this->rotation.y), glm::radians(this->rotation.x), glm::radians(this->rotation.z));
+    view =  glm::translate(glm::mat4(1.0f), position)  *
+            glm::eulerAngleYXZ(glm::yaw(rotation), glm::pitch(rotation), glm::roll(rotation));
 
-    float w = graphics->GetWindowWidth();
-    float h = graphics->GetWindowHeight();
-    projection = glm::perspective(glm::radians(this->fov), w/h, this->nearClip, this->farClip);
+    glm::inverse(view);
+    viewProjection = projection * view;
+}
 
-    this->view_projection = this->projection * this->view;
+void Camera::Update()
+{
+    static Input &input = Input::Get();
+    if(input.WindowResizedThisFrame())
+    {
+        UpdateCameraSpace();
+    }
+}
+
+void Camera::UpdateCameraSpace()
+{
+    switch (camType)
+    {
+    case CameraType::ORTHOGRAPHIC:
+        SetOrtho(info.orthoInfo, nearClip, farClip);
+        break;
+    
+    case CameraType::PERSPECTIVE:
+        SetPerspective(info.perspectiveInfo, nearClip, farClip);
+        break;
+    
+    default:
+        break;
+    }
 }
 
 } // namespace baka

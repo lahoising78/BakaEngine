@@ -51,6 +51,8 @@ bool BakaApplication::Init()
 void BakaApplication::Run()
 {
     this->Init();
+    g_time->game_start_time.Start();
+    this->Start();
     this->Loop();
 }
 
@@ -58,9 +60,6 @@ void BakaApplication::Loop()
 {
     // std::chrono::high_resolution_clock::time_point lastTimestamp = std::chrono::high_resolution_clock::now();   
     // uint32_t frameCounter = 0;
-    g_time->game_start_time.Start();
-
-    this->Start();
 
     bakalog("--==== Update of application ====--");
     while(running)
