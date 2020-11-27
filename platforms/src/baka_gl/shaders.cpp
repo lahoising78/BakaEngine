@@ -31,8 +31,14 @@ namespace baka
             this->renderer_program_id = renderer_program_id;
         }
 
+        Shader::~Shader()
+        {
+            this->Destroy();
+        }
+
         void Shader::Destroy()
         {
+            bakalog("destroy shader");
             glDeleteProgram(this->renderer_program_id);
         }
 

@@ -7,9 +7,9 @@ namespace baka
     {
     public:
         static Shader *Create(const char *vertSrc, const char *fragSrc);
-        ~Shader();
+        virtual ~Shader() {}
         virtual void Bind() = 0;
-        virtual void Destroy();
+        virtual void Destroy() = 0;
     };
 } // namespace baka
 

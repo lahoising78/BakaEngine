@@ -11,6 +11,7 @@ namespace baka
         {
         public:
             Shader(const char *vertSrc, const char *fragSource);
+            ~Shader();
             void Destroy() override;
             void Bind() override;
 

@@ -4,11 +4,6 @@
 
 namespace baka
 {
-    Shader::~Shader()
-    {
-        this->Destroy();
-    }
-
     Shader *Shader::Create(const char *vertSrc, const char *fragSrc)
     {
         static Graphics &graphics = Graphics::Get();
@@ -17,10 +12,5 @@ namespace baka
         case GraphicsAPI::BAKA_GAPI_OPENGL: return new gl::Shader(vertSrc, fragSrc);
         default: return nullptr;
         }
-    }
-
-    void Shader::Destroy()
-    {
-        
     }
 } // namespace baka
