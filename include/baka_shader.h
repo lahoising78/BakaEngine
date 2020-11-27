@@ -14,6 +14,7 @@ namespace baka
 
     public:
         static Shader *Create(const char *vertSrc, const char *fragSrc);
+        static Shader *Load(const char *vertPath, const char *fragPath);
         
         virtual ~Shader() {}
         virtual void Bind() = 0;

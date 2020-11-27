@@ -83,16 +83,10 @@ namespace baka
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        char *vert = nullptr;
-        char *frag = nullptr;
-
-        baka::PathExplorer explorer = baka::PathExplorer::Get();
-        vert = explorer.ReadFile("resources/shaders/default.vert", nullptr);
-        frag = explorer.ReadFile("resources/shaders/default.frag", nullptr);
-        defaultShader = Shader::Create(vert, frag);
-
-        if(vert) delete vert;
-        if(frag) delete frag;
+        defaultShader = Shader::Load(
+            "./resources/shaders/default.vert",
+            "./resources/shaders/default.frag"
+        );
 
         float vertices[] = 
         {
