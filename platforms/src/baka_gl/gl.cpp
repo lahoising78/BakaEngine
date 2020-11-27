@@ -83,20 +83,12 @@ namespace baka
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        char folder[128];
-        char path[256];
         char *vert = nullptr;
         char *frag = nullptr;
 
         baka::PathExplorer explorer = baka::PathExplorer::Get();
-        explorer.GetEngineDirectory(folder);
-
-        std::sprintf(path, "%s/shaders/default.vert", folder);
-        vert = explorer.ReadFile(path, nullptr);
-
-        std::sprintf(path, "%s/shaders/default.frag", folder);
-        frag = explorer.ReadFile(path, nullptr);
-
+        vert = explorer.ReadFile("resources/shaders/default.vert", nullptr);
+        frag = explorer.ReadFile("resources/shaders/default.frag", nullptr);
         defaultShader = Shader::Create(vert, frag);
 
         if(vert) delete vert;
@@ -139,9 +131,6 @@ namespace baka
         this->RenderBegin();
 
             defaultShader->Bind();
-            // GLint location = glGetUniformLocation(((gl::Shader*)defaultShader)->GetRendererId(), "proj");
-            // glm::mat4 proj = cam.GetViewProjection();
-            // glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj));
             defaultShader->SetUniform(
                 Shader::Type::MAT4X4,
                 "proj",

@@ -71,16 +71,7 @@ add_compile_definitions(BAKA_WORKSPACE_PATH="${CMAKE_SOURCE_DIR}")
 add_compile_definitions(BAKA_ENGINE_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
 add_compile_definitions(BAKA_EXECUTABLE_PATH="${CMAKE_BINARY_DIR}")
 
-# Copy the shaders to get a good filepath thing from engine
-file(
-    GLOB shaders
-    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*"
-)
-
-set( shader_outdir "${CMAKE_CURRENT_BINARY_DIR}/shaders" )
-foreach( f ${shaders} )
-    get_filename_component(filename ${f} NAME)
-    set(outfile "${shader_outdir}/${filename}")
-    message("copy ${filename} to ${outfile}")
-    configure_file(${f} ${outfile} COPYONLY)
-endforeach()
+# Copy default resources to build dir
+set(resources_dir "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+set(resources_output_dir "${CMAKE_BINARY_DIR}")
+file(COPY "${resources_dir}" DESTINATION "${resources_output_dir}")
