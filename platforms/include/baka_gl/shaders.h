@@ -1,6 +1,9 @@
 #ifndef _BAKA_GL_SHADERS_H_
 #define _BAKA_GL_SHADERS_H_
 
+#include <unordered_map>
+#include <GL/gl.h>
+
 #include <baka_shader.h>
 
 namespace baka
@@ -14,6 +17,7 @@ namespace baka
             ~Shader();
             void Destroy() override;
             void Bind() override;
+            void SetUniform(Shader::Type shaderType, const char *name, void *data) override;
 
             unsigned int GetRendererId() { return renderer_program_id; };
 
@@ -22,6 +26,7 @@ namespace baka
 
         private:
             unsigned int renderer_program_id;
+            std::unordered_map<const char *, GLint> varLocations;
         };
     }
 } // namespace baka

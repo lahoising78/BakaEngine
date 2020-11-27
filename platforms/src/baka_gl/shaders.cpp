@@ -70,5 +70,26 @@ namespace baka
         {
             glUseProgram(this->renderer_program_id);
         }
+
+        void Shader::SetUniform(Shader::Type shaderType, const char *name, void *data)
+        {
+            GLint location = 0;
+            if(this->varLocations.find(name) == this->varLocations.end())
+            {
+                bakalog("get location");
+                this->varLocations[name] = glGetUniformLocation(this->renderer_program_id, name);
+            }
+            location = this->varLocations[name];
+
+            switch (shaderType)
+            {
+            case Shader::Type::MAT4X4:
+                glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)data);
+                break;
+            
+            default:
+                break;
+            }
+        }
     }
 } // namespace baka

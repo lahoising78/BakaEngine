@@ -139,9 +139,14 @@ namespace baka
         this->RenderBegin();
 
             defaultShader->Bind();
-            GLint location = glGetUniformLocation(((gl::Shader*)defaultShader)->GetRendererId(), "proj");
-            glm::mat4 proj = cam.GetViewProjection();
-            glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj));
+            // GLint location = glGetUniformLocation(((gl::Shader*)defaultShader)->GetRendererId(), "proj");
+            // glm::mat4 proj = cam.GetViewProjection();
+            // glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj));
+            defaultShader->SetUniform(
+                Shader::Type::MAT4X4,
+                "proj",
+                (void*)glm::value_ptr(cam.GetViewProjection())
+            );
             mesh->Render();
 
         this->RenderEnd();
