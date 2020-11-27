@@ -58,8 +58,8 @@ void BakaApplication::Run()
 
 void BakaApplication::Loop()
 {
-    // std::chrono::high_resolution_clock::time_point lastTimestamp = std::chrono::high_resolution_clock::now();   
-    // uint32_t frameCounter = 0;
+    std::chrono::high_resolution_clock::time_point lastTimestamp = std::chrono::high_resolution_clock::now();   
+    uint32_t frameCounter = 0;
 
     bakalog("--==== Update of application ====--");
     while(running)
@@ -77,17 +77,16 @@ void BakaApplication::Loop()
         graphics->Render();
 
         g_time->FrameEnd();
-        // frameCounter++;
+        frameCounter++;
 
-        // auto tEnd = std::chrono::high_resolution_clock::now();
-        // double fpsTimer = std::chrono::duration<double, std::milli>(tEnd - lastTimestamp).count();
+        auto tEnd = std::chrono::high_resolution_clock::now();
+        double fpsTimer = std::chrono::duration<double, std::milli>(tEnd - lastTimestamp).count();
 
-        // if (fpsTimer > 1000.0f)
-		// {
-		// 	bakalog("fps: %f", (float)frameCounter * (1000.0f / fpsTimer));
-		// 	frameCounter = 0;
-		// 	lastTimestamp = tEnd;
-		// }
+        if (fpsTimer > 1000.0f)
+		{
+		    frameCounter = 0;
+			lastTimestamp = tEnd;
+		}
     }
 }
 

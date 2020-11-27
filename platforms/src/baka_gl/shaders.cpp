@@ -11,14 +11,14 @@ namespace baka
 {
     namespace gl
     {
-        unsigned int Shader::Create(const char *vertSource, const char *fragSource)
+        Shader::Shader(const char *vertSrc, const char *fragSrc)
         {
-            BAKA_ASSERT(vertSource);
-            BAKA_ASSERT(fragSource);
+            BAKA_ASSERT(vertSrc);
+            BAKA_ASSERT(fragSrc);
 
             unsigned int renderer_program_id = glCreateProgram();
-            unsigned int vert = this->CompileShader(GL_VERTEX_SHADER, vertSource);
-            unsigned int frag = this->CompileShader(GL_FRAGMENT_SHADER, fragSource);
+            unsigned int vert = this->CompileShader(GL_VERTEX_SHADER, vertSrc);
+            unsigned int frag = this->CompileShader(GL_FRAGMENT_SHADER, fragSrc);
 
             GLCALL(glAttachShader(renderer_program_id, vert));
             GLCALL(glAttachShader(renderer_program_id, frag));
@@ -29,7 +29,6 @@ namespace baka
             GLCALL(glDeleteShader(frag));
 
             this->renderer_program_id = renderer_program_id;
-            return renderer_program_id;
         }
 
         void Shader::Destroy()

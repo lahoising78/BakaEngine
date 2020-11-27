@@ -14,6 +14,7 @@
 #include <baka_graphics.h>
 #include <baka_gl/gl.h>
 
+#include <baka_shader.h>
 #include <baka_gl/shaders.h>
 #include <baka_buffer.h>
 #include <baka_mesh.h>
@@ -23,7 +24,7 @@
 namespace baka
 {
     extern Graphics *graphics;
-    gl::Shader *defaultShader = nullptr;
+    Shader *defaultShader = nullptr;
     Mesh *mesh = nullptr;
     Camera cam;
     // VertexBuffer *vb = nullptr;
@@ -96,8 +97,7 @@ namespace baka
         std::sprintf(path, "%s/shaders/default.frag", folder);
         frag = explorer.ReadFile(path, nullptr);
 
-        defaultShader = new gl::Shader();
-        defaultShader->Create(vert, frag);
+        defaultShader = Shader::Create(vert, frag);
 
         if(vert) delete vert;
         if(frag) delete frag;
@@ -139,7 +139,7 @@ namespace baka
         this->RenderBegin();
 
             defaultShader->Bind();
-            GLint location = glGetUniformLocation(defaultShader->GetRendererId(), "proj");
+            GLint location = glGetUniformLocation(((gl::Shader*)defaultShader)->GetRendererId(), "proj");
             glm::mat4 proj = cam.GetViewProjection();
             glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(proj));
             mesh->Render();

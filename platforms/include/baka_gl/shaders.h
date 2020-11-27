@@ -1,16 +1,18 @@
 #ifndef _BAKA_GL_SHADERS_H_
 #define _BAKA_GL_SHADERS_H_
 
+#include <baka_shader.h>
+
 namespace baka
 {
     namespace gl
     {
-        class Shader
+        class Shader : public baka::Shader
         {
         public:
-            unsigned int Create(const char *vertSource, const char *fragSource);
-            void Destroy();
-            void Bind();
+            Shader(const char *vertSrc, const char *fragSource);
+            void Destroy() override;
+            void Bind() override;
 
             unsigned int GetRendererId() { return renderer_program_id; };
 
