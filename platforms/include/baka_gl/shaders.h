@@ -2,6 +2,10 @@
 #define _BAKA_GL_SHADERS_H_
 
 #include <unordered_map>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
 #include <baka_shader.h>

@@ -84,8 +84,8 @@ namespace baka
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         defaultShader = Shader::Load(
-            "./resources/shaders/default.vert",
-            "./resources/shaders/default.frag"
+            BAKA_RESOURCES_DIR "/shaders/default.vert",
+            BAKA_RESOURCES_DIR "/shaders/default.frag"
         );
 
         float vertices[] = 

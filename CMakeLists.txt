@@ -2,6 +2,11 @@ project(Baka)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/modules/")
 
+# make important directories be retrievable from code
+add_compile_definitions(BAKA_WORKSPACE_PATH="${CMAKE_SOURCE_DIR}")
+add_compile_definitions(BAKA_ENGINE_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
+add_compile_definitions(BAKA_EXECUTABLE_PATH="${CMAKE_BINARY_DIR}")
+
 find_package(SDL2 REQUIRED)
 message("SDL2 includes: ${SDL2_INCLUDE_DIR}")
 
@@ -26,7 +31,7 @@ file(
 )
 
 add_library(
-    baka_engine
+    baka_engine STATIC
     "${baka_src}"
     "${baka_vk}"
     "${baka_gl}"
@@ -66,12 +71,56 @@ endif()
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/platforms/include")
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-# make important directories be retrievable from code
-add_compile_definitions(BAKA_WORKSPACE_PATH="${CMAKE_SOURCE_DIR}")
-add_compile_definitions(BAKA_ENGINE_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
-add_compile_definitions(BAKA_EXECUTABLE_PATH="${CMAKE_BINARY_DIR}")
+function(copy_dll target base_lib_path possible_paths possible_names)
+    foreach(possible_path ${possible_paths})
+        foreach(dll ${possible_names})
+            set(dll_file "${base_lib_path}/${possible_path}/${dll}")
+            message("try dll ${dll_file}")
+            if(EXISTS "${dll_file}")
+                add_custom_command(TARGET ${target} POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        "${dll_file}"
+                        "$<TARGET_FILE_DIR:${target}>")
+                break()
+            endif(EXISTS "${dll_file}")
+        endforeach(dll ${sdl2_dll_names})
+    endforeach(possible_path ${sdl2_dll_paths})
+endfunction()
+
+# copy SDL2.dll and glew32.dll if on msvc
+macro(baka_import_dlls target)
+    if( MSVC )
+        set(sdl2_possible_paths lib)
+        if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+            set(sdl2_possible_paths "${sdl2_possible_paths};lib64;lib/x64")
+        else()
+            set(sdl2_possible_paths "${sdl2_possible_paths};lib32;lib/x86")
+        endif()
+        copy_dll(
+            ${target}
+            "${SDL2_PATH}"
+            "${sdl2_possible_paths}"
+            "SDL2.dll"
+        )
+
+        set(glew_possible_paths .)
+        if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+            set(glew_possible_paths "${glew_possible_paths};Release/x64")
+        else()
+            set(glew_possible_paths "${glew_possible_paths};Release/Win32")
+        endif()
+        copy_dll(
+            ${target}
+            "${GLEW_PATH}/bin"
+            "${glew_possible_paths}"
+            "glew32.dll"
+        )
+    endif()
+endmacro()
 
 # Copy default resources to build dir
 set(resources_dir "${CMAKE_CURRENT_SOURCE_DIR}/resources")
-set(resources_output_dir "${CMAKE_BINARY_DIR}")
+set(resources_output_dir "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+add_compile_definitions(BAKA_RESOURCES_DIR="${resources_output_dir}resources")
+message("${resources_dir} -> ${resources_output_dir}")
 file(COPY "${resources_dir}" DESTINATION "${resources_output_dir}")

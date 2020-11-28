@@ -1,5 +1,9 @@
 #include <cstring>
 #include <cstdio>
+#ifdef WIN32
+#include <string>
+#include <algorithm>
+#endif
 
 #include <baka_logger.h>
 #include <baka_path_explorer.h>
@@ -9,7 +13,8 @@ namespace baka
     
 char *PathExplorer::ReadFile(const char *filepath, size_t *pFileLength)
 {
-    FILE *file = fopen(filepath, "r");
+    FILE *file = nullptr; //fopen(filepath, "r");
+    fopen_s(&file, filepath, "r");
     if(!file)
     {
         bakawarn("unable to open file %s", filepath);

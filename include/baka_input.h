@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include "baka_keycodes.h"
 #include "baka_mousebuttons.h"
