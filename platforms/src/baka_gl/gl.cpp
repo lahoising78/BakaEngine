@@ -6,30 +6,17 @@
 #include <SDL.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+// #include <glm/gtx/string_cast.hpp>
 
 #include <baka_logger.h>
 #include <baka_input.h>
 #include <baka_graphics.h>
 #include <baka_gl/gl.h>
-
-#include <baka_shader.h>
-#include <baka_gl/shaders.h>
-#include <baka_buffer.h>
-#include <baka_mesh.h>
-#include <baka_camera.h>
-#include <baka_path_explorer.h>
+#include <baka_vertex_buffer_layout.h>
 
 namespace baka
 {
     extern Graphics *graphics;
-    Shader *defaultShader = nullptr;
-    Mesh *mesh = nullptr;
-    Camera cam;
-    // VertexBuffer *vb = nullptr;
-    // IndexBuffer *ib = nullptr;
-    // unsigned int vertexArray;
 
     static GLenum AttribTypeToGLType(VertexAttributeType type)
     {
@@ -47,12 +34,6 @@ namespace baka
 
     GLGraphics::~GLGraphics()
     {
-        // meshes.clear();
-        // if(vb) delete vb;
-        // if(ib) delete ib;
-        if(mesh) delete mesh;
-        if(defaultShader) delete defaultShader;
-
         SDL_GL_DeleteContext(this->gl_context);
         bakalog("GLGraphics closed");
     }
@@ -82,35 +63,9 @@ namespace baka
         bakalog("gl graphics initialized. using version %s", glGetString(GL_VERSION));
 
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-
-        defaultShader = Shader::Load(
-            BAKA_RESOURCES_DIR "/shaders/default.vert",
-            BAKA_RESOURCES_DIR "/shaders/default.frag"
-        );
-
-        float vertices[] = 
-        {
-            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-             0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f        
-        };
-        VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
-
-        VertexBufferLayout layout = VertexBufferLayout({
-            { VertexAttributeType::ATTRIBUTE_FLOAT, 3 },
-            { VertexAttributeType::ATTRIBUTE_FLOAT, 4 }
-        });
-
-        std::uint32_t indices[] = { 0, 1, 2 };
-        IndexBuffer *ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
-
-        mesh = Mesh::Create(vb,layout, ib);
-
-        cam = Camera(CameraType::PERSPECTIVE, {45.0f});
-        cam.SetPosition(glm::vec3(0.0f, 0.0f, -1.0f));
     }
 
-    void GLGraphics::Render()
+    void GLGraphics::Render(  )
     {
         static Input &input = Input::Get();
         if(input.WindowResizedThisFrame()) 
@@ -121,23 +76,23 @@ namespace baka
             glViewport(0, 0, w, h);
         }
 
-        cam.Update();
         this->RenderBegin();
-
-            defaultShader->Bind();
-            defaultShader->SetUniform(
-                Shader::Type::MAT4X4,
-                "proj",
-                (void*)glm::value_ptr(cam.GetViewProjection())
-            );
-            mesh->Render();
-
+            
         this->RenderEnd();
     }
 
     void GLGraphics::RenderBegin()
     {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        static Input &input = Input::Get();
+        if(input.WindowResizedThisFrame()) 
+        {
+            int w = 0;
+            int h = 0;
+            graphics->GetWindowSize(&w, &h);
+            glViewport(0, 0, w, h);
+        }
     }
 
     void GLGraphics::RenderEnd()

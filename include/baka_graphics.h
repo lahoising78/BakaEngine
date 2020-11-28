@@ -33,6 +33,9 @@ namespace baka{
         bool Init(WindowConfig);
         bool IsInit();
         void Render();
+        void RenderBegin();
+        void RenderEnd();
+        void Update();
         void Close();
 
         SDL_Window *GetWindow();

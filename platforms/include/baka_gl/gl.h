@@ -22,7 +22,7 @@ public:
     GLGraphics();
     ~GLGraphics();
     virtual void Init();
-    virtual void Render();
+    virtual void Render( );
 
     static GLGraphics &Get()
     {
@@ -30,11 +30,11 @@ public:
         return glGraphics;
     }
 
-    // std::unordered_map<std::string,gl::Mesh*> meshes;
-
-private:
     virtual void RenderBegin();
     virtual void RenderEnd();
+    void Update() {};
+
+// private:
 
 private:
     SDL_GLContext gl_context;

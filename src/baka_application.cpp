@@ -74,7 +74,10 @@ void BakaApplication::Loop()
         }
 
         this->Update();
-        graphics->Render();
+
+        graphics->RenderBegin();
+            this->OnRender();
+        graphics->RenderEnd();
 
         g_time->FrameEnd();
         frameCounter++;

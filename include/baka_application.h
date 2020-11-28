@@ -26,6 +26,7 @@ private:
 
     virtual void Update() = 0;
     virtual void Start() = 0;
+    virtual void OnRender() = 0;
 
 protected:
     BakaAppConfig app_config;

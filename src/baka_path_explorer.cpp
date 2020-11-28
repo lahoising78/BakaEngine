@@ -10,7 +10,7 @@
 
 namespace baka
 {
-    
+
 char *PathExplorer::ReadFile(const char *filepath, size_t *pFileLength)
 {
     FILE *file = nullptr; //fopen(filepath, "r");
