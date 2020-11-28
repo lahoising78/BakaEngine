@@ -67,18 +67,7 @@ namespace baka
 
     void GLGraphics::Render(  )
     {
-        static Input &input = Input::Get();
-        if(input.WindowResizedThisFrame()) 
-        {
-            int w = 0;
-            int h = 0;
-            graphics->GetWindowSize(&w, &h);
-            glViewport(0, 0, w, h);
-        }
-
-        this->RenderBegin();
-            
-        this->RenderEnd();
+        
     }
 
     void GLGraphics::RenderBegin()

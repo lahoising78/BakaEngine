@@ -57,10 +57,17 @@ void Camera::SetOrtho(CameraInfo::Ortho orthoInfo, float nearClip, float farClip
 
 void Camera::RecalculateMatrix()
 {
-    view =  glm::translate(glm::mat4(1.0f), position)  *
-            glm::eulerAngleYXZ(glm::yaw(rotation), glm::pitch(rotation), glm::roll(rotation));
+    // view =  glm::yawPitchRoll(glm::yaw(rotation), glm::pitch(rotation), glm::roll(rotation)) *
+    //         glm::translate(glm::mat4(1.0f), position);
 
-    glm::inverse(view);
+    // glm::inverse(view);
+    glm::vec3 up = rotation * glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 fwd = rotation * glm::vec3(0.0f, 0.0f, 1.0f);
+    view = glm::lookAt(
+        position,
+        position + fwd,
+        up
+    );
     viewProjection = projection * view;
 }
 

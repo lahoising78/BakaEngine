@@ -35,7 +35,6 @@ namespace baka{
         void Render();
         void RenderBegin();
         void RenderEnd();
-        void Update();
         void Close();
 
         SDL_Window *GetWindow();

@@ -21,8 +21,6 @@ friend class Graphics;
 public:
     GLGraphics();
     ~GLGraphics();
-    virtual void Init();
-    virtual void Render( );
 
     static GLGraphics &Get()
     {
@@ -30,11 +28,11 @@ public:
         return glGraphics;
     }
 
+protected:
+    virtual void Init();
     virtual void RenderBegin();
+    virtual void Render( );
     virtual void RenderEnd();
-    void Update() {};
-
-// private:
 
 private:
     SDL_GLContext gl_context;

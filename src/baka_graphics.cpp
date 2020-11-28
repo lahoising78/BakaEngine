@@ -81,11 +81,6 @@ namespace baka
         SDL_Quit();
     }
 
-    void Graphics::Update()
-    {
-        if(gl_graphics) gl_graphics->Update();
-    }
-
     void Graphics::RenderBegin()
     {
         if(gl_graphics) gl_graphics->RenderBegin();
