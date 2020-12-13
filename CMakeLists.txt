@@ -41,6 +41,7 @@ target_include_directories(baka_engine PUBLIC ${SDL2_INCLUDE_DIR})
 target_link_libraries(baka_engine ${SDL2_LIBRARY})
 
 target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/glm")
+target_include_directories(baka_engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/baka_allocators")
 
 # VULKAN
 find_package(Vulkan)
