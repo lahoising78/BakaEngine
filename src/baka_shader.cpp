@@ -20,11 +20,11 @@ namespace baka
         }
     }
 
-    Shader *Shader::Load(const char *vertPath, const char *fragPath)
+    Shader *Shader::Load(const char *vertPath, const char *fragPath, ResourceType resourceType)
     {
         static PathExplorer explorer = PathExplorer::Get();
-        const char *vertSrc = explorer.ReadFile(vertPath, nullptr);
-        const char *fragSrc = explorer.ReadFile(fragPath, nullptr);
+        const char *vertSrc = explorer.ReadFile(vertPath, nullptr, resourceType);
+        const char *fragSrc = explorer.ReadFile(fragPath, nullptr, resourceType);
         Shader *shader = Shader::Create(vertSrc, fragSrc);
 
         if(vertSrc) delete vertSrc;

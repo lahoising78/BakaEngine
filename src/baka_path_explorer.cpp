@@ -8,13 +8,28 @@
 #include <baka_logger.h>
 #include <baka_path_explorer.h>
 
+#define PATH_BUFFER_SIZE 256
+
 namespace baka
 {
-
-char *PathExplorer::ReadFile(const char *filepath, size_t *pFileLength)
+char *PathExplorer::ReadFile(const char *filepath, size_t *pFileLength, ResourceType resourceType)
 {
-    FILE *file = nullptr; //fopen(filepath, "r");
-    fopen_s(&file, filepath, "r");
+    FILE *file = nullptr;
+    char path[ PATH_BUFFER_SIZE ];
+    const char *pathFormat = "%s/%s";
+    
+    switch (resourceType)
+    {
+    case ResourceType::ASSET:
+        snprintf(path, PATH_BUFFER_SIZE, pathFormat, BAKA_ASSETS_DIR, filepath);
+        break;
+    default:
+        strncpy(path, filepath, PATH_BUFFER_SIZE);
+        break;
+    }
+    
+    file = fopen(path, "r");
+    // fopen_s(&file, filepath, "r");
     if(!file)
     {
         bakawarn("unable to open file %s", filepath);
@@ -47,24 +62,5 @@ char *PathExplorer::ReadFile(const char *filepath, size_t *pFileLength)
     fclose(file);
     return content;
 }
-    
-void PathExplorer::GetExecutableDirectory(char *dst)
-{
-    strcpy(dst, BAKA_EXECUTABLE_PATH);
-    bakalog("current directory: %s", dst);
-}
-
-void PathExplorer::GetWorkspaceDirectory(char *dst)
-{
-    strcpy(dst, BAKA_WORKSPACE_PATH);
-    bakalog("workspace directory: %s", dst);
-}
-
-void PathExplorer::GetEngineDirectory(char *dst)
-{
-    strcpy(dst, BAKA_ENGINE_PATH);
-    bakalog("engine directory: %s", dst);
-}
-
 
 } // namespace baka

@@ -119,8 +119,8 @@ macro(baka_import_dlls target)
 endmacro()
 
 # Copy default resources to build dir
-set(resources_dir "${CMAKE_CURRENT_SOURCE_DIR}/resources")
-set(resources_output_dir "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-add_compile_definitions(BAKA_RESOURCES_DIR="${resources_output_dir}resources")
-message("${resources_dir} -> ${resources_output_dir}")
-file(COPY "${resources_dir}" DESTINATION "${resources_output_dir}")
+set(assets_dir "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+set(assets_output_dir "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+add_compile_definitions(BAKA_ASSETS_DIR="${assets_output_dir}assets")
+message("${assets_dir} -> ${assets_output_dir}")
+file(COPY "${assets_dir}" DESTINATION "${assets_output_dir}")

@@ -1,6 +1,8 @@
 #ifndef _BAKA_SHADER_H_
 #define _BAKA_SHADER_H_
 
+#include <baka_path_explorer.h>
+
 namespace baka
 {
     class Shader
@@ -14,7 +16,7 @@ namespace baka
 
     public:
         static Shader *Create(const char *vertSrc, const char *fragSrc);
-        static Shader *Load(const char *vertPath, const char *fragPath);
+        static Shader *Load(const char *vertPath, const char *fragPath, ResourceType resourceType = ResourceType::ASSET);
         
         virtual ~Shader() {}
         virtual void Bind() = 0;
