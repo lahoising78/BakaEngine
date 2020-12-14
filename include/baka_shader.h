@@ -11,6 +11,10 @@ namespace baka
         typedef enum
         {
             NONE = 0,
+            FLOAT,
+            FLOAT2,
+            FLOAT3,
+            FLOAT4,
             MAT4X4
         } Type;
 

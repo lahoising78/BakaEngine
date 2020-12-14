@@ -86,6 +86,10 @@ namespace baka
             case Shader::Type::MAT4X4:
                 glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)data);
                 break;
+
+            case Shader::Type::FLOAT4:
+                glUniform4fv(location, 1, (GLfloat*)data);
+                break;
             
             default:
                 break;

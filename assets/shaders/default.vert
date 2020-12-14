@@ -1,15 +1,10 @@
 #version 330 core
 
+uniform mat4 u_proj;
+uniform vec4 u_tint;
 layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec4 a_Color;
-uniform mat4 proj;
-
-// out vec3 v_Position;
-out vec4 v_Color;
 
 void main()
 {   
-    v_Color = a_Color;
-
-    gl_Position = proj * vec4(a_Position, 1.0f);
+    gl_Position = u_proj * vec4(a_Position, 1.0f);
 }
