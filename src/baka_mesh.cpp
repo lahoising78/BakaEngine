@@ -15,6 +15,7 @@ namespace baka
     static std::unordered_map<const char*,Mesh*> meshes;
     Mesh *CubePrimitive(VertexBufferLayout &layout);
     Mesh *SpherePrimitive(VertexBufferLayout &layout);
+    Mesh *PlanePrimitive(VertexBufferLayout &layout);
     
     Mesh *Mesh::Create(VertexBuffer *vertexBuffer, VertexBufferLayout &layout, IndexBuffer *indexBuffer)
     {
@@ -48,6 +49,10 @@ namespace baka
 
         case Primitive::SPHERE:
             ret = SpherePrimitive(defaultLayout);
+            break;
+
+        case Primitive::PLANE:
+            ret = PlanePrimitive(defaultLayout);
             break;
 
         default: return nullptr;
@@ -86,7 +91,7 @@ namespace baka
         };
 
         VertexBuffer *vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
-        IndexBuffer *indexBuffer = IndexBuffer::Create(indices, sizeof(indices));
+        IndexBuffer *indexBuffer = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
         return Mesh::Create(vertexBuffer, layout, indexBuffer);
     }
 
@@ -138,6 +143,24 @@ namespace baka
         }
 
         VertexBuffer *vb = VertexBuffer::Create(&vertices[0].x, sizeof(vertices));
+        IndexBuffer *ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
+        return Mesh::Create(vb, layout, ib);
+    }
+
+    Mesh *PlanePrimitive(VertexBufferLayout &layout)
+    {
+        float vertices[] = {
+            1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f
+        };
+        
+        std::uint32_t indices[] = {
+            0, 1, 2, 2, 3, 0,
+        };
+
+        VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
         IndexBuffer *ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
         return Mesh::Create(vb, layout, ib);
     }
