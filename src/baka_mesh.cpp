@@ -13,9 +13,11 @@
 namespace baka
 {
     static std::unordered_map<const char*,Mesh*> meshes;
-    Mesh *CubePrimitive(VertexBufferLayout &layout);
-    Mesh *SpherePrimitive(VertexBufferLayout &layout);
-    Mesh *PlanePrimitive(VertexBufferLayout &layout);
+    
+    Mesh *CubePrimitive     (VertexBufferLayout &layout);
+    Mesh *SpherePrimitive   (VertexBufferLayout &layout);
+    Mesh *PlanePrimitive    (VertexBufferLayout &layout);
+    Mesh *ConePrimitive     (VertexBufferLayout &layout);
     
     Mesh *Mesh::Create(VertexBuffer *vertexBuffer, VertexBufferLayout &layout, IndexBuffer *indexBuffer)
     {
@@ -53,6 +55,10 @@ namespace baka
 
         case Primitive::PLANE:
             ret = PlanePrimitive(defaultLayout);
+            break;
+
+        case Primitive::CONE:
+            ret = ConePrimitive(defaultLayout);
             break;
 
         default: return nullptr;
@@ -159,6 +165,53 @@ namespace baka
         std::uint32_t indices[] = {
             0, 1, 2, 2, 3, 0,
         };
+
+        VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
+        IndexBuffer *ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
+        return Mesh::Create(vb, layout, ib);
+    }
+
+    Mesh *ConePrimitive(VertexBufferLayout &layout)
+    {
+        const std::uint32_t baseVertCount = 12;
+        const float radius = 1.0f;
+        const float height = 1.0f;
+
+        glm::vec3 vertices[baseVertCount + 2];
+        std::uint32_t indices[(baseVertCount + 2) * 6];
+
+        const std::uint32_t baseCenterIndex = 0;
+        const std::uint32_t peakIndex = baseVertCount + 2 - 1;
+
+        vertices[baseCenterIndex] = glm::vec3(0.0f, -height / 2.0f, 0.0f);
+        vertices[peakIndex] = glm::vec3(0.0f, height / 2.0f, 0.0f);
+
+        const float step = 2.0f * glm::pi<float>() / baseVertCount;
+        for(std::uint32_t i = 1; i <= baseVertCount; i++)
+        {
+            float angle = step * i;
+            vertices[i] = glm::vec3(
+                radius * cos(angle),
+                vertices[baseCenterIndex].y,
+                radius * sin(angle)
+            );
+        }
+
+        for(std::uint32_t i = 1; i <= baseVertCount + 1; i++)
+        {
+            std::uint32_t nextVertexCicle = i + 1;
+            if(nextVertexCicle >= peakIndex)
+                nextVertexCicle = 1;
+            std::uint32_t index = (i - 1) * 6;
+
+            indices[index++] = nextVertexCicle;
+            indices[index++] = i;
+            indices[index++] = baseCenterIndex;
+
+            indices[index++] = i;
+            indices[index++] = nextVertexCicle;
+            indices[index  ] = peakIndex;
+        }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
         IndexBuffer *ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
