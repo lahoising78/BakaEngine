@@ -51,7 +51,7 @@ namespace baka
         {
             glBindVertexArray(this->vertexArrayId);
             BAKA_ASSERT(indexBuffer);
-            glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_LINE_STRIP, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
         }
 
     } // namespace gl

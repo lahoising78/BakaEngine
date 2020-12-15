@@ -145,11 +145,11 @@ namespace baka
             for(std::uint32_t y = 0; y < heightDivisions; y++)
             {
                 indices[index++] = (y + 0) * numVertsAround + x + 1;
+                indices[index++] = (y + 1) * numVertsAround + x;
                 indices[index++] = (y + 0) * numVertsAround + x;
-                indices[index++] = (y + 1) * numVertsAround + x;
                 indices[index++] = (y + 0) * numVertsAround + x + 1;
-                indices[index++] = (y + 1) * numVertsAround + x;
                 indices[index++] = (y + 1) * numVertsAround + x + 1;
+                indices[index++] = (y + 1) * numVertsAround + x;
             }
         }
 
