@@ -62,6 +62,9 @@ namespace baka
 
         bakalog("gl graphics initialized. using version %s", glGetString(GL_VERSION));
 
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     }
 

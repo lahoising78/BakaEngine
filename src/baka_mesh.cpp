@@ -260,16 +260,16 @@ namespace baka
             indices[index++] = bottomIndex;
 
             indices[index++] = botNextVert;
-            indices[index++] = topNextVert;
             indices[index++] = i + sideCount;
+            indices[index++] = topNextVert;
 
-            indices[index++] = i + sideCount;
             indices[index++] = topNextVert;
+            indices[index++] = i + sideCount;
             indices[index++] = topIndex;
 
             indices[index++] = i + sideCount;
-            indices[index++] = i;
             indices[index++] = botNextVert;
+            indices[index++] = i;
         }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
