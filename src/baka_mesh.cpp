@@ -210,12 +210,12 @@ namespace baka
             std::uint32_t index = (i - 1) * 6;
 
             indices[index++] = nextVertexCicle;
-            indices[index++] = i;
             indices[index++] = baseCenterIndex;
-
             indices[index++] = i;
+
             indices[index++] = nextVertexCicle;
-            indices[index  ] = peakIndex;
+            indices[index++] = i;
+            indices[index] = peakIndex;
         }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
