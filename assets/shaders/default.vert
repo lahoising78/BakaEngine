@@ -12,5 +12,5 @@ out vec3 v_normal;
 void main()
 {   
     gl_Position = u_modelViewProj * vec4(a_position, 1.0);
-    v_normal = (u_normalMat * vec4(a_normal, 0.0)).xyz;
+    v_normal = normalize((u_normalMat * vec4(a_normal, 0.0)).xyz);
 }
