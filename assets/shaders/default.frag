@@ -1,10 +1,10 @@
 #version 330 core
 
-uniform mat4 u_proj;
+uniform mat4 u_modelViewProj;
 uniform vec4 u_tint;
 uniform mat4 u_normalMat;
 
-varying vec3 v_normal;
+in vec3 v_normal;
 
 void main()
 {

@@ -1,16 +1,16 @@
 #version 330 core
 
-uniform mat4 u_proj;
+uniform mat4 u_modelViewProj;
 uniform vec4 u_tint;
 uniform mat4 u_normalMat;
 
-attribute vec3 a_position;
-attribute vec3 a_normal;
+in vec3 a_position;
+in vec3 a_normal;
 
-varying vec3 v_normal;
+out vec3 v_normal;
 
 void main()
 {   
-    gl_Position = u_proj * vec4(a_position, 1.0);
-    v_normal = a_normal;
+    gl_Position = u_modelViewProj * vec4(a_position, 1.0);
+    v_normal = (u_normalMat * vec4(a_normal, 0.0)).xyz;
 }

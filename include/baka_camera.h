@@ -38,6 +38,7 @@ namespace baka
 
         glm::mat4 GetViewProjection() { return viewProjection; }
         glm::mat4 GetView() { return view; }
+        glm::mat4 GetProjection() { return projection; }
 
         void SetPosition(glm::vec3 pos) { position = pos; RecalculateMatrix(); }
         void SetRotation(glm::quat rotation) { this->rotation = rotation; RecalculateMatrix(); }
