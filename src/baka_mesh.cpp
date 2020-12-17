@@ -34,6 +34,7 @@ namespace baka
     Mesh *Mesh::PrimitiveMesh(Primitive primitive)
     {
         static VertexBufferLayout defaultLayout = VertexBufferLayout({
+            {VertexAttributeType::ATTRIBUTE_FLOAT, 3},
             {VertexAttributeType::ATTRIBUTE_FLOAT, 3}
         });
         
@@ -76,29 +77,81 @@ namespace baka
     Mesh *CubePrimitive(VertexBufferLayout &layout)
     {
         float vertices[] = {
-            -1.0f,  1.0f, -1.0f,
-             1.0f,  1.0f, -1.0f,
-             1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f,  1.0f,  1.0f,
-             1.0f,  1.0f,  1.0f,
-             1.0f, -1.0f,  1.0f,
-            -1.0f, -1.0f,  1.0f
+            //  1.0f,  1.0f, -1.0f,     0.0f,  0.0f, -1.0f,    // 2 1
+            // -1.0f, -1.0f, -1.0f,     0.0f,  0.0f, -1.0f,    // 4 1
+            // -1.0f,  1.0f, -1.0f,     0.0f,  0.0f, -1.0f,    // 1 1
+
+            // -1.0f, -1.0f,  1.0f,     0.0f,  0.0f,  1.0f,    // 8 2
+            //  1.0f,  1.0f,  1.0f,     0.0f,  0.0f,  1.0f,    // 6 2
+            // -1.0f,  1.0f,  1.0f,     0.0f,  0.0f,  1.0f,    // 5 2
+
+            // -1.0f,  1.0f,  1.0f,     0.0f,  1.0f,  0.0f,    // 5 3
+            //  1.0f,  1.0f, -1.0f,     0.0f,  1.0f,  0.0f,    // 2 3
+            // -1.0f,  1.0f, -1.0f,     0.0f,  1.0f,  0.0f,    // 1 3
+             
+            //  1.0f,  1.0f,  1.0f,     1.0f,  0.0f,  0.0f,    // 6 4
+            //  1.0f, -1.0f, -1.0f,     1.0f,  0.0f,  0.0f,    // 3 4
+            //  1.0f,  1.0f, -1.0f,     1.0f,  0.0f,  0.0f,    // 2 4
+
+            // -1.0f,  1.0f,  1.0f,     0.0f, -1.0f,  0.0f,    // 3 5
+            // -1.0f, -1.0f,  1.0f,     0.0f, -1.0f,  0.0f,    // 8 5
+            // -1.0f, -1.0f, -1.0f,     0.0f, -1.0f,  0.0f,    // 4 5
+
+            // -1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,    // 1 6
+            // -1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    // 8 6
+            // -1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,    // 5 6
+
+            // -1.0f,  1.0f,  1.0f,     0.0f,  0.0f, -1.0f,    // 3 1
+            //  1.0f, -1.0f,  1.0f,     0.0f,  0.0f,  1.0f,    // 7 2
+            //  1.0f,  1.0f,  1.0f,     0.0f,  1.0f,  0.0f,    // 6 3
+            //  1.0f, -1.0f,  1.0f,     1.0f,  0.0f,  0.0f,    // 7 4
+            //  1.0f, -1.0f,  1.0f,     0.0f, -1.0f,  0.0f,    // 7 5
+            // -1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f     // 4 6
+
+            // Front face: white
+            -1.0, -1.0,  1.0,  0.0,  0.0,  1.0,
+            1.0, -1.0,  1.0,  0.0,  0.0,  1.0,
+            1.0,  1.0,  1.0,  0.0,  0.0,  1.0, 
+            -1.0,  1.0,  1.0,  0.0,  0.0,  1.0,
+
+            // Back face: red
+            -1.0, -1.0, -1.0,  0.0,  0.0, -1.0,
+            -1.0,  1.0, -1.0,  0.0,  0.0, -1.0,
+            1.0,  1.0, -1.0,  0.0,  0.0, -1.0,
+            1.0, -1.0, -1.0,  0.0,  0.0, -1.0,
+
+            // Top face: green
+            -1.0,  1.0, -1.0,  0.0,  1.0,  0.0,
+            -1.0,  1.0,  1.0,  0.0,  1.0,  0.0,
+            1.0,  1.0,  1.0,  0.0,  1.0,  0.0,
+            1.0,  1.0, -1.0,  0.0,  1.0,  0.0,
+
+            // Bottom face: blue
+            -1.0, -1.0, -1.0,  0.0, -1.0,  0.0,
+            1.0, -1.0, -1.0,  0.0, -1.0,  0.0,
+            1.0, -1.0,  1.0,  0.0, -1.0,  0.0, 
+            -1.0, -1.0,  1.0,  0.0, -1.0,  0.0,
+
+            // Right face: yellow
+            1.0, -1.0, -1.0,  1.0,  0.0,  0.0,
+            1.0,  1.0, -1.0,  1.0,  0.0,  0.0,
+            1.0,  1.0,  1.0,  1.0,  0.0,  0.0,
+            1.0, -1.0,  1.0,  1.0,  0.0,  0.0,
+
+            // Left face: purple
+            -1.0, -1.0, -1.0, -1.0,  0.0,  0.0,
+            -1.0, -1.0,  1.0, -1.0,  0.0,  0.0,
+            -1.0,  1.0,  1.0, -1.0,  0.0,  0.0,
+            -1.0,  1.0, -1.0, -1.0,  0.0,  0.0,
         };
 
         std::uint32_t indices[] = {
-            1, 3, 0,
-            7, 5, 4,
-            4, 1, 0,
-            5, 2, 1,
-            2, 7, 3,
-            0, 7, 4,
-            1, 2, 3,
-            7, 6, 5,
-            4, 5, 1,
-            5, 6, 2,
-            2, 6, 7,
-            0, 3, 7
+             0,  1,  2,  0,  2,  3, // front
+             4,  5,  6,  4,  6,  7, // back
+             8,  9, 10,  8, 10, 11, // top
+            12, 13, 14, 12, 14, 15, // bottom
+            16, 17, 18, 16, 18, 19, // right
+            20, 21, 22, 20, 22, 23, // left
         };
 
         VertexBuffer *vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
@@ -115,7 +168,7 @@ namespace baka
         const float pi = glm::pi<float>();
         const float pi2 = pi * 2.0f;
 
-        glm::vec3 vertices[numVertices];
+        float vertices[numVertices * (3 + 3)];
         std::uint32_t index = 0;
         for (int y = 0; y <= heightDivisions; y++) {
             const float v = (float)y / heightDivisions;
@@ -130,10 +183,16 @@ namespace baka
                 const float sinTheta = sin(theta);
                 const float cosTheta = cos(theta);
 
-                vertices[index++] = glm::vec3(
+                const glm::vec3 vert = glm::vec3(
                     cosTheta * sinPhi, 
                     cosPhi, 
-                    sinTheta * sinPhi) * radius;
+                    sinTheta * sinPhi);
+
+                *(glm::vec3*)(&vertices[index]) = vert * radius;
+                index += 3;
+
+                *(glm::vec3*)(&vertices[index]) = vert / radius;
+                index += 3;
             }
         }
 
@@ -153,7 +212,7 @@ namespace baka
             }
         }
 
-        VertexBuffer *vb = VertexBuffer::Create(&vertices[0].x, sizeof(vertices));
+        VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
         IndexBuffer *ib = IndexBuffer::Create(indices, sizeof(indices) / sizeof(std::uint32_t));
         return Mesh::Create(vb, layout, ib);
     }
