@@ -211,46 +211,69 @@ namespace baka
         return Mesh::Create(vb, layout, ib);
     }
 
+    void addVertexToConeBuffer(float *buffer, std::uint32_t index, glm::vec3 pos, glm::vec3 normal)
+    {
+        memcpy(&buffer[index], &pos, sizeof(glm::vec3));
+        memcpy(&buffer[index+3], &normal, sizeof(glm::vec3));
+    }
+
     Mesh *ConePrimitive(VertexBufferLayout &layout)
     {
         const std::uint32_t baseVertCount = 12;
         const float radius = 1.0f;
         const float height = 1.0f;
+        const std::uint32_t stride = 6;
+        const std::uint32_t offset = baseVertCount * stride;
 
-        glm::vec3 vertices[baseVertCount + 2] = {{}};
+        float vertices[(baseVertCount * 3 + 1) * stride] = {0};
         std::uint32_t indices[baseVertCount * 6] = {0};
 
-        const std::uint32_t baseCenterIndex = 0;
-        const std::uint32_t peakIndex = baseVertCount + 2 - 1;
+        const std::uint32_t baseCenterIndex = (baseVertCount * 3) * stride;
+        glm::vec3 pos = glm::vec3(0.0f, -height / 2.0f, 0.0f);
+        glm::vec3 normal = glm::vec3(0.0f, -1.0f, 0.0f);
+        addVertexToConeBuffer(vertices, baseCenterIndex, pos, normal);
 
-        vertices[baseCenterIndex] = glm::vec3(0.0f, -height / 2.0f, 0.0f);
-        vertices[peakIndex] = glm::vec3(0.0f, height / 2.0f, 0.0f);
-
+        const glm::vec3 peak = glm::vec3(0.0f, height / 2.0f, 0.0f);
+        const float slope = sin(atan2f(peak.y, radius));
         const float step = 2.0f * glm::pi<float>() / baseVertCount;
-        for(std::uint32_t i = 1; i <= baseVertCount; i++)
+        for(std::uint32_t i = 0; i < baseVertCount; i++)
         {
             float angle = step * i;
-            vertices[i] = glm::vec3(
+            std::uint32_t index = i * stride;
+            
+            // base slope
+            pos = glm::vec3(
                 radius * cos(angle),
-                vertices[baseCenterIndex].y,
+                vertices[baseCenterIndex+1],
                 radius * sin(angle)
             );
+            normal = glm::normalize(glm::vec3(cos(angle), slope, sin(angle)));
+            addVertexToConeBuffer(vertices, index, pos, normal);
+
+            // peak
+            index += offset;
+            angle += step * 0.5f;
+            normal = glm::normalize(glm::vec3(cos(angle), slope, sin(angle)));
+            addVertexToConeBuffer(vertices, index, peak, normal);
+            
+            // base down
+            index += offset;
+            normal = glm::vec3(0.0f, -1.0f, 0.0f);
+            addVertexToConeBuffer(vertices, index, pos, normal);
         }
 
-        for(std::uint32_t i = 1; i <= baseVertCount; i++)
+        for(std::uint32_t i = 0; i < baseVertCount; i++)
         {
-            std::uint32_t nextVertexCicle = i + 1;
-            if(nextVertexCicle >= peakIndex)
-                nextVertexCicle = 1;
-            std::uint32_t index = (i - 1) * 6;
+            std::uint32_t nextVertexCicle = (i + 1) % baseVertCount;
+            std::uint32_t index = i * 6;
 
-            indices[index++] = nextVertexCicle;
+            indices[index++] = nextVertexCicle + offset * 2;
             indices[index++] = baseCenterIndex;
-            indices[index++] = i;
+            indices[index++] = i + offset * 2;
 
             indices[index++] = nextVertexCicle;
+            indices[index++] = i + offset;
             indices[index++] = i;
-            indices[index] = peakIndex;
         }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
