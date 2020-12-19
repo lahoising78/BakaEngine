@@ -288,46 +288,59 @@ namespace baka
         const float height = 1.0f;
         const std::uint32_t indicesPerSide = 3 * 4; // 4 faces, 3 verts per face
 
-        glm::vec3 vertices[ sideCount * 2 + 2 ] = {{}};
+        glm::vec3 vertices[ (sideCount * 4 + 2) * 2 ] = {{}};
         std::uint32_t indices[ sideCount * indicesPerSide ] = {0}; 
 
-        const std::uint32_t bottomIndex = sideCount * 2 + 1;
-        const std::uint32_t topIndex = bottomIndex - 1;
+        const std::uint32_t bottomIndex = ((sideCount * 4 + 2) * 2) - 2;
+        const std::uint32_t topIndex = bottomIndex - 2;
 
         vertices[bottomIndex] = glm::vec3(0.0f, -height / 2.0f, 0.0f);
+        vertices[bottomIndex + 1] = glm::vec3(0.0f, -1.0f, 0.0f);
+
         vertices[topIndex] =    glm::vec3(0.0f,  height / 2.0f, 0.0f);
+        vertices[topIndex + 1] = glm::vec3(0.0f, 1.0f, 0.0f);
 
         const float step = 2.0f * glm::pi<float>() / sideCount;
+        const std::uint32_t offset = sideCount * 2;
         for(std::uint32_t i = 0; i < sideCount; i++)
         {
             // VERTICES
             float angle = i * step;
             const float x = radius * cos(angle);
             const float z = radius * sin(angle);
+            std::uint32_t index = i * 2;
 
-            vertices[i] =             glm::vec3(x, -height / 2.0f, z);  // bottom
-            vertices[i + sideCount] = glm::vec3(x,  height / 2.0f, z);  // top
+            vertices[index] =                   glm::vec3(x, -height / 2.0f, z);    // bottom
+            vertices[index + 1] =               glm::vec3(0.0f, -1.0f, 0.0f);       // down
+
+            vertices[index + offset] =          glm::vec3(x,  height / 2.0f, z);    // top
+            vertices[index + offset + 1] =      glm::vec3(0.0f,  1.0f, 0.0f);       // up
+            
+            vertices[index + offset * 2] =      glm::vec3(x, -height / 2.0f, z);    // bottom
+            vertices[index + offset * 2 + 1] =  glm::vec3(x, 0.0f, z);              // side
+
+            vertices[index + offset * 3] =      glm::vec3(x, height / 2.0f, z);     // top
+            vertices[index + offset * 3 + 1] =  glm::vec3(x, 0.0f, z);              // side
 
             // INDICES
-            std::uint32_t index = i * indicesPerSide;
-            std::uint32_t botNextVert = (i + 1) % sideCount;
-            std::uint32_t topNextVert = botNextVert + sideCount;
+            index = i * indicesPerSide;
+            std::uint32_t nextVert = (i + 1) % sideCount;
             
             indices[index++] = i;
-            indices[index++] = botNextVert;
+            indices[index++] = nextVert;
             indices[index++] = bottomIndex;
 
-            indices[index++] = botNextVert;
-            indices[index++] = i + sideCount;
-            indices[index++] = topNextVert;
+            indices[index++] = i + sideCount * 3;
+            indices[index++] = nextVert + sideCount * 3;
+            indices[index++] = nextVert + sideCount * 2;
 
-            indices[index++] = topNextVert;
+            indices[index++] = nextVert + sideCount;
             indices[index++] = i + sideCount;
             indices[index++] = topIndex;
 
-            indices[index++] = i + sideCount;
-            indices[index++] = botNextVert;
-            indices[index++] = i;
+            indices[index++] = nextVert + sideCount * 2;
+            indices[index++] = i + sideCount * 2;
+            indices[index++] = i + sideCount * 3;
         }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
