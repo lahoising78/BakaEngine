@@ -292,7 +292,7 @@ namespace baka
         std::uint32_t indices[ sideCount * indicesPerSide ] = {0}; 
 
         // base and top indices as vertices (pos and normals count as only one)
-        const std::uint32_t bottomIndex = sideCount * 4;
+        const std::uint32_t bottomIndex = sideCount * 4 + 1;
         const std::uint32_t topIndex = bottomIndex - 1;
 
         vertices[bottomIndex * 2] = glm::vec3(0.0f, -height / 2.0f, 0.0f);
