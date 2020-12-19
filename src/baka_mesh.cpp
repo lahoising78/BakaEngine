@@ -223,57 +223,37 @@ namespace baka
         const float radius = 1.0f;
         const float height = 1.0f;
         const std::uint32_t stride = 6;
-        const std::uint32_t offset = baseVertCount * stride;
 
         float vertices[(baseVertCount * 3 + 1) * stride] = {0};
         std::uint32_t indices[baseVertCount * 6] = {0};
 
-        const std::uint32_t baseCenterIndex = (baseVertCount * 3) * stride;
+        const std::uint32_t baseIndex = baseVertCount * 3; // the vertex index
         glm::vec3 pos = glm::vec3(0.0f, -height / 2.0f, 0.0f);
         glm::vec3 normal = glm::vec3(0.0f, -1.0f, 0.0f);
-        addVertexToConeBuffer(vertices, baseCenterIndex, pos, normal);
+        addVertexToConeBuffer(vertices, baseIndex * stride, pos, normal);
 
-        const glm::vec3 peak = glm::vec3(0.0f, height / 2.0f, 0.0f);
-        const float slope = sin(atan2f(peak.y, radius));
+        const std::uint32_t offset = baseIndex;
         const float step = 2.0f * glm::pi<float>() / baseVertCount;
         for(std::uint32_t i = 0; i < baseVertCount; i++)
         {
+            // VERTICES
             float angle = step * i;
-            std::uint32_t index = i * stride;
-            
-            // base slope
+            std::uint32_t vertIndex = i * stride;
+
             pos = glm::vec3(
-                radius * cos(angle),
-                vertices[baseCenterIndex+1],
-                radius * sin(angle)
+                cos(angle),
+                vertices[baseIndex * stride + 1],
+                sin(angle)
             );
-            normal = glm::normalize(glm::vec3(cos(angle), slope, sin(angle)));
-            addVertexToConeBuffer(vertices, index, pos, normal);
-
-            // peak
-            index += offset;
-            angle += step * 0.5f;
-            normal = glm::normalize(glm::vec3(cos(angle), slope, sin(angle)));
-            addVertexToConeBuffer(vertices, index, peak, normal);
-            
-            // base down
-            index += offset;
             normal = glm::vec3(0.0f, -1.0f, 0.0f);
-            addVertexToConeBuffer(vertices, index, pos, normal);
-        }
+            addVertexToConeBuffer(vertices, i * stride, pos, normal);
 
-        for(std::uint32_t i = 0; i < baseVertCount; i++)
-        {
-            std::uint32_t nextVertexCicle = (i + 1) % baseVertCount;
+            // INDICES
+            std::uint32_t nextVert = (i + 1) % baseVertCount;
             std::uint32_t index = i * 6;
-
-            indices[index++] = nextVertexCicle + offset * 2;
-            indices[index++] = baseCenterIndex;
-            indices[index++] = i + offset * 2;
-
-            indices[index++] = nextVertexCicle;
-            indices[index++] = i + offset;
-            indices[index++] = i;
+            indices[index] =    nextVert;
+            indices[index+1] =  baseIndex;
+            indices[index+2] =  i;
         }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
