@@ -232,28 +232,46 @@ namespace baka
         glm::vec3 normal = glm::vec3(0.0f, -1.0f, 0.0f);
         addVertexToConeBuffer(vertices, baseIndex * stride, pos, normal);
 
-        const std::uint32_t offset = baseIndex;
         const float step = 2.0f * glm::pi<float>() / baseVertCount;
+        const float slope = sin( atan2f(height/2.0f, radius) );
+        const glm::vec3 peak = glm::vec3(0.0f, height/2.0f, 0.0f);
         for(std::uint32_t i = 0; i < baseVertCount; i++)
         {
             // VERTICES
             float angle = step * i;
             std::uint32_t vertIndex = i * stride;
 
+            // base down
             pos = glm::vec3(
-                cos(angle),
+                radius * cos(angle),
                 vertices[baseIndex * stride + 1],
-                sin(angle)
+                radius * sin(angle)
             );
             normal = glm::vec3(0.0f, -1.0f, 0.0f);
             addVertexToConeBuffer(vertices, i * stride, pos, normal);
 
+            // base side
+            normal = glm::vec3(pos.x, slope, pos.z);
+            normal = glm::normalize(normal);
+            addVertexToConeBuffer(vertices, (i + baseVertCount) * stride, pos, normal);
+
+            // peak
+            angle += step / 2.0f;
+            normal = glm::vec3(cos(angle), slope, sin(angle));
+            normal = glm::normalize(normal);
+            addVertexToConeBuffer(vertices, (i + baseVertCount * 2) * stride, peak, normal);
+
             // INDICES
             std::uint32_t nextVert = (i + 1) % baseVertCount;
             std::uint32_t index = i * 6;
-            indices[index] =    nextVert;
-            indices[index+1] =  baseIndex;
-            indices[index+2] =  i;
+            
+            indices[index++] =  nextVert;
+            indices[index++] =  baseIndex;
+            indices[index++] =  i;
+
+            indices[index++] =  i + baseVertCount;
+            indices[index++] =  i + baseVertCount * 2;
+            indices[index] =    nextVert + baseVertCount;
         }
 
         VertexBuffer *vb = VertexBuffer::Create(vertices, sizeof(vertices));
