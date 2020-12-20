@@ -12,8 +12,9 @@ message("SDL2 includes: ${SDL2_INCLUDE_DIR}")
 
 file(
     GLOB baka_src
-    "include/*.h"
-    "src/*.cpp"
+    "include/**.h"
+    "src/**.cpp"
+    "src/lights/*.cpp"
     "external/glm/glm/*.hpp"
     "external/glm/glm/*.inl"
 )
