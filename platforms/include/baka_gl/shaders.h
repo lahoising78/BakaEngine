@@ -2,6 +2,7 @@
 #define _BAKA_GL_SHADERS_H_
 
 #include <unordered_map>
+#include <string>
 
 #ifdef WIN32
 #include <windows.h>
@@ -30,7 +31,7 @@ namespace baka
 
         private:
             unsigned int renderer_program_id;
-            std::unordered_map<const char *, GLint> varLocations;
+            std::unordered_map<std::string, GLint> varLocations;
         };
     }
 } // namespace baka
