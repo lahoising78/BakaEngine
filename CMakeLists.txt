@@ -14,6 +14,7 @@ file(
     GLOB baka_src
     "include/**.h"
     "src/**.cpp"
+    "include/lights/*.h"
     "src/lights/*.cpp"
     "external/glm/glm/*.hpp"
     "external/glm/glm/*.inl"

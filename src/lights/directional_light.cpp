@@ -5,8 +5,6 @@
 
 #include <lights/directional_light.h>
 
-#define DIR_LIGHT_MAX_NAME 64
-
 namespace baka
 {
     DirectionalLight::DirectionalLight() : DirectionalLight(
@@ -22,20 +20,7 @@ namespace baka
     {
         char buffer[DIR_LIGHT_MAX_NAME] = {0};
         BAKA_ASSERT(shader);
-        
-        snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.color", uniformName);
-        shader->SetUniform(
-            Shader::Type::FLOAT3, 
-            buffer, 
-            (void*)glm::value_ptr(this->color)
-        );
-
-        snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.intensity", uniformName);
-        shader->SetUniform(
-            Shader::Type::FLOAT,
-            buffer,
-            &this->intensity
-        );
+        Light::BindBaseLight(this, shader, uniformName);
 
         snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.dir", uniformName);
         glm::vec3 dir = this->GetDirection();

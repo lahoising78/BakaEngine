@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <baka_shader.h>
 
+#define DIR_LIGHT_MAX_NAME 64
+
 namespace baka
 {
 
@@ -18,6 +20,9 @@ public:
     }
 
     virtual void Bind(Shader *shader, const char *uniformName) = 0;
+
+protected:
+    static void BindBaseLight(Light *light, Shader *shader, const char *uniformName);
 
 public:
     glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
