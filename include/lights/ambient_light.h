@@ -11,7 +11,7 @@ class AmbientLight : public Light
 {
 public:
     AmbientLight();
-    AmbientLight(glm::vec3 color, float intensity, glm::quat rot);
+    AmbientLight(glm::vec3 color, float intensity = 1.0f);
 
     void Bind(Shader *shader, const char *uniformName) override;
     

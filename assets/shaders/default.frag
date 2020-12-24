@@ -25,6 +25,11 @@ uniform mat4 u_normalMat;
 
 in vec3 v_normal;
 
+vec3 ambient_light_calc(AmbientLight light)
+{
+    return light.light.color * light.light.intensity;
+}
+
 vec3 dir_light_calc(DirLight light, vec3 normal)
 {
     return light.light.color * max(dot(normal, light.dir), 0.0) * light.light.intensity;
@@ -32,5 +37,7 @@ vec3 dir_light_calc(DirLight light, vec3 normal)
 
 void main()
 {
-    gl_FragColor = u_tint * vec4(dir_light_calc(u_dirLight, v_normal), 1.0);
+    vec3 result = ambient_light_calc(u_ambientLight);
+    result += dir_light_calc(u_dirLight, v_normal);
+    gl_FragColor = vec4(result, 1.0) * u_tint;
 }
