@@ -47,7 +47,7 @@ vec3 point_light_calc(PointLight light, vec3 normal, vec3 pos)
 {
     vec3 posToLight = light.position - pos;
     vec3 lightDir = normalize(posToLight);
-    float r = length(lightDir);
+    float r = length(posToLight);
     vec3 color = light.light.intensity * light.light.color / (r * r);
     
     float dot_nl = max(dot(normal, lightDir), 0.0);
