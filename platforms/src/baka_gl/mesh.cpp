@@ -36,6 +36,7 @@ namespace baka
             this->indexBuffer = indexBuffer;
             BAKA_ASSERT(indexBuffer);
             this->indexBuffer->Bind();
+            glBindVertexArray(0);
         }
 
         Mesh::~Mesh()
@@ -52,6 +53,7 @@ namespace baka
             glBindVertexArray(this->vertexArrayId);
             BAKA_ASSERT(indexBuffer);
             glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray(0);
         }
 
     } // namespace gl

@@ -12,7 +12,7 @@
 
 namespace baka
 {
-    static std::unordered_map<const char*,Mesh*> meshes;
+    static std::unordered_map<std::string,Mesh*> meshes;
     
     Mesh *CubePrimitive     (VertexBufferLayout &layout);
     Mesh *SpherePrimitive   (VertexBufferLayout &layout);
@@ -70,7 +70,8 @@ namespace baka
         default: return nullptr;
         }
 
-        meshes[meshName] = ret;
+        // meshes[meshName] = ret;
+        meshes.insert({std::string(meshName), ret});
         return ret;
     }
 
