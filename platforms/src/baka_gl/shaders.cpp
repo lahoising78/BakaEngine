@@ -40,6 +40,7 @@ namespace baka
         {
             bakalog("destroy shader");
             glDeleteProgram(this->renderer_program_id);
+            glUseProgram(0);
         }
 
         unsigned int Shader::CompileShader(unsigned int shaderType, const char *source)
@@ -69,6 +70,11 @@ namespace baka
         void Shader::Bind()
         {
             glUseProgram(this->renderer_program_id);
+        }
+
+        void Shader::Unbind()
+        {
+            glUseProgram(0);
         }
 
         void Shader::SetUniform(Shader::Type shaderType, const char *name, void *data)

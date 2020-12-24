@@ -24,6 +24,7 @@ namespace baka
         
         virtual ~Shader() {}
         virtual void Bind() = 0;
+        virtual void Unbind() = 0;
         virtual void Destroy() = 0;
         virtual void SetUniform(Shader::Type shaderType, const char *name, void *data) = 0;
     };
