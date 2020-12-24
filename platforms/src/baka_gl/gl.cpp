@@ -62,10 +62,10 @@ namespace baka
 
         bakalog("gl graphics initialized. using version %s", glGetString(GL_VERSION));
 
+        glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CW);
-        glEnable(GL_DEPTH_BUFFER);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     }
 
@@ -76,7 +76,7 @@ namespace baka
 
     void GLGraphics::RenderBegin()
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         static Input &input = Input::Get();
         if(input.WindowResizedThisFrame()) 
