@@ -34,10 +34,13 @@ void Camera::SetPerspective(CameraInfo::Perspective perspectiveInfo, float nearC
     this->info.perspectiveInfo = perspectiveInfo;
     this->nearClip = nearClip;
     this->farClip = farClip;
+
+    glm::mat4 coords = glm::mat4(1.0f);
+    coords[0][0] = -1.0f;
     
     int w, h;
     graphics.GetWindowSize(&w, &h);
-    projection = glm::perspective(perspectiveInfo.fov, (float)w / (float)h , nearClip, farClip);
+    projection = glm::perspective(perspectiveInfo.fov, (float)w / (float)h , nearClip, farClip) * coords;
     RecalculateMatrix();
 }
 
@@ -51,16 +54,15 @@ void Camera::SetOrtho(CameraInfo::Ortho orthoInfo, float nearClip, float farClip
     this->nearClip = nearClip;
     this->farClip = farClip;
 
-    projection = glm::ortho( -halfWidth, halfWidth, -halfHeight, halfHeight, nearClip, farClip );
+    glm::mat4 coords = glm::mat4(1.0f);
+    coords[0][0] = -1.0f;
+
+    projection = glm::ortho( -halfWidth, halfWidth, -halfHeight, halfHeight, nearClip, farClip ) * coords;
     RecalculateMatrix();
 }
 
 void Camera::RecalculateMatrix()
 {
-    // view =  glm::yawPitchRoll(glm::yaw(rotation), glm::pitch(rotation), glm::roll(rotation)) *
-    //         glm::translate(glm::mat4(1.0f), position);
-
-    // glm::inverse(view);
     glm::vec3 up = rotation * glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 fwd = rotation * glm::vec3(0.0f, 0.0f, 1.0f);
     view = glm::lookAt(
@@ -68,6 +70,7 @@ void Camera::RecalculateMatrix()
         position + fwd,
         up
     );
+
     viewProjection = projection * view;
 }
 

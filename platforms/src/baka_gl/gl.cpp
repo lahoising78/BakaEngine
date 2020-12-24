@@ -64,7 +64,7 @@ namespace baka
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-        glFrontFace(GL_CCW);
+        glFrontFace(GL_CW);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     }
 
