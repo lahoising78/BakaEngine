@@ -1,7 +1,7 @@
 #ifndef _BAKA_DIRECTIONAL_LIGHT_H_
 #define _BAKA_DIRECTIONAL_LIGHT_H_
 
-#include <lights/baka_lights.h>
+#include <lights/light.h>
 #include <glm/gtc/quaternion.hpp>
 
 namespace baka

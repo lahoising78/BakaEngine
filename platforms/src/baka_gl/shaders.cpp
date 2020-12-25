@@ -82,7 +82,6 @@ namespace baka
             GLint location = 0;
             if(this->varLocations.find(name) == this->varLocations.end())
             {
-                bakalog("get location");
                 this->varLocations[name] = glGetUniformLocation(this->renderer_program_id, name);
             }
             location = this->varLocations[name];

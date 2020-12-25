@@ -2,7 +2,7 @@
 #define _BAKA_LIGHTS_AMBIENT_LIGHT_H_
 
 #include <glm/gtc/quaternion.hpp>
-#include <lights/baka_lights.h>
+#include <lights/light.h>
 
 namespace baka
 {

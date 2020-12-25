@@ -1,7 +1,7 @@
 #ifndef _BAKA_LIGHTS_POINT_LIGHT_H_
 #define _BAKA_LIGHTS_POINT_LIGHT_H_
 
-#include <lights/baka_lights.h>
+#include <lights/light.h>
 
 namespace baka
 {

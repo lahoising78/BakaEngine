@@ -1,5 +1,5 @@
 #include <glm/gtc/type_ptr.hpp>
-#include <lights/baka_lights.h>
+#include <lights/light.h>
 
 namespace baka
 {
