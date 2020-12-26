@@ -8,7 +8,7 @@ AmbientLight::AmbientLight()
     : AmbientLight(glm::vec3(1.0f, 1.0f, 1.0f), 1.0f) {}
 
 AmbientLight::AmbientLight(glm::vec3 color, float intensity) 
-    : Light(color, intensity) {}
+    : Light(color, intensity, Light::Type::AMBIENT) {}
 
 void AmbientLight::Bind(Shader *shader, const char *uniformName)
 {

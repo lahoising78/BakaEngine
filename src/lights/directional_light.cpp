@@ -14,7 +14,7 @@ namespace baka
     ) {}
 
     DirectionalLight::DirectionalLight(glm::vec3 color, float intensity, glm::quat rotation)
-        : Light(color, intensity), rotation(rotation) {}
+        : Light(color, intensity, Light::DIRECTIONAL), rotation(rotation) {}
 
     void DirectionalLight::Bind(Shader *shader, const char *uniformName)
     {

@@ -1,5 +1,5 @@
-#ifndef _BAKA_LIGHTS_H_
-#define _BAKA_LIGHTS_H_
+#ifndef _BAKA_LIGHTS_LIGHT_H_
+#define _BAKA_LIGHTS_LIGHT_H_
 
 #include <glm/glm.hpp>
 #include <baka_shader.h>
@@ -12,14 +12,24 @@ namespace baka
 class Light
 {
 public:
+    enum Type
+    {
+        AMBIENT = 0,
+        DIRECTIONAL,
+        POINT
+    };
+
+public:
     Light();
-    Light(glm::vec3 color, float intensity) 
+    Light(glm::vec3 color, float intensity, Type type) 
     {
         this->color = color;
         this->intensity = intensity;
+        this->type = type;
     }
 
     virtual void Bind(Shader *shader, const char *uniformName) = 0;
+    Type GetType() { return this->type; }
 
 protected:
     static void BindBaseLight(Light *light, Shader *shader, const char *uniformName);
@@ -27,8 +37,7 @@ protected:
 public:
     glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
     float intensity = 1.0f;
-// create
-// destroy
+    Type type;
 };
 
 } // namespace baka
