@@ -19,7 +19,7 @@ namespace baka
     class Shader
     {
     public:
-        static Shader *Create(const char *vertSrc, const char *fragSrc);
+        static Shader *Create(char *vertSrc, char *fragSrc);
         static Shader *Load(const char *vertPath, const char *fragPath, ResourceType resourceType = ResourceType::ASSET);
         
         virtual ~Shader() {}
@@ -27,6 +27,9 @@ namespace baka
         virtual void Unbind() = 0;
         virtual void Destroy() = 0;
         virtual void SetUniform(UniformType shaderType, const char *name, void *data) = 0;
+
+    private:
+        static void GetUniforms(char *source, std::unordered_map<std::string, UniformType> &dst);
 
     private:
         std::unordered_map<std::string, UniformType> activeUniforms;

@@ -1,8 +1,10 @@
 #version 330 core
 
+#uniforms
 uniform mat4 u_modelViewProj;
 uniform vec4 u_tint;
 uniform mat4 u_normalMat;
+#enduniforms
 
 in vec3 a_position;
 in vec3 a_normal;
