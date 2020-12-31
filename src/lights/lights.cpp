@@ -9,14 +9,14 @@ namespace baka
         
         snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.light.color", uniformName);
         shader->SetUniform(
-            Shader::Type::FLOAT3, 
+            UniformType::FLOAT3, 
             buffer, 
             (void*)glm::value_ptr(light->color)
         );
 
         snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.light.intensity", uniformName);
         shader->SetUniform(
-            Shader::Type::FLOAT,
+            UniformType::FLOAT,
             buffer,
             &light->intensity
         );

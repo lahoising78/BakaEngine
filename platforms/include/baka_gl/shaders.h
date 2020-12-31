@@ -23,7 +23,7 @@ namespace baka
             void Destroy() override;
             void Bind() override;
             void Unbind() override;
-            void SetUniform(Shader::Type shaderType, const char *name, void *data) override;
+            void SetUniform(UniformType shaderType, const char *name, void *data) override;
 
             unsigned int GetRendererId() { return renderer_program_id; };
 

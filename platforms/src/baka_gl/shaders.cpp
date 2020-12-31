@@ -77,7 +77,7 @@ namespace baka
             glUseProgram(0);
         }
 
-        void Shader::SetUniform(Shader::Type shaderType, const char *name, void *data)
+        void Shader::SetUniform(UniformType shaderType, const char *name, void *data)
         {
             GLint location = 0;
             if(this->varLocations.find(name) == this->varLocations.end())
@@ -88,23 +88,23 @@ namespace baka
 
             switch (shaderType)
             {
-            case Shader::Type::FLOAT:
+            case UniformType::FLOAT:
                 glUniform1fv(location, 1, (GLfloat*)data);
                 break;
 
-            case Shader::Type::FLOAT2:
+            case UniformType::FLOAT2:
                 glUniform2fv(location, 1, (GLfloat*)data);
                 break;
 
-            case Shader::Type::FLOAT3:
+            case UniformType::FLOAT3:
                 glUniform3fv(location, 1, (GLfloat*)data);
                 break;
 
-            case Shader::Type::FLOAT4:
+            case UniformType::FLOAT4:
                 glUniform4fv(location, 1, (GLfloat*)data);
                 break;
 
-            case Shader::Type::MAT4X4:
+            case UniformType::MAT4X4:
                 glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)data);
                 break;
             
