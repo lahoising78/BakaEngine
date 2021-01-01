@@ -9,10 +9,13 @@ namespace baka
 class Material
 {
 public:
-    Material();
+    Material(Shader *shader);
+    ~Material();
 
 private:
     Shader *shader;
+    std::unordered_map<std::string, void*> pointers;
+    void *buffer;
 };
 
 } // namespace baka

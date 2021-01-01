@@ -3,19 +3,10 @@
 
 #include <unordered_map>
 #include <baka_path_explorer.h>
+#include <baka_uniforms.h>
 
 namespace baka
 {
-    typedef enum UniformType_t
-    {
-        UNIFORM_NONE = 0,
-        UNIFORM_FLOAT,
-        UNIFORM_FLOAT2,
-        UNIFORM_FLOAT3,
-        UNIFORM_FLOAT4,
-        UNIFORM_MAT4X4
-    } UniformType;
-
     class Shader
     {
     public:
@@ -32,12 +23,16 @@ namespace baka
         {
             return this->activeUniforms;
         }
+        std::size_t GetUniformsTotalSize() { return this->uniformsTotalSize; }
 
     private:
+        void UpdateUniformsTotalSize();
+
         static void GetUniforms(char *source, std::unordered_map<std::string, UniformType> &dst);
 
     private:
         std::unordered_map<std::string, UniformType> activeUniforms;
+        std::size_t uniformsTotalSize;
     };
 } // namespace baka
 

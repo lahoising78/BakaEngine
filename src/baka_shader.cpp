@@ -27,6 +27,7 @@ namespace baka
         }
 
         shader->activeUniforms = uniforms;
+        shader->UpdateUniformsTotalSize();
         return shader;
     }
 
@@ -78,6 +79,8 @@ namespace baka
                 dst[uniformName] = UniformType::UNIFORM_FLOAT2;
             else if (strcmp(curr, "float") == 0) 
                 dst[uniformName] = UniformType::UNIFORM_FLOAT;
+            else if (strcmp(curr, "sampler2D") == 0)
+                dst[uniformName] = UniformType::UNIFORM_SAMPLER2D;
 
             *wordEnd = ' ';
             *separator = ';';
@@ -86,5 +89,14 @@ namespace baka
 
         memset(start, ' ', strlen(startTerm));
         memset(end, ' ', strlen(endTerm));
+    }
+
+    void Shader::UpdateUniformsTotalSize()
+    {
+        this->uniformsTotalSize = 0;
+        for(auto pair : this->activeUniforms)
+        {
+            this->uniformsTotalSize += GetUniformSize(pair.second);
+        }
     }
 } // namespace baka

@@ -31,6 +31,7 @@ uniform mat4 u_normalMat;
 
 #uniforms
 uniform vec4 u_tint;
+uniform float u_f;
 #enduniforms
 
 in vec3 v_normal;
