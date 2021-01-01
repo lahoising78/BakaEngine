@@ -53,13 +53,27 @@ namespace baka
         char *end = strstr(start, endTerm);
         if(!end) return;
 
-        // for(char *curr = start; curr < end; )
-        // {
+        for(char *curr = start + sizeof(startTerm) + 1; curr < end; )
+        {
+            while(isspace(*curr)) curr++;
+            char *separator = strchr(curr, ';');
+            curr += sizeof("uniform");
+            while(isspace(*curr)) curr++;
+            
+            char *wordEnd = curr;
+            while(!isspace(*wordEnd)) wordEnd++;
+            *wordEnd = '\0';
 
-        // }
+            if(strcmp(curr, "mat4") == 0) 
+                bakalog("found mat4");
+            else if (strcmp(curr, "vec4") == 0) 
+                bakalog("found vec4");
+
+            *wordEnd = ' ';
+            curr = separator + 1;
+        }
 
         memset(start, ' ', strlen(startTerm));
         memset(end, ' ', strlen(endTerm));
-        bakalog(source);
     }
 } // namespace baka

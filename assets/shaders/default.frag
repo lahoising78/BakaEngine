@@ -27,8 +27,11 @@ struct PointLight
 uniform PointLight u_pointLight;
 
 uniform mat4 u_modelViewProj;
-uniform vec4 u_tint;
 uniform mat4 u_normalMat;
+
+#uniforms
+uniform vec4 u_tint;
+#enduniforms
 
 in vec3 v_normal;
 in vec3 v_pos;
