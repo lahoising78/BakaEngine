@@ -7,7 +7,7 @@
 namespace baka
 {
 
-typedef enum : std::uint8_t
+typedef enum VertexAttributeType_t: std::uint8_t
 {
     ATTRIBUTE_FLOAT,
     ATTRIBUTE_MAT3X3,

@@ -25,7 +25,7 @@ namespace baka
         snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.dir", uniformName);
         glm::vec3 dir = this->GetDirection();
         shader->SetUniform(
-            UniformType::FLOAT3,
+            UniformType::UNIFORM_FLOAT3,
             buffer,
             (void*)glm::value_ptr(dir)
         );

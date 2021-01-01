@@ -6,14 +6,14 @@
 
 namespace baka
 {
-    typedef enum
+    typedef enum UniformType_t
     {
-        NONE = 0,
-        FLOAT,
-        FLOAT2,
-        FLOAT3,
-        FLOAT4,
-        MAT4X4
+        UNIFORM_NONE = 0,
+        UNIFORM_FLOAT,
+        UNIFORM_FLOAT2,
+        UNIFORM_FLOAT3,
+        UNIFORM_FLOAT4,
+        UNIFORM_MAT4X4
     } UniformType;
 
     class Shader
@@ -27,6 +27,11 @@ namespace baka
         virtual void Unbind() = 0;
         virtual void Destroy() = 0;
         virtual void SetUniform(UniformType shaderType, const char *name, void *data) = 0;
+
+        const std::unordered_map<std::string, UniformType> &GetActiveUniforms()
+        {
+            return this->activeUniforms;
+        }
 
     private:
         static void GetUniforms(char *source, std::unordered_map<std::string, UniformType> &dst);

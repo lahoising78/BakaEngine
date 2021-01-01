@@ -59,17 +59,28 @@ namespace baka
             char *separator = strchr(curr, ';');
             curr += sizeof("uniform");
             while(isspace(*curr)) curr++;
-            
+
             char *wordEnd = curr;
             while(!isspace(*wordEnd)) wordEnd++;
             *wordEnd = '\0';
 
+            char *uniformName = wordEnd + 1;
+            while(isspace(*uniformName)) uniformName++;
+            *separator = '\0';
+
             if(strcmp(curr, "mat4") == 0) 
-                bakalog("found mat4");
+                dst[uniformName] = UniformType::UNIFORM_MAT4X4;
             else if (strcmp(curr, "vec4") == 0) 
-                bakalog("found vec4");
+                dst[uniformName] = UniformType::UNIFORM_FLOAT4;
+            else if (strcmp(curr, "vec3") == 0) 
+                dst[uniformName] = UniformType::UNIFORM_FLOAT3;
+            else if (strcmp(curr, "vec2") == 0) 
+                dst[uniformName] = UniformType::UNIFORM_FLOAT2;
+            else if (strcmp(curr, "float") == 0) 
+                dst[uniformName] = UniformType::UNIFORM_FLOAT;
 
             *wordEnd = ' ';
+            *separator = ';';
             curr = separator + 1;
         }
 

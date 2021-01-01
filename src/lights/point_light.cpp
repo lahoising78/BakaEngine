@@ -23,7 +23,7 @@ void PointLight::Bind(Shader *shader, const char *uniformName)
 
     snprintf(buffer, DIR_LIGHT_MAX_NAME, "%s.position", uniformName);
     shader->SetUniform(
-        baka::UniformType::FLOAT3,
+        baka::UniformType::UNIFORM_FLOAT3,
         buffer,
         (void*)glm::value_ptr(this->position)
     );

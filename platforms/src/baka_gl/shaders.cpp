@@ -88,23 +88,23 @@ namespace baka
 
             switch (shaderType)
             {
-            case UniformType::FLOAT:
+            case UniformType::UNIFORM_FLOAT:
                 glUniform1fv(location, 1, (GLfloat*)data);
                 break;
 
-            case UniformType::FLOAT2:
+            case UniformType::UNIFORM_FLOAT2:
                 glUniform2fv(location, 1, (GLfloat*)data);
                 break;
 
-            case UniformType::FLOAT3:
+            case UniformType::UNIFORM_FLOAT3:
                 glUniform3fv(location, 1, (GLfloat*)data);
                 break;
 
-            case UniformType::FLOAT4:
+            case UniformType::UNIFORM_FLOAT4:
                 glUniform4fv(location, 1, (GLfloat*)data);
                 break;
 
-            case UniformType::MAT4X4:
+            case UniformType::UNIFORM_MAT4X4:
                 glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat*)data);
                 break;
             
