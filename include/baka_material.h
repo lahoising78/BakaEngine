@@ -12,6 +12,9 @@ public:
     Material(Shader *shader);
     ~Material();
 
+    void SetUniform(const char *uniformName, UniformValue value);
+    UniformValue GetUniform(const char *uniformName);
+
 private:
     Shader *shader;
     std::unordered_map<std::string, void*> pointers;
