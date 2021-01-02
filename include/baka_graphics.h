@@ -41,7 +41,7 @@ namespace baka{
         void GetWindowPosition(int *x, int *y);
         void GetWindowSize(int *w, int *h);
         const char * const GetWindowName();
-        // static void SetWindowName(const char *);
+        void SetWindowName(const char *name);
 
         baka::GraphicsAPI GetEnabledAPI() { return this->window_config.graphics_api; }
 

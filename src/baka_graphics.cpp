@@ -124,9 +124,10 @@ namespace baka
         return this->window_config.name;
     }
 
-    // void Graphics::SetWindowName(const char *name)
-    // {
-    //     snprintf(this->windowName, sizeof(char) * BAKA_WINDOW_NAME_MAX_LENGTH, name);
-    // }
+    void Graphics::SetWindowName(const char *name)
+    {
+        snprintf(this->window_config.name, sizeof(char) * BAKA_WINDOW_NAME_MAX_LENGTH, name);
+        SDL_SetWindowTitle(this->window, this->window_config.name);
+    }
 
 }
