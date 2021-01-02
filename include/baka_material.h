@@ -14,6 +14,8 @@ public:
 
     void SetUniform(const char *uniformName, UniformValue value);
     UniformValue GetUniform(const char *uniformName);
+    
+    void Bind();
 
 private:
     Shader *shader;

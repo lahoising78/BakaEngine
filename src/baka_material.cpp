@@ -1,6 +1,8 @@
 #include <baka_logger.h>
 #include <baka_material.h>
 
+#include <baka_lights.h>
+
 namespace baka
 {
     
@@ -31,11 +33,14 @@ Material::~Material()
 void Material::SetUniform(const char *uniformName, UniformValue value)
 {
     const auto &activeUniforms = this->shader->GetActiveUniforms();
-    memcpy(
-        this->pointers[uniformName], 
-        &value, 
-        GetUniformSize(activeUniforms.at(uniformName))
-    );
+    if(this->pointers.find(uniformName) != this->pointers.end())
+    {
+        memcpy(
+            this->pointers[uniformName], 
+            &value, 
+            GetUniformSize(activeUniforms.at(uniformName))
+        );
+    }
 }
 
 UniformValue Material::GetUniform(const char *uniformName)
@@ -53,5 +58,18 @@ UniformValue Material::GetUniform(const char *uniformName)
     return val;
 }
 
+void Material::Bind()
+{
+    const auto &activeUniforms = this->shader->GetActiveUniforms();
+    for(auto pair : activeUniforms)
+    {
+        const char *uniformName = pair.first.c_str();
+        this->shader->SetUniform(
+            pair.second,
+            uniformName,
+            this->pointers[uniformName]
+        );
+    }
+}
 
 } // namespace baka

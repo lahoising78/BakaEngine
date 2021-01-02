@@ -19,16 +19,16 @@ namespace baka
 
     typedef union UniformValue_u
     {
-        glm::mat4   uMat4;
-        glm::vec4   uVec4;
-        glm::vec3   uVec3;
-        glm::vec2   uVec2;
+        glm::mat4   mat4;
+        glm::vec4   vec4;
+        glm::vec3   vec3;
+        glm::vec2   vec2;
         float       uFloat;
 
-        UniformValue_u(glm::mat4 val) { this->uMat4   = val; }
-        UniformValue_u(glm::vec4 val) { this->uVec4   = val; }
-        UniformValue_u(glm::vec3 val) { this->uVec3   = val; }
-        UniformValue_u(glm::vec2 val) { this->uVec2   = val; }
+        UniformValue_u(glm::mat4 val) { this->mat4   = val; }
+        UniformValue_u(glm::vec4 val) { this->vec4   = val; }
+        UniformValue_u(glm::vec3 val) { this->vec3   = val; }
+        UniformValue_u(glm::vec2 val) { this->vec2   = val; }
         UniformValue_u(float val)     { this->uFloat  = val; }
     } UniformValue;
 

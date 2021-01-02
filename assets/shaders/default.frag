@@ -31,6 +31,7 @@ uniform mat4 u_normalMat;
 
 #uniforms
 uniform vec4 u_tint;
+uniform float u_useLights;
 #enduniforms
 
 in vec3 v_normal;
@@ -60,8 +61,9 @@ vec3 point_light_calc(PointLight light, vec3 normal, vec3 pos)
 
 void main()
 {
-    vec3 result = ambient_light_calc(u_ambientLight);
-    result += dir_light_calc(u_dirLight, v_normal);
-    result += point_light_calc(u_pointLight, v_normal, v_pos);
+    vec3 result = u_useLights * ambient_light_calc(u_ambientLight);
+    result +=     u_useLights * dir_light_calc(u_dirLight, v_normal);
+    result +=     u_useLights * point_light_calc(u_pointLight, v_normal, v_pos);
+    result = mix(vec3(1.0, 1.0, 1.0), result, u_useLights);
     gl_FragColor = vec4(result, 1.0) * u_tint;
 }
